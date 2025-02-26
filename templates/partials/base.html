@@ -1,0 +1,124 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay Sphere - Book Unique Experiences</title>
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'scripts/custom.js' %}"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body> 
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Stay Sphere Logo" style="height: 80px;">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/" class="active">Home</a></li>
+                
+                <!-- Hotels Dropdown -->
+                <li class="dropdown">
+                    <a href="#">Hotels </a>
+                    <ul class="dropdown-menu">
+                        <!-- Add hotel links here -->
+                    </ul>
+                </li>
+
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Blog</a></li>
+            </ul>
+        </nav>
+        <div class="header-buttons">
+            {% if user.is_authenticated %}
+                <a href="#" class="dashboard-btn"><i class="fa fa-th"></i> Dashboard</a>
+                <a href="{% url 'userauthentication:sign-out' %}" class="signout-btn"><i class="fa fa-sign-out"></i> Logout </a>
+            {% else %}
+                <a href="{% url 'userauthentication:sign-in' %}" class="dashboard-btn"> Login</a>
+                <a href="{% url 'userauthentication:sign-up' %}" class="signout-btn"> Register </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Partnerships</a></li>
+                    <li><a href="#">Newsroom</a></li>                    
+                    <li><a href="#">Advertising</a></li>
+                    <li><a href="#">Affiliate Marketing</a></li>
+                    <li><a href="#">Feedback</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <ul>
+                    <li><a href="#">Travel Guide</a></li>
+                    <li><a href="#">Hotels</a></li>
+                    <li><a href="#">All Accommodation Types</a></li>
+                    <li><a href="#">One Key Credit Cards</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Policies</h3>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Cookies</a></li>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">One Key Terms</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                    <li><a href="#">Your Privacy Choices</a></li>
+                    <li><a href="#">Content Guidelines</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Cancel Your Booking</a></li>
+                    <li><a href="#">Refund Basics</a></li>
+                    <li><a href="#">Use a Coupon</a></li>
+                    <li><a href="#">Travel Documents</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Stay Sphere, Inc. All rights reserved. Stay Sphere and the Stay Sphere Logo are trademarks or registered trademarks.</p>
+        </div>
+    </footer>
+
+    <script>
+        {% for message in messages %}
+            Swal.fire({
+                icon:"{{message.tags}}",
+                title:"{{message}}",
+                timer:1500
+            })
+        {% endfor %}
+    </script>
+</body>
+</html>

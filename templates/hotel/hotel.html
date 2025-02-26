@@ -1,0 +1,59 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="{% static 'images/hero-background.jpeg' %}" alt="Beach View" class="hero-bg">
+        <div class="hero-content">
+            <h1>Book Unique Experiences</h1>
+            <p>Discover top rated hotels, and restaurants around the world.</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Hotel, City.">
+                <input type="date" placeholder="Select Booking Date">
+                <select>
+                    <option>All Categories</option>
+                </select>
+                <button class="search-btn">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Tours Section -->
+    <section class="popular-tours">
+        <h2>Our Popular Tours</h2>
+    </section>
+
+    <!-- Hotel Listings -->
+<section class="hotel-list">
+
+    {% for hotel in hotels %}
+        <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">
+            <div class="hotel">
+                <img src="{% static 'images/hotel_marriott.jpg' %}" alt="Hotel Marriott">
+                <div class="hotel-overlay">
+                    <span class="status-badge">Open Now</span>
+                    <span class="category-badge">HOTEL</span>
+                    {% if hotel.featured == True %}
+                    <span class="featured-badge">FEATURED</span>
+                    {% endif %}
+                </div>
+                <div class="hotel-info">
+                    <!-- <span class="price-tag">$50 - $200</span> -->
+                    <h3>{{hotel.name}}</h3>
+                    <p class="hotel-location">📍 {{hotel.address}}</p>
+                    <p class="hotel-contact">📞 {{hotel.mobile}}</p>
+                    <div class="hotel-rating">
+                        ⭐⭐⭐⭐⭐ <span class="rating-value">(4.8)</span>
+                        <span class="views">👁 {{hotel.views}}</span>
+                        <span class="fav-btn">❤️</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+
+</section>
+
+{% endblock content %}
+

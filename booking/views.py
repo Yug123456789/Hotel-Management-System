@@ -1,0 +1,163 @@
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
+from urllib.parse import urlencode
+from datetime import datetime
+from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Resturant, Booking, ActivityLog, StaffOnDuty
+from django.template.loader import render_to_string
+
+def check_room_availability(request):
+    if request.method == "POST":
+        id = request.POST.get("hotel-id")
+        checkin = request.POST.get("checkin")
+        checkout = request.POST.get("checkout")
+        
+        room_type_slug = request.POST.get("room_type")  
+
+        try:
+            hotel = Hotel.objects.get(id=id)
+            room_type = RoomType.objects.get(hotel=hotel, slug=room_type_slug)
+        except (Hotel.DoesNotExist, RoomType.DoesNotExist):
+            return HttpResponseRedirect(reverse("booking:home"))  # Redirect if not found
+
+        print("id ===", id)
+        print("checkin ===", checkin)
+        print("checkout ===", checkout)
+        print("room_type ===", room_type)
+        print("hotel ===", hotel)
+        print("room_type ===", room_type)
+
+        url = reverse("hotel:room_type_detail", args=[hotel.slug, room_type.slug])
+        query_params = urlencode({
+            "hotel-id": id,
+            "checkin": checkin,
+            "checkout": checkout,
+            "room_type": room_type.slug  
+        })
+
+        return HttpResponseRedirect(f"{url}?{query_params}")
+
+def add_to_selection(request):
+    room_selection = {}
+
+    room_id = str(request.GET.get('id', ''))  # Ensure room_id is a string
+
+    room_selection[room_id] = {
+        'hotel_id': request.GET.get('hotel_id', ''),
+        'hotel_name': request.GET.get('hotel_name', ''),
+        'room_name': request.GET.get('room_name', ''),
+        'room_price': request.GET.get('room_price', ''),
+        'room_number': request.GET.get('room_number', ''),
+        'room_type': request.GET.get('room_type', ''),
+        'room_id': request.GET.get('room_id', ''),
+        'number_of_beds': request.GET.get('number_of_beds', ''),
+        'checkin': request.GET.get('checkin', ''),  # Get checkin date
+        'checkout': request.GET.get('checkout', ''),  # Get checkout date
+    }
+
+    if 'selection_data_object' in request.session:
+        selection_data = request.session['selection_data_object']
+        room_id = str(request.GET.get('id', ''))  # Use .get() to avoid KeyError
+
+        if room_id in selection_data:  
+            # Ensure the keys exist before modifying them
+            selection_data[room_id]['checkin'] = room_selection.get(room_id, {}).get('checkin', '')
+            selection_data[room_id]['checkout'] = room_selection.get(room_id, {}).get('checkout', '')
+        else:
+            selection_data.update(room_selection)  # Add new room if not in session
+
+        request.session['selection_data_object'] = selection_data
+        request.session.modified = True  # Force session update
+
+    else:
+        request.session['selection_data_object'] = room_selection
+        request.session.modified = True
+
+    data = {
+        'data': request.session['selection_data_object'],
+        "total_selected_items": len(request.session['selection_data_object']),
+    }
+
+    return JsonResponse(data)
+
+def remove_selection(request):
+    hotel_id = str(request.GET.get(id))
+    if 'selection_data_object' in request.session:
+        if hotel_id in request.session['selection_data_object']:
+            selection_data = request.session['selection_data_object']
+            del request.session['selection_data_object'][hotel_id]
+            request.session['selection_data_object'] = selection_data
+
+    total = 0
+    room_count = 0
+    total_days = 0
+    checkin = ""
+    checkout = ""
+    hotel = None
+
+    if 'selection_data_object' in request.session:
+        for h_id, item in request.session['selection_data_object'].items():
+                id = int(item['hotel_id'])
+                checkin = item['checkin']
+                checkout = item['checkout']
+                room_type_ = int(item['room_type'])
+                room_id = int(item['room_id'])
+
+                user = request.user
+                hotel = Hotel.objects.get(id=id)
+                room_type = RoomType.objects.get(id=room_type_)
+                room = Room.objects.get(id=room_id)
+
+                new_date_format = "%Y-%m-%d"
+                checkin_date = datetime.strptime(checkin, new_date_format)
+                checkout_date = datetime.strptime(checkout, new_date_format)
+                time_gap = checkout_date-checkin_date
+                total_days = time_gap.days
+
+                full_name = request.POST.get('full_name')
+                email = request.POST.get('email')
+                phone = request.POST.get('phone')
+
+                booking = Booking.objects.create(
+                    hotel=hotel,
+                    room_type=room_type,
+                    check_in_date=checkin,
+                    check_out_date=checkout,
+                    total_days=total_days,
+                    full_name=full_name,
+                    email=email,
+                    phone=phone
+                )
+
+                if request.user.is_authenticated:
+                    booking.user = request.user
+                    booking.save()
+                else:
+                    booking.user == None
+                    booking.save()
+
+                for h_id, item in request.session['selection_data_object'].items():
+                    room_id = int(item['room_id']) 
+                    room = Room.objects.get(id=room_id)
+                    booking.room.add(room)
+
+                    room_count  += 1
+                    days = total_days
+                    price = room_type.price
+                    total_room_price = price * room_count
+                    total = total_room_price * days
+
+        context = render_to_string(
+            "hotel/async/rooms_selected.html",
+                {
+                    "data": request.session["selection_data_object"],
+                    "total_selected_item": len(request.session["selection_data_object"]),
+                    "total": total,
+                    "total_days": total_days,
+                    "checkin": checkin,
+                    "checkout": checkout,
+                    "hotel": hotel,
+                },
+            )
+        print("context = ", context)
+        return JsonResponse({"data" :context, "total_selected_item": len(request.session["selection_data_object"]),})
+

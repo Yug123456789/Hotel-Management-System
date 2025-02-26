@@ -1,0 +1,114 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Details</title>
+    <link rel="stylesheet" href="{% static 'css/hoteldetail.css' %}">
+</head>
+
+<div class="hotel-container">
+    <!-- Hotel Image Section -->
+    <div class="hotel-image">
+        <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Hotel Marriott">
+    </div>
+
+    <!-- Hotel Details and Booking Section -->
+    <div class="hotel-details-container">
+        <!-- Hotel Info Section -->
+        <div class="hotel-info">
+            <h3>{{ hotel.name }}</h3>
+            <p class="hotel-location">📍 {{ hotel.address }}</p>
+            <p class="hotel-contact">📞 {{ hotel.mobile }}</p>
+            <div class="rating">
+                ⭐⭐⭐⭐☆ <span class="review">3.0/1 Reviews</span>
+            </div>
+            <div class="share">
+                ❤️ <span>Share</span>
+            </div>
+        </div>
+
+        <!-- Booking Section -->
+        <form class="booking-section" method="POST" action="{% url 'booking:check_room_availability' %}">
+            {% csrf_token %}
+            <h3>🛎 Check Available Rooms</h3>
+
+            <input type="hidden" value="{{hotel.id}}" name="hotel-id" id="">
+            <div class="form-group">
+                <label for="checkin">Check-in Date</label>
+                <input type="date" id="checkin" name="checkin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkout">Check-out Date</label>
+                <input type="date" id="checkout" name="checkout" required>
+            </div>
+
+            <div class="form-group">
+                <label for="room-type">Select Room Type</label>
+                <select id="room-type" name="room_type">
+                    {% for roomtype in hotel.hotel_room_types.all %}
+                        <option value="{{ roomtype.slug }}">{{ roomtype.type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn check-availability">Check Availability</button> <br><br>
+            <button type="button" class="btn wishlist">♡ Add to Favorites</button>
+        </form>
+    </div>
+
+    <!-- Description Section -->
+    <div class="hotel-description">
+        <h3>Description</h3>
+        <p>{{ hotel.description|safe }}</p>
+
+        <div class="contact-info">
+            <button>📞 {{ hotel.mobile }}</button>
+            <button>📧 {{ hotel.email }}</button>
+        </div>
+
+           <h3>Follow Us</h3>
+           <div class="social-media">
+               <button class="facebook">Facebook</button>
+               <button class="youtube">YouTube</button>
+           </div>
+
+        <h3>Room Types</h3>
+        <table class="room-types-table">
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Beds</th>
+                    <th>Rooms Capacity</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for roomtype in hotel.hotel_room_types.all %}
+                    <tr>
+                        <td>{{ roomtype.type }}</td>
+                        <td>{{ roomtype.number_of_beds }}</td>
+                        <td>{{ roomtype.room_capacity }}</td>
+                        <td>Rs. {{ roomtype.price }}</td>
+                        <td>
+                            <a href="{% url 'hotel:room_type_detail' roomtype.hotel.slug roomtype.slug %}" class="view-more">View More</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+
+        <h3>Featured Amenities On-Site</h3>
+        {% for tag in hotel.tags.all %}
+            <a href="#"><i class="fa fa-tag" aria-hidden="true"></i> {{ tag.name }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

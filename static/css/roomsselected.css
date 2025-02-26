@@ -1,0 +1,139 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    max-width: 900px;
+    margin: auto;
+    gap: 20px;
+}
+
+/* Selected Rooms Section - Full Width */
+.selected-rooms-section,
+.booking-summary,
+.billing-info-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+
+/* Section Title */
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* Selected Room Styling */
+.selected-room-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background: #f9f9f9;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    transition: all 0.3s ease-in-out;
+}
+
+.selected-room-card:hover {
+    background: #e8e8e8;
+    transform: scale(1.02);
+}
+
+.room-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: green;
+}
+
+/* Booking Summary */
+.booking-summary {
+    position: relative;
+}
+
+.summary-list {
+    list-style: none;
+    padding: 0;
+}
+
+.summary-list li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.total-cost {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: purple;
+}
+
+.cost {
+    color: #6b24b2;
+}
+
+/* Billing Form */
+.billing-form .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.billing-form .input-group label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.billing-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 16px;
+}
+
+/* Checkout Button */
+.checkout-btn {
+    width: 100%;
+    background: purple;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+.checkout-btn:hover {
+    background: darkviolet;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+}
