@@ -1,19 +1,6 @@
-{% extends 'partials/base.html' %}
-{% load static %}
-{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selected Rooms</title>
-    <link rel="stylesheet" href="{% static 'css/roomsselected.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
 
-    <div class="selection-list">
+    <div id="main_wrapper" class="selection-list">
         <div class="selected-rooms-section">
             <h1 class="section-title"> {{hotel.name}}</h1>
             <h2 class="section-title"><i class="fas fa-bed"></i> Selected Rooms</h2>
@@ -70,4 +57,4 @@
 </body>
 </html>
 
-{% endblock content %}
+

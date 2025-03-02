@@ -79,8 +79,11 @@ def add_to_selection(request):
 
     return JsonResponse(data)
 
+
+
+
 def remove_selection(request):
-    hotel_id = str(request.GET.get(id))
+    hotel_id = str(request.GET['id'])
     if 'selection_data_object' in request.session:
         if hotel_id in request.session['selection_data_object']:
             selection_data = request.session['selection_data_object']
@@ -113,38 +116,11 @@ def remove_selection(request):
                 time_gap = checkout_date-checkin_date
                 total_days = time_gap.days
 
-                full_name = request.POST.get('full_name')
-                email = request.POST.get('email')
-                phone = request.POST.get('phone')
-
-                booking = Booking.objects.create(
-                    hotel=hotel,
-                    room_type=room_type,
-                    check_in_date=checkin,
-                    check_out_date=checkout,
-                    total_days=total_days,
-                    full_name=full_name,
-                    email=email,
-                    phone=phone
-                )
-
-                if request.user.is_authenticated:
-                    booking.user = request.user
-                    booking.save()
-                else:
-                    booking.user == None
-                    booking.save()
-
-                for h_id, item in request.session['selection_data_object'].items():
-                    room_id = int(item['room_id']) 
-                    room = Room.objects.get(id=room_id)
-                    booking.room.add(room)
-
-                    room_count  += 1
-                    days = total_days
-                    price = room_type.price
-                    total_room_price = price * room_count
-                    total = total_room_price * days
+                room_count += 1
+                days = total_days
+                price = room_type.price
+                total_room_price = price * room_count
+                total = total_room_price * days
 
         context = render_to_string(
             "hotel/async/rooms_selected.html",

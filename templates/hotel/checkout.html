@@ -1,1 +1,81 @@
-{{booking}}
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Page</title>
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Selected Rooms Section -->
+        <div class="selected-rooms">
+            <h1 class="section-title"> {{booking.hotel.name}}</h1>
+            <h3 class="section-title"><i class="fas fa-bed"></i> Selected Rooms</h3>
+            {% for s in booking.room.all %}
+            <div class="room-card">
+                <h3>Room: {{ s.room_type.type }} 
+                    <small>
+                        <a style="cursor: pointer;" class="remove-room" data-item="{{ h_id }}">
+                           
+                        </a>
+                    </small>
+                </h3>
+                <p>Room No: {{ s.room_number }}</p>
+                <p>No.of Beds: {{ s.number_of_beds }}</p>
+                <span class="room-price">Rs. {{ s.price }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Billing Information Section -->
+        <div class="billing-info">
+            <h2 class="section-title"><i class="fas fa-user"></i> Billing Information</h2>
+            <form class="billing-form" method="POST">
+
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" value={{booking.full_name}} readonly style="background-color: rgb(234, 219, 219);" id=full_name name="full_name"  required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">E-Mail</label>
+                    <input type="email" value={{booking.email}} readonly style="background-color: rgb(234, 219, 219);" id="email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" value={{booking.phone}} readonly style="background-color: rgb(234, 219, 219);"  id="phone" name="phone"  required>
+                </div>
+
+                
+            </form>
+        </div>
+
+        <!-- Booking Summary Section -->
+        <div class="booking-summary">
+            <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Booking Summary</h2>
+            <ul class="summary-list">
+                <li><strong>Check-in:</strong> {{ booking.check_in_date }}</li>
+                <li><strong>Check-out:</strong> {{ booking.check_out_date }}</li>
+                <li><strong>Discount:</strong> - Rs. {{booking.saved_amount}}</li>
+            </ul>
+            <div class="total-cost">
+                <strong>Total Cost:</strong> <span class="cost">Rs. {{ booking.total }}</span>
+            </div>
+            <input type="text" class="coupon-input" placeholder="Do you Have a coupon? Enter here...">
+            <button class="btn apply-btn">Apply</button>
+            <button class="btn pay-btn stripe">Pay with Khalti</button>
+        </div>
+    </div>
+
+</body>
+</html>
+
+{% endblock content %}

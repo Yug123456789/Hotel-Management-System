@@ -1,7 +1,7 @@
 $(document).ready(function () {
   // Add to Selection
   $(".add-to-selection").on("click", function () {
-    let button = $(this); //<button class="btn  add-to-selection" data-index="{{r.id}}">📋 Select</button>
+    let button = $(this); //<button class="btn  add-to-selection" data-index="{{r.id}}">📋 Select</button> from room_type_detail.html
     let id = button.attr("data-index");
 
     let hotel_id = $("#id").val();
@@ -47,12 +47,37 @@ $(document).ready(function () {
       },
       success: function (response) {
         console.log(response);
+        button.html("Selected");
+        $(".room-count").text(response.total_selected_items)
+        
+        
       },
     });
   });
 });
 
 //Deleting the selected rooms from the cart
-$(document).on("click", ".remove-room, .remove-room i", function () { // In here the remove-room class is taken from the frontend part of rooms_selected.html section.
-  console.log("Deleted");
+$(document).on("click", ".remove-room", function () {
+  // In here the remove-room class is taken from the frontend part of rooms_selected.html section.
+  
+  let id = $(this).attr("data-item")
+  let button = $(this)
+
+  $.ajax({
+    url: "/booking/remove_selection/",
+    data: { 
+        "id": id 
+    },
+    dataType: "json",
+    beforeSend: function() {
+      button.text("..."); 
+    },
+    success: function(res){
+      $(".room-count").text(res.total_selected_item)
+      $(".selection-list").html(res.data) // In here the selection-list is from the rooms_selected.html (top div) class name
+      
+
+    }
+  });
 });
+

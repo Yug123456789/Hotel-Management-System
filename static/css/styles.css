@@ -50,6 +50,8 @@ nav ul li a.active {
   background-color: #8e24aa;
   color: white;
   border-radius: 5px;
+  font-size: 18px;
+  padding: 12px 20px;
 }
 
 .signout-btn {
