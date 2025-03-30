@@ -1,0 +1,50 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Table Booking</title>
+    <link rel="stylesheet" href="{% static 'css/resturanttabledetail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Available Tables</h1>
+            <p>The {{hotel.name}} restaurant has {{resturant.count}} tables available</p>
+        </header>
+        
+        <div class="restaurant-grid">
+            {% for restaurant in resturant %}
+            <!-- Table Card -->
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <h2>TABLE NO.{{restaurant.table_number}}</h2>
+                </div>
+                <div class="restaurant-body">
+                    <div class="restaurant-info">
+                        <div class="info-item">
+                            <i class="fas fa-chair"></i>
+                            <span>No. of Seats</span>
+                            <strong>{{restaurant.number_of_seats}}</strong>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-users"></i>
+                            <span>Table Capacity</span>
+                            <strong>{{restaurant.table_capacity}}</strong>
+                        </div>
+                    </div>
+                    <button class="book-btn">
+                        <i class="fas fa-utensils"></i> Book
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}
