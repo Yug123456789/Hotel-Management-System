@@ -1,0 +1,68 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking</title>
+    <link rel="stylesheet" href="{% static 'css/resturantdetail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+<div class="hotel-container">
+    {% for gallery in hotel.hotelgallery_set.all %}
+        <div class="restaurant-image">
+            <img src="{{ gallery.image.url }}" alt="Hotel Image">
+        </div>
+    {% endfor %}
+</div>
+
+<div class="container">
+    <!-- Left Section -->
+    <div class="hotel-info">
+        <h1>{{hotel.name}}</h1>
+        <p><i class="fas fa-map-marker-alt"></i> {{hotel.address}}</p>
+        <p><i class="fas fa-phone-alt"></i> {{hotel.mobile}}</p>
+        <div class="rating">
+            <span class="stars">
+                ⭐⭐⭐⭐☆
+            </span>
+            <span class="reviews">3.0/1 Reviews</span>
+        </div>
+        <p class="share"><i class="fas fa-heart"></i> Share</p>
+    </div>
+
+    <!-- Right Section -->
+    <div class="booking-box">
+        <h2>🌅 Check Available Restaurant</h2>
+        <form method="POST" action="{% url 'booking:check_resturant_availability' %}">
+            {% csrf_token %}
+            <input type="hidden" value="{{hotel.id}}" name="hotel-id" id="">
+            <div class="form-group">
+                <label for="checkin">Check-in Date</label>
+                <input type="date" id="checkin" name="checkin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkout">Check-out Date</label>
+                <input type="date" id="checkout" name="checkout" required>
+            </div>
+            
+            <label for="checkintime">Check-in Time</label>
+            <input type="time" id="checkintime" name="checkintime" required>
+
+            <label for="checkouttime">Check-out Time</label>
+            <input type="time" id="checkouttime" name="checkouttime" required>
+
+            <button type="submit" class="check-btn">Check Availability</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+{% endblock content %}
