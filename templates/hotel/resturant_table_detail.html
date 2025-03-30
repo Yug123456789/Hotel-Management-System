@@ -37,12 +37,24 @@
                             <strong>{{restaurant.table_capacity}}</strong>
                         </div>
                     </div>
-                    <button class="book-btn">
+                    <input type="hidden" class="restaurant_id_{{restaurant.id}}" value="{{restaurant.id}}" id="restaurant_id">
+                    <input type="hidden"  class= "table_number{{restaurant.id}}" value="{{restaurant.table_number}}" id="table_number">
+                    <button class="add-to-resturant-selection" data-index="{{r.id}}">
                         <i class="fas fa-utensils"></i> Book
                     </button>
                 </div>
             </div>
             {% endfor %}
+
+            <input type="hidden" value="{{hotel.id}}"  id="id">
+            <input type="hidden" value="{{hotel.name}}"  id="hotel_name">
+            <input type="hidden" value="{{number_of_seats}}"  id="number_of_seats">
+            <input type="hidden" value="{{table_capacity}}"  id="table_capacity">
+            <input type="hidden" value="{{checkin}}"  id="checkin">
+            <input type="hidden" value="{{checkout}}"  id="checkout">
+            <input type="hidden" value="{{checkintime}}"  id="checkintime">
+            <input type="hidden" value="{{checkouttime}}"  id="checkouttime">
+            
         </div>
     </div>
 </body>
