@@ -1,0 +1,72 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Rooms</title>
+    <link rel="stylesheet" href="{% static 'css/roomsselected.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+    <div class="selection-list">
+        <div class="selected-rooms-section">
+            <h1 class="section-title"> {{hotel.name}}</h1>
+            <h2 class="section-title"><i class="fas fa-bed"></i> Selected Rooms</h2>
+            {% for r_id, item in resturantdata.items %}
+            <div class="selected-room-card">
+                <h3>Table No: {{item.table_number}} 
+                    
+                <p>Beds: {{number_of_seats}}</p>
+                
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="booking-summary">
+            <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Booking Summary</h2>
+            <ul class="summary-list">
+                <li><strong>Check-in:</strong> {{checkin}}</li>
+                <li><strong>Check-out:</strong> {{checkout}}</li>
+                <li><strong>Check-in:</strong> {{checkintime}}</li>
+                <li><strong>Check-out:</strong> {{checkouttime}}</li>
+                <li><strong>Total Days:</strong> {{total_days}}</li>
+                
+            </ul>
+            <div class="total-cost">
+                <strong>Total Cost:</strong> <span class="cost">Rs.{{total}}</span>
+            </div>
+        </div>
+
+        <div class="billing-info-section">
+            <h2 class="section-title"> Billing Information</h2>
+            <form class="billing-form" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Full Name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">E-Mail</label>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" placeholder="Phone" required>
+                </div>
+
+                <button type="submit" class="btn checkout-btn">Continue to Checkout</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+{% endblock content %}

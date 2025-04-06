@@ -176,3 +176,94 @@ select {
   background: #ff0000;
   color: white;
 }
+
+/* Restaurant Section CSS */
+.amenities-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.amenities-section h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #333;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.amenities-section h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  background: purple;
+}
+
+.amenity-card {
+  background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
+}
+
+.amenity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.restaurant-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  padding: 15px;
+}
+
+.amenity-icon {
+  width: 60px;
+  height: 60px;
+  background: purple;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  flex-shrink: 0;
+  color: white;
+  font-size: 24px;
+}
+
+.amenity-content {
+  flex-grow: 1;
+}
+
+.amenity-content h4 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.amenity-content p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.view-more {
+  font-size: 14px;
+  color: purple;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.restaurant-link:hover .view-more {
+  color: #6a0dad;
+  margin-left: 5px;
+}

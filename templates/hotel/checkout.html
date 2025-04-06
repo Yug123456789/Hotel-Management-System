@@ -64,13 +64,18 @@
             <ul class="summary-list">
                 <li><strong>Check-in:</strong> {{ booking.check_in_date }}</li>
                 <li><strong>Check-out:</strong> {{ booking.check_out_date }}</li>
-                <li><strong>Discount:</strong> - Rs. {{booking.saved_amount}}</li>
+                <li><strong>Discount:</strong> - Rs.{{booking.saved_amount}}</li>
             </ul>
             <div class="total-cost">
                 <strong>Total Cost:</strong> <span class="cost">Rs. {{ booking.total }}</span>
             </div>
-            <input type="text" class="coupon-input" placeholder="Do you Have a coupon? Enter here...">
-            <button class="btn apply-btn">Apply</button>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" id="coupon-input" name="code" placeholder="Do you Have a coupon? Enter here...">  
+                <br>
+                <br>            
+                <button type="submit" class="btn apply-btn">Apply</button>
+            </form> 
             <button class="btn pay-btn stripe">Pay with Khalti</button>
         </div>
     </div>

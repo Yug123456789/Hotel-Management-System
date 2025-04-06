@@ -35,6 +35,41 @@ def check_room_availability(request):
         })
 
         return HttpResponseRedirect(f"{url}?{query_params}")
+    
+def check_resturant_availability(request):
+    if request.method == "POST":
+        id = request.POST.get("hotel-id")
+        checkin = request.POST.get("checkin")
+        checkout = request.POST.get("checkout")
+        checkintime = request.POST.get("checkintime")
+        checkouttime = request.POST.get("checkouttime")
+        
+        try:
+            hotel = Hotel.objects.get(id=id)
+            
+        except (Hotel.DoesNotExist):
+            return HttpResponseRedirect(reverse("booking:home"))  # Redirect to home page of hotel app if not found
+
+        print("id ===", id)
+        print("checkin ===", checkin)
+        print("checkout ===", checkout)
+        print("checkintime ===", checkintime)
+        print("checkouttime ===", checkouttime)
+        
+        print("hotel ===", hotel)
+        
+
+        url = reverse("hotel:resturant_table_detail", args=[hotel.slug])
+        query_params = urlencode({
+            "hotel-id": id,
+            "checkin": checkin,
+            "checkout": checkout,
+            "checkintime": checkintime,
+            "checkouttime": checkouttime,
+              
+        })
+
+        return HttpResponseRedirect(f"{url}?{query_params}")
 
 def add_to_selection(request):
     room_selection = {}
@@ -75,6 +110,52 @@ def add_to_selection(request):
     data = {
         'data': request.session['selection_data_object'],
         "total_selected_items": len(request.session['selection_data_object']),
+    }
+
+    return JsonResponse(data)
+
+
+def add_to_resturant_selection(request):
+    resturant_selection = {}
+
+    restaurant_id = str(request.GET.get('restaurant_id', ''))  # Ensure table_id is a string
+
+    resturant_selection[restaurant_id] = {
+        'hotel_id': request.GET.get('hotel_id', ''),
+        'hotel_name': request.GET.get('hotel_name', ''),
+        'restaurant_id': request.GET.get('restaurant_id', ''),
+        #'table_id': request.GET.get('table_id', ''),      
+        'number_of_seats': request.GET.get('number_of_seats', ''),
+        'table_capacity': request.GET.get('table_capacity', ''),
+        'table_number': request.GET.get('table_number', ''),
+        'checkin': request.GET.get('checkin', ''),  # Get checkin date
+        'checkout': request.GET.get('checkout', ''),  # Get checkout date
+        'checkintime': request.GET.get('checkintime', ''),  # Get checkin time
+        'checkouttime': request.GET.get('checkouttime', ''),  # Get checkout time
+    }
+
+
+    if 'selection_data_objects' in request.session:
+        selection_data = request.session['selection_data_objects']
+        restaurant_id = str(request.GET.get('restaurant_id', ''))  # Use .get() to avoid KeyError
+
+        if restaurant_id in selection_data:  
+            # Ensure the keys exist before modifying them
+            selection_data[restaurant_id]['checkintime'] = resturant_selection.get(restaurant_id, {}).get('checkintime', '')
+            selection_data[restaurant_id]['checkouttime'] = resturant_selection.get(restaurant_id, {}).get('checkouttime', '')
+        else:
+            selection_data.update(resturant_selection)  # Add new room if not in session
+
+        request.session['selection_data_objects'] = selection_data
+        request.session.modified = True  # Force session update
+
+    else:
+        request.session['selection_data_objects'] = resturant_selection
+        request.session.modified = True
+
+    data = {
+        'data': request.session['selection_data_objects'],
+        "total_selected_item": len(request.session['selection_data_objects']),
     }
 
     return JsonResponse(data)

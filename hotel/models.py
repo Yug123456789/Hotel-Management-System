@@ -53,7 +53,7 @@ class Hotel(models.Model):
     slug = models.SlugField(unique=True)
     date = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
@@ -70,11 +70,11 @@ class Hotel(models.Model):
         return RoomType.objects.filter(hotel=self)
 
 class HotelGallery(models.Model):
-    hotel = models.ForeignKey(Hotel, on_delete= models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete= models.CASCADE)    
     image = models.FileField(upload_to ="hotel_gallery")
     hgid = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
 
-    def _str_(self):
+    def __str__(self):
         return str(self.hotel.name)
     
     class Meta:
@@ -86,7 +86,7 @@ class HotelFeatures(models.Model):
     icon = models.CharField(max_length=150, null=True, blank=True)
     name = models.CharField(max_length=150, null=True, blank=True)
 
-    def _str_(self):
+    def __str__(self):
         return str(self.name)
     
     class Meta:
@@ -98,7 +98,7 @@ class HotelFaqs(models.Model):
     answer = models.CharField(max_length=1500, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return str(self.question)
     
     class Meta:
@@ -115,7 +115,7 @@ class RoomType(models.Model):
     slug = models.SlugField(unique=True)
     date = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.type} - {self.hotel.name} - {self.price}"
     
     class Meta:
@@ -139,7 +139,7 @@ class Room(models.Model):
     rid = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
     date = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.room_type.type} - {self.hotel.name}"
     
     class Meta:
@@ -153,8 +153,10 @@ class Room(models.Model):
     
 class Resturant(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete= models.CASCADE)
-    resturant_number = models.CharField(max_length=150)
+    table_number = models.CharField(max_length=150)
     is_available = models.BooleanField(default=True)
+    number_of_seats = models.IntegerField(default=0)
+    table_capacity = models.IntegerField(default=0)
     resturantid = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
     date = models.DateTimeField(auto_now_add=True)
 
@@ -171,6 +173,7 @@ class Booking(models.Model):
     full_name = models.CharField(max_length=150)
     email = models.EmailField(max_length=150)
     phone = models.CharField(max_length=150)
+    coupons = models.ManyToManyField("hotel.Coupon", blank=True)
 
     hotel = models.ForeignKey(Hotel, on_delete= models.SET_NULL, null=True, blank=True)
     room_type = models.ForeignKey(RoomType, on_delete= models.SET_NULL, null=True, blank=True)
@@ -193,7 +196,7 @@ class Booking(models.Model):
     booking_id = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
  
     
-    def _str_(self):
+    def __str__(self):
         return f"{self.booking_id}"
 
     def rooms(self):
@@ -206,7 +209,7 @@ class ActivityLog(models.Model):
     description = models.TextField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     
-    def _str_(self):
+    def __str__(self):
         return f"{self.booking}"
 
 class StaffOnDuty(models.Model):
@@ -214,9 +217,20 @@ class StaffOnDuty(models.Model):
     staff_id = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     
-    def _str_(self):
+    def __str__(self):
         return f"{self.staff_id}"
 
 
+class Coupon(models.Model):
+    code = models.CharField(max_length=2000)
+    discount = models.IntegerField(default=1)
+    type = models.CharField(max_length=200, default="Percentage")
+    date = models.DateTimeField(auto_now_add=True)
+    valid_from = models.DateTimeField()
+    valid_upto = models.DateTimeField()
+    coupon_id = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
+    active = models.BooleanField(default=True)
 
   
+    def __str__(self):
+        return f"{self.code}"

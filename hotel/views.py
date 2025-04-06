@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Booking, ActivityLog, StaffOnDuty
+from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Booking, ActivityLog, StaffOnDuty, Coupon, Resturant
 from django.contrib import messages
 from datetime import datetime
+from django.shortcuts import get_object_or_404
 
 def index (request):
     hotels = Hotel.objects.filter(status="Live")
@@ -141,11 +142,177 @@ def rooms_selected(request):
     else:
         messages.warning(request, "No rooms Selected")
         return redirect("/")
-    
+
+ 
 def checkout(request, booking_id):
     booking = Booking.objects.get(booking_id=booking_id)
+    if request.method == "POST":
+        code = request.POST.get("code")
+        try:
+            coupon = Coupon.objects.get(code__iexact=code, active = True)
+            if coupon in booking.coupons.all():
+                messages.warning(request, "Coupon already in used")
+                return redirect("hotel:checkout", booking.booking_id)
+            else:
+                if coupon.type == "Percentage":
+                    discount = booking.total * coupon.discount / 100 # Calculating the total discount amount that will be given of the coupon
+                else:
+                    discount = coupon.discount
+                booking.coupons.add(coupon)
+                booking.total -= discount
+                booking.saved_amount += discount
+                booking.save() 
 
+                messages.success(request, "Coupon activated")
+                return redirect("hotel:checkout", booking.booking_id)
+        except:
+            messages.error(request, "Coupon is not available")
+            return redirect("hotel:checkout", booking.booking_id)
     context = {
         "booking": booking
     }
     return render(request, "hotel/checkout.html", context)
+
+def resturant(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    context = {
+        "hotel": hotel,
+    }
+    return render(request, "hotel/resturant_detail.html", context)
+
+
+def resturant_detail(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    #resturant = get_object_or_404(Resturant, hotel=hotel, is_available=True)
+    resturant = Resturant.objects.filter(hotel=hotel)
+    
+    context = {
+        "hotel": hotel,
+        "resturant": resturant,
+    }
+    return render(request, "hotel/resturant_detail.html", context)
+
+
+def resturant_table_detail(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    resturant = Resturant.objects.filter( is_available = True)
+
+
+    id = request.GET.get("hotel-id")
+    checkin = request.GET.get("checkin")
+    checkout = request.GET.get("checkout")
+    checkintime = request.GET.get("checkintime")
+    checkouttime = request.GET.get("checkouttime")
+
+    context = {
+        "hotel": hotel,
+        "resturant": resturant,
+        "checkin": checkin,
+        "checkout": checkout,
+        "checkintime": checkintime,
+        "checkouttime": checkouttime,
+    }
+    return render(request, "hotel/resturant_table_detail.html", context)
+
+
+def restaurant_selected(request):
+    total_time = 0  # Total time in hours
+    table_count = 0
+    checkin = ""
+    checkout = ""
+    checkintime = ""
+    checkouttime = ""
+
+    if 'selection_data_objects' in request.session:
+        if request.method == "POST":
+            for r_id, item in request.session['selection_data_objects'].items():
+                id = int(item['hotel_id'])
+                checkin = item['checkin']
+                checkout = item['checkout']
+                checkintime = item.get('checkintime', '00:00')  # Default to '00:00' if empty
+                checkouttime = item.get('checkouttime', '00:00')  # Default to '00:00' if empty
+                restaurant_id = int(item['restaurant_id'])
+
+                user = request.user
+                hotel = Hotel.objects.get(id=id)
+                restaurant = Resturant.objects.get(id=restaurant_id)
+
+            # Convert check-in and check-out to datetime objects
+            datetime_format = "%Y-%m-%d %H:%M"
+            checkin_datetime = datetime.strptime(f"{checkin} {checkintime}", datetime_format)
+            checkout_datetime = datetime.strptime(f"{checkout} {checkouttime}", datetime_format)
+            
+            time_gap = checkout_datetime - checkin_datetime
+            total_time = time_gap.total_seconds() / 3600  # Convert to hours
+
+            full_name = request.POST.get('full_name')
+            email = request.POST.get('email')
+            phone = request.POST.get('phone')
+
+            booking = Booking.objects.create(
+                hotel=hotel,
+                restaurant=restaurant,
+                check_in_date=checkin,
+                check_out_date=checkout,
+                check_in_time=checkintime,
+                check_out_time=checkouttime,
+                total_time=total_time,
+                full_name=full_name,
+                email=email,
+                phone=phone
+            )
+
+            if request.user.is_authenticated:
+                booking.user = request.user
+                booking.save()
+            else:
+                booking.user = None
+                booking.save()
+
+            for r_id, item in request.session['selection_data_objects'].items():
+                restaurant_id = item['restaurant_id']
+                restaurant = Resturant.objects.get(resturantid=restaurant_id)
+                booking.restaurant.add(restaurant)
+                table_count += 1
+
+            booking.save()
+
+            return redirect("hotel:checkout", booking.booking_id)
+
+        hotel = None
+        for r_id, item in request.session['selection_data_objects'].items():
+            id = int(item['hotel_id'])
+            checkin = item['checkin']
+            checkout = item['checkout']
+            checkintime = item.get('checkintime', '00:00')  # Default to '00:00' if empty
+            checkouttime = item.get('checkouttime', '00:00')  # Default to '00:00' if empty
+            restaurant_id_ = item.get('restaurant_id')
+
+            restaurant = Resturant.objects.get(id=restaurant_id_)
+
+            # Convert check-in and check-out to datetime objects
+            #datetime_format = "%Y-%m-%d %H:%M"
+            #checkin_datetime = datetime.strptime(f"{checkin} {checkintime}", datetime_format)
+            #checkout_datetime = datetime.strptime(f"{checkout} {checkouttime}", datetime_format)
+            
+            #time_gap = checkout_datetime - checkin_datetime
+            #total_time = time_gap.total_seconds() / 3600  # Convert to hours
+            
+            #table_count += 1
+            hotel = Hotel.objects.get(id=id)
+
+        context = {
+            "resturantdata": request.session['selection_data_objects'],
+            "total_selected_items": len(request.session['selection_data_objects']),
+            "total_time": total_time,  # Total time in hours
+            "hotel": hotel,
+            "checkin": checkin,
+            "checkout": checkout,
+            "checkintime": checkintime,
+            "checkouttime": checkouttime,
+        }
+        return render(request, "hotel/restaurant_selected.html", context)
+
+    else:
+        messages.warning(request, "No restaurants selected")
+        return redirect("/")

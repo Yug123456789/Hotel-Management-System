@@ -81,3 +81,57 @@ $(document).on("click", ".remove-room", function () {
   });
 });
 
+$(document).ready(function () {
+  // Add to Selection
+  $(".add-to-resturant-selection").on("click", function () {
+    let button = $(this); 
+    let id = button.attr("data-index"); 
+
+    let hotel_id = $("#hotel_id").val();  
+    let restaurant_id = $(`.restaurant_id_${id}`).val();
+    let table_number = $(`.table_number_${id}`).val(); // ✅ Get table number
+    let hotel_name = $("#hotel_name").val();
+    
+    let checkin = $("#checkin").val();
+    let checkout = $("#checkout").val();
+    let checkin_time = $("#checkin_time").val();
+    let checkout_time = $("#checkout_time").val();
+
+    // ✅ Debug output
+    console.log("Hotel ID:", hotel_id);
+    console.log("Restaurant ID:", restaurant_id);
+    console.log("Hotel Name:", hotel_name);
+    console.log("Table Number:", table_number); // ✅ Log table number
+    
+    console.log("Check-in:", checkin);
+    console.log("Check-out:", checkout);
+    console.log("Check-in Time:", checkin_time);
+    console.log("Check-out Time:", checkout_time);
+    
+    $.ajax({
+      url: "/booking/add_to_resturant_selection/",
+      data: {
+        hotel_id: hotel_id,
+        restaurant_id: restaurant_id,
+        table_number: table_number, // ✅ Optional: Send to backend if needed
+        hotel_name: hotel_name,
+        checkin: checkin,
+        checkout: checkout,
+        checkin_time: checkin_time,
+        checkout_time: checkout_time,
+      },
+      dataType: "json",
+      beforeSend: function () {
+        console.log("Sending restaurant selection data to server...");
+      },
+      success: function (response) {
+        console.log(response);
+        button.html("Booked");
+        $(".selection-count").text(response.total_selected_items);
+      },
+      error: function (xhr, status, error) {
+        console.error("Error selecting restaurant:", error);
+      }
+    });
+  });
+});

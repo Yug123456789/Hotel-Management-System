@@ -16,3 +16,15 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['full_name', 'username', 'email', 'phone', 'password1', 'password2']
 
+class UserHotelRegisterForm(UserCreationForm):
+
+    hotel_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Enter your Hotel Name", 'class':"a custom class"}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Enter your User Name"}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Enter your Hotel Email"}))
+    phone = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Enter your Hotel Number"}))
+    password1 = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Enter your Password"}))
+    password2 = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Comfirm your Password"}))
+
+    class Meta:
+        model = User
+        fields = ['hotel_name', 'username', 'email', 'phone', 'password1', 'password2']

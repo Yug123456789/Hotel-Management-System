@@ -1,0 +1,18 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="signup-container">
+    <form  method="POST"   class="signup-form">
+        {% csrf_token %}
+        <input type="text" placeholder="Enter Your Email" name="email" id="">
+        <input type="password" placeholder="Enter Your Password" name="password" id="">
+        <br>
+        <br>
+        <button type="submit">Login </button>
+  
+    </form>
+</div>
+
+
+{% endblock content %}

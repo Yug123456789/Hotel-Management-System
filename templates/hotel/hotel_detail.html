@@ -12,7 +12,7 @@
 <div class="hotel-container">
     <!-- Hotel Image Section -->
     <div class="hotel-image">
-        <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Hotel Marriott">
+        <img src="{{hotel.image.url}}" alt="Hotel Marriott">
     </div>
 
     <!-- Hotel Details and Booking Section -->
@@ -76,38 +76,27 @@
                <button class="youtube">YouTube</button>
            </div>
 
-        <h3>Room Types</h3>
-        <table class="room-types-table">
-            <thead>
-                <tr>
-                    <th>Room Type</th>
-                    <th>Beds</th>
-                    <th>Rooms Capacity</th>
-                    <th>Price</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for roomtype in hotel.hotel_room_types.all %}
-                    <tr>
-                        <td>{{ roomtype.type }}</td>
-                        <td>{{ roomtype.number_of_beds }}</td>
-                        <td>{{ roomtype.room_capacity }}</td>
-                        <td>Rs. {{ roomtype.price }}</td>
-                        <td>
-                            <a href="{% url 'hotel:room_type_detail' roomtype.hotel.slug roomtype.slug %}" class="view-more">View More</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        
 
 
 
-        <h3>Featured Amenities On-Site</h3>
-        {% for tag in hotel.tags.all %}
-            <a href="#"><i class="fa fa-tag" aria-hidden="true"></i> {{ tag.name }}</a>
-        {% endfor %}
+        <!-- In your HTML file -->
+        <div class="amenities-section">
+            <h3>Featured Amenities On-Site</h3>
+            <div class="amenity-card">
+                <a href="{% url 'hotel:resturant' hotel.slug %}" class="restaurant-link">
+                    <div class="amenity-icon">
+                        <i class="fa fa-cutlery" aria-hidden="true"></i>
+                    </div>
+                    <div class="amenity-content">
+                        <h4>Restaurant</h4>
+                        <p>Explore our exquisite dining options</p>
+                        <span class="view-more">View Details →</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
     </div>
 </div>
 
