@@ -129,7 +129,6 @@ def add_to_resturant_selection(request):
         'table_capacity': request.GET.get('table_capacity', ''),
         'table_number': request.GET.get('table_number', ''),
         'checkin': request.GET.get('checkin', ''),  # Get checkin date
-        'checkout': request.GET.get('checkout', ''),  # Get checkout date
         'checkintime': request.GET.get('checkintime', ''),  # Get checkin time
         'checkouttime': request.GET.get('checkouttime', ''),  # Get checkout time
     }

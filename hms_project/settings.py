@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'django_ckeditor_5',
     'anymail',
+    
 
 
 ]
@@ -90,6 +91,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hms_project.wsgi.application'
 
+CKEDITOR_UPLOAD_PATH = "uploads/ckeditor/"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -161,6 +163,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "userauthentication.User"
+
+
 
 
 # Custom Admin Settings

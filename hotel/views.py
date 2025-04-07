@@ -3,6 +3,9 @@ from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType
 from django.contrib import messages
 from datetime import datetime
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from hotel.forms import HotelForm
+from django.contrib.auth.decorators import login_required
 
 def index (request):
     hotels = Hotel.objects.filter(status="Live")
@@ -200,7 +203,7 @@ def resturant_table_detail(request, slug):
 
     id = request.GET.get("hotel-id")
     checkin = request.GET.get("checkin")
-    checkout = request.GET.get("checkout")
+    
     checkintime = request.GET.get("checkintime")
     checkouttime = request.GET.get("checkouttime")
 
@@ -208,7 +211,7 @@ def resturant_table_detail(request, slug):
         "hotel": hotel,
         "resturant": resturant,
         "checkin": checkin,
-        "checkout": checkout,
+        
         "checkintime": checkintime,
         "checkouttime": checkouttime,
     }
@@ -219,7 +222,7 @@ def restaurant_selected(request):
     total_time = 0  # Total time in hours
     table_count = 0
     checkin = ""
-    checkout = ""
+    
     checkintime = ""
     checkouttime = ""
 
@@ -228,7 +231,7 @@ def restaurant_selected(request):
             for r_id, item in request.session['selection_data_objects'].items():
                 id = int(item['hotel_id'])
                 checkin = item['checkin']
-                checkout = item['checkout']
+                
                 checkintime = item.get('checkintime', '00:00')  # Default to '00:00' if empty
                 checkouttime = item.get('checkouttime', '00:00')  # Default to '00:00' if empty
                 restaurant_id = int(item['restaurant_id'])
@@ -253,7 +256,7 @@ def restaurant_selected(request):
                 hotel=hotel,
                 restaurant=restaurant,
                 check_in_date=checkin,
-                check_out_date=checkout,
+                
                 check_in_time=checkintime,
                 check_out_time=checkouttime,
                 total_time=total_time,
@@ -282,8 +285,7 @@ def restaurant_selected(request):
         hotel = None
         for r_id, item in request.session['selection_data_objects'].items():
             id = int(item['hotel_id'])
-            checkin = item['checkin']
-            checkout = item['checkout']
+            checkin = item['checkin']            
             checkintime = item.get('checkintime', '00:00')  # Default to '00:00' if empty
             checkouttime = item.get('checkouttime', '00:00')  # Default to '00:00' if empty
             restaurant_id_ = item.get('restaurant_id')
@@ -307,7 +309,6 @@ def restaurant_selected(request):
             "total_time": total_time,  # Total time in hours
             "hotel": hotel,
             "checkin": checkin,
-            "checkout": checkout,
             "checkintime": checkintime,
             "checkouttime": checkouttime,
         }
@@ -316,3 +317,16 @@ def restaurant_selected(request):
     else:
         messages.warning(request, "No restaurants selected")
         return redirect("/")
+
+@login_required
+def add_hotel(request):
+    if request.method == 'POST':
+        form = HotelForm(request.POST)
+        if form.is_valid():
+            hotel = form.save(commit=False)
+            hotel.owner = request.user
+            hotel.save()
+            return redirect('hotel/hotel.html')  
+    else:
+        form = HotelForm()
+    return render(request, 'hotel/add_hotel.html', {'form': form})

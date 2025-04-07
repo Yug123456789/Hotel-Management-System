@@ -6,7 +6,7 @@ from hotel.models import (
 
 # Custom admin for Hotel
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ['name', 'thumbnail', 'user', 'status']
+    list_display = ['name', 'thumbnail', 'owner', 'status']
     prepopulated_fields = {"slug": ('name',)}
     search_fields = ['name', 'user__username']
     list_filter = ['status', 'featured', 'date']

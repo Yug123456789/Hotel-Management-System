@@ -93,7 +93,7 @@ $(document).ready(function () {
     let hotel_name = $("#hotel_name").val();
     
     let checkin = $("#checkin").val();
-    let checkout = $("#checkout").val();
+    
     let checkin_time = $("#checkin_time").val();
     let checkout_time = $("#checkout_time").val();
 
@@ -104,7 +104,7 @@ $(document).ready(function () {
     console.log("Table Number:", table_number); // ✅ Log table number
     
     console.log("Check-in:", checkin);
-    console.log("Check-out:", checkout);
+    
     console.log("Check-in Time:", checkin_time);
     console.log("Check-out Time:", checkout_time);
     
@@ -116,7 +116,7 @@ $(document).ready(function () {
         table_number: table_number, // ✅ Optional: Send to backend if needed
         hotel_name: hotel_name,
         checkin: checkin,
-        checkout: checkout,
+        
         checkin_time: checkin_time,
         checkout_time: checkout_time,
       },

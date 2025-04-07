@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.html import mark_safe
-from django_ckeditor_5.fields import CKEditor5Field
 from userauthentication.models import User
 from shortuuid.django_fields import ShortUUIDField
 from taggit.managers import TaggableManager
@@ -38,9 +37,9 @@ PAYMENT_STATUS = (
 # Create your models here.
 
 class Hotel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
-    description = CKEditor5Field(null=True, blank=True, config_name='extends')
+    description = models.CharField(max_length=10000, null=True, blank=True)
     image = models.FileField(upload_to ="hotel_gallery")
     address = models.CharField(max_length=500)
     mobile = models.CharField(max_length=200)
