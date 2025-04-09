@@ -40,7 +40,7 @@ class Hotel(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=10000, null=True, blank=True)
-    image = models.FileField(upload_to ="hotel_gallery")
+    image = models.ImageField(upload_to='hotel_gallery/', blank=True)
     address = models.CharField(max_length=500)
     mobile = models.CharField(max_length=200)
     email = models.EmailField(max_length=50)
@@ -56,8 +56,8 @@ class Hotel(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self.slug == "" or self.slug == None:
-            uuid_key = shortuuid()
+        if not self.slug:
+            uuid_key = shortuuid.uuid()  
             uniqueid = uuid_key[:4]
             self.slug = slugify(self.name) + '-' + str(uniqueid.lower())
         super(Hotel, self).save(*args, **kwargs)

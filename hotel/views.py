@@ -324,9 +324,10 @@ def add_hotel(request):
         form = HotelForm(request.POST)
         if form.is_valid():
             hotel = form.save(commit=False)
+            print()
             hotel.owner = request.user
             hotel.save()
-            return redirect('hotel/hotel.html')  
+            return redirect(request, 'hotel/hotel.html')  
     else:
         form = HotelForm()
     return render(request, 'hotel/add_hotel.html', {'form': form})

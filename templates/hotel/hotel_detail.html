@@ -10,6 +10,7 @@
 </head>
 
 <div class="hotel-container">
+    {% for hotel in hotels %}
     <!-- Hotel Image Section -->
     <div class="hotel-image">
         <img src="{{hotel.image.url}}" alt="Hotel Marriott">
@@ -29,7 +30,7 @@
                 ❤️ <span>Share</span>
             </div>
         </div>
-
+        {% endfor %}
         <!-- Booking Section -->
         <form class="booking-section" method="POST" action="{% url 'booking:check_room_availability' %}">
             {% csrf_token %}

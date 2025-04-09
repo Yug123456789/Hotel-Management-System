@@ -3,7 +3,7 @@
 {% block content %}
 
 <h2>Add Hotel</h2>
-<form method="POST">
+<form action="{% url 'hotel:add_hotel' %}" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Add Hotel</button>
