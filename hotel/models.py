@@ -37,20 +37,20 @@ PAYMENT_STATUS = (
 # Create your models here.
 
 class Hotel(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=150)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=150,null=True)
     description = models.CharField(max_length=10000, null=True, blank=True)
-    image = models.ImageField(upload_to='hotel_gallery/', blank=True)
-    address = models.CharField(max_length=500)
-    mobile = models.CharField(max_length=200)
-    email = models.EmailField(max_length=50)
+    image = models.ImageField(upload_to='aa', blank=True,null=True)
+    address = models.CharField(max_length=500,null=True)
+    mobile = models.CharField(max_length=200,null=True)
+    email = models.EmailField(max_length=50,null=True)
     status = models.CharField(max_length=50, choices=HOTEL_STATUS, default="Live")
     tags = TaggableManager(blank=True)
-    views = models.IntegerField(default=0)
-    hid = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz")
-    featured = models.BooleanField(default=False)
-    slug = models.SlugField(unique=True)
-    date = models.DateTimeField(auto_now_add=True)
+    views = models.IntegerField(default=0,null=True)
+    hid = ShortUUIDField(unique=True, length = 8, max_length=15, alphabet = "abcdefghijklmnopqrstuvwxyz",null=True)
+    featured = models.BooleanField(default=False,null=True)
+    slug = models.SlugField(unique=True,null=True)
+    date = models.DateTimeField(auto_now_add=True,null=True)
 
     def __str__(self):
         return self.name

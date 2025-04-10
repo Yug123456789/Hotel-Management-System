@@ -318,16 +318,15 @@ def restaurant_selected(request):
         messages.warning(request, "No restaurants selected")
         return redirect("/")
 
-@login_required
-def add_hotel(request):
+# @login_required
+def add_hotels(request):
     if request.method == 'POST':
-        form = HotelForm(request.POST)
+        form = HotelForm(request.POST, request.FILES)
         if form.is_valid():
-            hotel = form.save(commit=False)
-            print()
+            hotel = form.save()
             hotel.owner = request.user
             hotel.save()
-            return redirect(request, 'hotel/hotel.html')  
+            return redirect("/")  
     else:
         form = HotelForm()
     return render(request, 'hotel/add_hotel.html', {'form': form})

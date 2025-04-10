@@ -12,5 +12,5 @@ urlpatterns = [
     path("checkout/<booking_id>/", views.checkout, name="checkout"),
     path("detail/<slug:slug>/resturant2/", views.resturant_table_detail, name="resturant_table_detail"),
     path("detail/<slug>/resturant/", views.resturant, name= "resturant"),
-    path('add/', views.add_hotel, name='add_hotel'),
+    path('add', views.add_hotels, name='add_hotel'),
 ]
