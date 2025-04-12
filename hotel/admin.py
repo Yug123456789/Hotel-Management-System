@@ -56,14 +56,13 @@ class BookingAdmin(admin.ModelAdmin):
 class ResturantBookingAdmin(admin.ModelAdmin):
     list_display = [
         'rbooking_id', 'full_name', 'email', 'phone', 
-        'user', 'hotel', 'resturant', 
-        'table_number', 'number_of_seats', 'table_capacity', 
+        'user', 'hotel', 
         'check_in_date', 'check_in_time', 'check_out_time'
     ]
-    list_filter = ['hotel', 'resturant', 'check_in_date']
+    list_filter = ['hotel',  'check_in_date']
     search_fields = [
         'rbooking_id', 'full_name', 'email', 'phone', 
-        'user__username', 'hotel__name', 'resturant__hotel__name'
+        'user__username', 'hotel__name'
     ]
 
 # Custom admin for Activity Log

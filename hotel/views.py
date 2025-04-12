@@ -217,7 +217,7 @@ def resturant_table_detail(request, slug):
 
 
 def restaurant_selected(request):
-    total_time = 0  # Total time in hours
+    total_time = 0
     table_count = 0
     checkin = ""
     checkintime = ""
@@ -226,30 +226,29 @@ def restaurant_selected(request):
     if 'selection_data_objects' in request.session:
         if request.method == "POST":
             for r_id, item in request.session['selection_data_objects'].items():
-                id = int(item['hotel_id'])
+                hotel_id = int(item['hotel_id'])
                 checkin = item['checkin']
                 checkintime = item.get('checkintime', '00:00')
                 checkouttime = item.get('checkouttime', '00:00')
                 restaurant_id = int(item['restaurant_id'])
 
-                user = request.user
-                hotel = Hotel.objects.get(id=id)
-                restaurant = Resturant.objects.get(id=restaurant_id)
-
-                # Calculate total time in hours
+                # Parse time and calculate duration
                 time_format = "%H:%M"
                 checkin_time_obj = datetime.strptime(checkintime, time_format)
                 checkout_time_obj = datetime.strptime(checkouttime, time_format)
                 time_gap = checkout_time_obj - checkin_time_obj
-                total_time = time_gap.total_seconds() / 3600  # Convert to hours
+                total_time = time_gap.total_seconds() / 3600
 
+                # Get form data
                 full_name = request.POST.get('full_name')
                 email = request.POST.get('email')
                 phone = request.POST.get('phone')
 
+                hotel = Hotel.objects.get(id=hotel_id)
+
+                # Create the booking
                 booking = ResturantBooking.objects.create(
                     hotel=hotel,
-                    resturant=restaurant,
                     check_in_date=checkin,
                     check_in_time=checkintime,
                     check_out_time=checkouttime,
@@ -260,31 +259,33 @@ def restaurant_selected(request):
                     user=request.user if request.user.is_authenticated else None
                 )
 
+                # Add all selected tables to booking
                 for r_id, item in request.session['selection_data_objects'].items():
-                    restaurant_id = item['restaurant_id']
-                    restaurant = Resturant.objects.get(id=restaurant_id)
-                    
+                    restaurant_table_id = item['restaurant_id']
+                    table = Resturant.objects.get(id=restaurant_table_id)
+                    booking.tables.add(table)
                     table_count += 1
 
                 booking.save()
+
                 return redirect("hotel:restaurant_checkout", booking.rbooking_id)
 
+        # If GET request — just display the current selection summary
         hotel = None
         for r_id, item in request.session['selection_data_objects'].items():
-            id = int(item['hotel_id'])
+            hotel_id = int(item['hotel_id'])
             checkin = item['checkin']
             checkintime = item.get('checkintime') or '00:00'
-            checkouttime = item.get('checkouttime') or '00:00'      
-            restaurant_id_ = item.get('restaurant_id')
+            checkouttime = item.get('checkouttime') or '00:00'
 
-            # Calculate total time in hours
+            # Calculate total time
             time_format = "%H:%M"
             checkin_time_obj = datetime.strptime(checkintime, time_format)
             checkout_time_obj = datetime.strptime(checkouttime, time_format)
             time_gap = checkout_time_obj - checkin_time_obj
             total_time = time_gap.total_seconds() / 3600
 
-            hotel = Hotel.objects.get(id=id)
+            hotel = Hotel.objects.get(id=hotel_id)
             table_count += 1
 
         context = {
