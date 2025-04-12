@@ -13,4 +13,9 @@ urlpatterns = [
     path("detail/<slug:slug>/resturant2/", views.resturant_table_detail, name="resturant_table_detail"),
     path("detail/<slug>/resturant/", views.resturant, name= "resturant"),
     path('add', views.add_hotels, name='add_hotel'),
+    path('add-room-type/', views.add_room_types, name='add_room_type'),
+    path('add-room/', views.add_rooms, name='add_room'),
+    path('add-restaurant/', views.add_restaurants, name='add_restaurant'),
+    path('coupons/add/', views.add_coupons, name='add_coupon'),
+    
 ]

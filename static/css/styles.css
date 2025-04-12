@@ -6,7 +6,6 @@ html {
   font-family: Arial, sans-serif;
 }
 
-/* For smooth scrolling when clicking on anchor links */
 html {
   scroll-behavior: smooth;
 }
@@ -30,6 +29,11 @@ nav ul {
   display: flex;
   gap: 20px;
   font-size: 20px;
+  position: relative;
+}
+
+nav ul li {
+  position: relative;
 }
 
 nav ul li a {
@@ -41,9 +45,74 @@ nav ul li a {
 
 nav ul li a.active {
   color: #6a1b9a;
-  font-size: 20px;
 }
 
+/* Dropdown Styles - Fixed to prevent disappearing on hover */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  top: 40px;
+  left: 0;
+  min-width: 220px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px 0;
+  /* Added transition properties for smoother appearance */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* This makes sure the dropdown stays visible when hovering */
+.dropdown:hover .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Adding an invisible bridge between dropdown trigger and menu */
+.dropdown::after {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  bottom: -20px;
+  left: 0;
+}
+
+/* Ensure menu stays visible when cursor is over the dropdown items */
+.dropdown-menu:hover {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdown-menu li {
+  display: block;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+.dropdown-menu li a {
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown-menu li a:hover {
+  color: #6a1b9a;
+}
+
+/* Header Buttons */
 .header-buttons button {
   margin-left: 10px;
   padding: 10px 15px;
@@ -181,7 +250,6 @@ nav ul li a.active {
   align-items: center;
 }
 
-/* Enhanced link styling to remove all underlines */
 .hotel-link {
   text-decoration: none !important;
   color: inherit;
@@ -194,7 +262,6 @@ nav ul li a.active {
   text-decoration: none !important;
 }
 
-/* Specific styling for views and fav-btn */
 .views,
 .fav-btn {
   text-decoration: none !important;
@@ -264,7 +331,6 @@ nav ul li a.active {
   text-align: left;
 }
 
-/* Ensure no underlines in hotel info */
 .hotel-info h3,
 .hotel-info p,
 .hotel-info .hotel-location,
@@ -349,5 +415,11 @@ nav ul li a.active {
 
   .hotel {
     max-width: 100%;
+  }
+
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+    min-width: 200px;
   }
 }

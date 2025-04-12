@@ -2,17 +2,38 @@
 {% load static %}
 {% block content %}
 
-<div class="signup-container">
-    <form  method="POST"   class="signup-form">
-        {% csrf_token %}
-        <input type="text" placeholder="Enter Your Email" name="email" id="">
-        <input type="password" placeholder="Enter Your Password" name="password" id="">
-        <br>
-        <br>
-        <button type="submit">Login </button>
-  
-    </form>
-</div>
+<link rel="stylesheet" href="{% static 'css/hotelsignin.css' %}">
 
+<div class="signin-wrapper">
+    <div class="signin-container">
+        <div class="signin-header">
+            <img src="{% static 'images/logo.png' %}" alt="Stay Sphere Logo" class="logo">
+            <h1>Hotel Partner Login</h1>
+            <p>Access your hotel management dashboard</p>
+        </div>
+
+        <form method="POST" class="signin-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <i class="fas fa-hotel"></i>
+                <input type="email" placeholder="Enter Your Hotel Email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Enter Your Password" name="password" required>
+            </div>
+
+            <button type="submit" class="signin-btn">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+
+            <div class="signin-footer">
+                <p>New hotel partner? <a href="{% url 'userauthentication:hotel-sign-up' %}">Register your hotel</a></p>
+                
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock content %}

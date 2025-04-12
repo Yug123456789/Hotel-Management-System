@@ -128,9 +128,14 @@ def HotelloginViewTemp(request):
             messages.error(request, "User doesnot exist")
             return redirect("userauthentication:hotel-sign-in")
         
-    return render(request, "userauthentication/hotel-sign-in.html")
+    return render(request, "userauthentication/hotel-sign-in.html", {'is_hotel': True})
 
 def LogoutView(request):
     logout(request)
     messages.success(request, "You have been sucessfully logged out.")
     return redirect("userauthentication:sign-in")
+
+
+def ChooseSignInView(request):
+    return render(request, "userauthentication/choose-sign-in.html")
+

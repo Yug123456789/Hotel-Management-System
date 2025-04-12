@@ -10,10 +10,10 @@
 </head>
 
 <div class="hotel-container">
-    {% for hotel in hotels %}
+    
     <!-- Hotel Image Section -->
-    <div class="hotel-image">
-        <img src="{{hotel.image.url}}" alt="Hotel Marriott">
+    <div class="hotel-image">        
+            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}">        
     </div>
 
     <!-- Hotel Details and Booking Section -->
@@ -30,13 +30,15 @@
                 ❤️ <span>Share</span>
             </div>
         </div>
-        {% endfor %}
+      
+        
         <!-- Booking Section -->
         <form class="booking-section" method="POST" action="{% url 'booking:check_room_availability' %}">
             {% csrf_token %}
             <h3>🛎 Check Available Rooms</h3>
 
-            <input type="hidden" value="{{hotel.id}}" name="hotel-id" id="">
+            <input type="hidden" value="{{ hotel.id }}" name="hotel-id">
+
             <div class="form-group">
                 <label for="checkin">Check-in Date</label>
                 <input type="date" id="checkin" name="checkin" required>
@@ -56,7 +58,8 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn check-availability">Check Availability</button> <br><br>
+            <button type="submit" class="btn check-availability">Check Availability</button>
+            <br><br>
             <button type="button" class="btn wishlist">♡ Add to Favorites</button>
         </form>
     </div>
@@ -71,17 +74,9 @@
             <button>📧 {{ hotel.email }}</button>
         </div>
 
-           <h3>Follow Us</h3>
-           <div class="social-media">
-               <button class="facebook">Facebook</button>
-               <button class="youtube">YouTube</button>
-           </div>
-
         
 
-
-
-        <!-- In your HTML file -->
+        <!-- Amenities Section -->
         <div class="amenities-section">
             <h3>Featured Amenities On-Site</h3>
             <div class="amenity-card">
@@ -97,7 +92,6 @@
                 </a>
             </div>
         </div>
-        
     </div>
 </div>
 

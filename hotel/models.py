@@ -63,7 +63,10 @@ class Hotel(models.Model):
         super(Hotel, self).save(*args, **kwargs)
 
     def thumbnail(self):
-        return mark_safe("<img src = '%s' width='50' height='50' style='object-fit: cover; border-radius: 7px;' />" %(self.image.url))
+        if self.image and hasattr(self.image, 'url'):
+            return mark_safe(f"<img src='{self.image.url}' width='50' height='50' style='object-fit: cover; border-radius: 7px;' />")
+        else:
+            return mark_safe("<img src='/static/images/club_himalayan.jpeg' width='50' height='50' style='object-fit: cover; border-radius: 7px;' />")
     
     def hotel_room_types(self):
         return RoomType.objects.filter(hotel=self)
@@ -124,10 +127,10 @@ class RoomType(models.Model):
         Room.objects.filter(room_type=self).count()
     
     def save(self, *args, **kwargs):
-        if self.slug == "" or self.slug == None:
-            uuid_key = shortuuid()
+        if not self.slug:
+            uuid_key = shortuuid.uuid()
             uniqueid = uuid_key[:4]
-            self.slug = slugify(self.name) + '-' + str(uniqueid.lower())
+            self.slug = slugify(self.type) + '-' + str(uniqueid.lower()) 
         super(RoomType, self).save(*args, **kwargs)
 
 class Room(models.Model):
@@ -153,6 +156,7 @@ class Room(models.Model):
 class Resturant(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete= models.CASCADE)
     table_number = models.CharField(max_length=150)
+    image = models.ImageField(upload_to='aa', blank=True,null=True)
     is_available = models.BooleanField(default=True)
     number_of_seats = models.IntegerField(default=0)
     table_capacity = models.IntegerField(default=0)
@@ -160,7 +164,7 @@ class Resturant(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def _str_(self):
-        return f"{self.resturant_number} - {self.hotel.name}"
+        return f"{self.table_number} - {self.hotel.name}"
     
     class Meta:
         verbose_name_plural = "Resturants"
@@ -221,6 +225,7 @@ class StaffOnDuty(models.Model):
 
 
 class Coupon(models.Model):
+    hotel = models.ForeignKey(Hotel, on_delete= models.SET_NULL, null=True, blank=True)
     code = models.CharField(max_length=2000)
     discount = models.IntegerField(default=1)
     type = models.CharField(max_length=200, default="Percentage")

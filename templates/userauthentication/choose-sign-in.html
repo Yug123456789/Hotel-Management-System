@@ -1,0 +1,49 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Sign In Type</title>
+    <link rel="stylesheet" href="{% static 'css/choosesignin.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="signin-container">
+        <h1 class="signin-title">Welcome to Stay Sphere</h1>
+        <p class="signin-subtitle">Please select how you'd like to sign in</p>
+        
+        <div class="signin-options">
+            <a href="{% url 'userauthentication:sign-in' %}" class="signin-btn customer">
+                <i class="fas fa-user"></i>
+                Customer
+            </a>
+            
+            <a href="{% url 'userauthentication:hotel-sign-in' %}" class="signin-btn hotel">
+                <i class="fas fa-hotel"></i>
+                Hotel
+            </a>
+        </div>
+        
+        <div class="or-divider">or</div>
+        
+        <div class="registration-options">
+            <h3 class="register-title">New to Stay Sphere? Register as:</h3>
+            <div class="register-buttons">
+                <a href="{% url 'userauthentication:sign-up' %}" class="register-btn customer-register">
+                    <i class="fas fa-user-plus"></i>
+                    Customer
+                </a>
+                <a href="{% url 'userauthentication:hotel-sign-up' %}" class="register-btn hotel-register">
+                    <i class="fas fa-hotel"></i>
+                    Hotel Owner
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock content %}

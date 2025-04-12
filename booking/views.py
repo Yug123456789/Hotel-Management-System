@@ -40,7 +40,7 @@ def check_resturant_availability(request):
     if request.method == "POST":
         id = request.POST.get("hotel-id")
         checkin = request.POST.get("checkin")
-        checkout = request.POST.get("checkout")
+        
         checkintime = request.POST.get("checkintime")
         checkouttime = request.POST.get("checkouttime")
         
@@ -52,7 +52,7 @@ def check_resturant_availability(request):
 
         print("id ===", id)
         print("checkin ===", checkin)
-        print("checkout ===", checkout)
+        
         print("checkintime ===", checkintime)
         print("checkouttime ===", checkouttime)
         
@@ -63,7 +63,7 @@ def check_resturant_availability(request):
         query_params = urlencode({
             "hotel-id": id,
             "checkin": checkin,
-            "checkout": checkout,
+            
             "checkintime": checkintime,
             "checkouttime": checkouttime,
               
@@ -118,7 +118,7 @@ def add_to_selection(request):
 def add_to_resturant_selection(request):
     resturant_selection = {}
 
-    restaurant_id = str(request.GET.get('restaurant_id', ''))  # Ensure table_id is a string
+    restaurant_id = str(request.GET.get('restaurant_id', ''))  # Ensure restaurant_id is a string
 
     resturant_selection[restaurant_id] = {
         'hotel_id': request.GET.get('hotel_id', ''),

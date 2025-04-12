@@ -19,14 +19,13 @@
             <h2 class="section-title"><i class="fas fa-bed"></i> Selected Rooms</h2>
             {% for r_id, item in resturantdata.items %}
             <div class="selected-room-card">
-                <h3>Table No: {{item.table_number}} 
-                    
-                <p>Beds: {{number_of_seats}}</p>
+                <h3>Table No: {{item.table_number}}                     
+                
                 
             </div>
             {% endfor %}
         </div>
-
+        
         <div class="booking-summary">
             <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Booking Summary</h2>
             <ul class="summary-list">
@@ -34,13 +33,12 @@
                 
                 <li><strong>Check-in time:</strong> {{checkintime}}</li>
                 <li><strong>Check-out time:</strong> {{checkouttime}}</li>
-                <li><strong>Total Days:</strong> {{total_days}}</li>
+                <li><strong>Total Time:</strong> {{total_time}}</li>
                 
             </ul>
-            <div class="total-cost">
-                <strong>Total Cost:</strong> <span class="cost">Rs.{{total}}</span>
-            </div>
+            
         </div>
+        
 
         <div class="billing-info-section">
             <h2 class="section-title"> Billing Information</h2>

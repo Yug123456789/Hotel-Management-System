@@ -33,8 +33,19 @@
                     <ul class="dropdown-menu">
                         <!-- Add hotel links here -->
                     </ul>
-                </li>     
-                <li><a href="{% url 'hotel:add_hotel' %}">Add Hotel</a></li>           
+                </li> 
+
+                <li class="dropdown">
+                    <a href="#">Add Hotel</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'hotel:add_hotel' %}">Add Hotel</a></li>
+                        <li><a href="{% url 'hotel:add_room_type' %}">Add Room Type</a></li>
+                        <li><a href="{% url 'hotel:add_room' %}">Add Room</a></li>
+                        <li><a href="{% url 'hotel:add_restaurant' %}">Add Restaurant</a></li>                        
+                        <li><a href="{% url 'hotel:add_coupon' %}">Add Coupon</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Blog</a></li>
             </ul>
@@ -46,7 +57,11 @@
                 <a href="{% url 'userauthentication:sign-out' %}" class="signout-btn"><i class="fa fa-sign-out"></i> Logout </a>
             {% else %}
                 <a href="{% url 'userauthentication:sign-in' %}" class="dashboard-btn"> Login</a>
-                <a href="{% url 'userauthentication:sign-up' %}" class="signout-btn"> Register </a>
+                {% if is_hotel %}
+                    <a href="{% url 'userauthentication:hotel-sign-up' %}" class="signout-btn"> Register </a>
+                {% else %}
+                    <a href="{% url 'userauthentication:sign-up' %}" class="signout-btn"> Register </a>
+                {% endif %}
             {% endif %}
         </div>
     </header>

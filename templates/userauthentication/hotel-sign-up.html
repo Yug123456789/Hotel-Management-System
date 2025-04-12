@@ -1,22 +1,51 @@
 {% extends 'partials/base.html' %}
 {% load static %}
-
 {% block content %}
 
-<div class="signup-container">
-   
-    <form method="POST" class="signup-form">
-        {% csrf_token %}
-        {{form.as_p}}
-        
-        <button type="submit" class="register-btn">Register</button>
-    </form>
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<div class="signup-wrapper">
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1>Create Account</h1>
+            <p>Join our community today</p>
+        </div>
+
+        <form method="POST" class="signup-form">
+            {% csrf_token %}
+            
+            <div class="form-fields">
+                {% for field in form %}
+                <div class="form-group">
+                    {% if field.name == 'username' %}
+                        <i class="fas fa-user"></i>
+                    {% elif field.name == 'email' %}
+                        <i class="fas fa-envelope"></i>
+                    {% elif 'password' in field.name %}
+                        <i class="fas fa-lock"></i>
+                    {% endif %}
+                    
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="error-text">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="signup-btn">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+
+            <div class="signup-footer">
+                <p>Already have an account? <a href="{% url 'userauthentication:sign-in' %}">Sign In</a></p>
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock content %}
-
-
-
-
-
-

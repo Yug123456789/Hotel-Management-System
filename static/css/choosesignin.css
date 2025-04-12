@@ -1,0 +1,241 @@
+/* choosesignin.css */
+/* Main container styling */
+.signin-container {
+    max-width: 600px;
+    margin: 5rem auto;
+    padding: 2.5rem;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eaeaea;
+}
+
+/* Title styling */
+.signin-title {
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.signin-subtitle {
+    color: #4a5568;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* Button container */
+.signin-options {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+/* Base button styling */
+.signin-btn {
+    padding: 1.25rem 2rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border: 2px solid transparent;
+}
+
+/* Button hover effects */
+.signin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Customer button specific */
+.signin-btn.customer {
+    background-color: #f0f9ff;
+    color: #0369a1;
+    border-color: #bae6fd;
+}
+
+.signin-btn.customer:hover {
+    background-color: #e0f2fe;
+}
+
+/* Hotel button specific */
+.signin-btn.hotel {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.signin-btn.hotel:hover {
+    background-color: #fee2e2;
+}
+
+/* Icon styling */
+.signin-btn i {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Divider styling */
+.or-divider {
+    margin: 2rem 0;
+    color: #718096;
+    position: relative;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.or-divider::before {
+    left: 0;
+}
+
+.or-divider::after {
+    right: 0;
+}
+
+/* Registration section */
+.registration-options {
+    margin-top: 2rem;
+}
+
+.register-title {
+    color: #4a5568;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.register-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.register-btn {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 180px;
+}
+
+.register-btn i {
+    font-size: 1.25rem;
+}
+
+.customer-register {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.customer-register:hover {
+    background-color: #dcfce7;
+    transform: translateY(-1px);
+}
+
+.hotel-register {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.hotel-register:hover {
+    background-color: #dbeafe;
+    transform: translateY(-1px);
+}
+
+/* Footer link styling */
+.signin-footer {
+    margin-top: 1.5rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.signin-footer a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.signin-footer a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .signin-container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+    }
+    
+    .signin-options,
+    .register-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .signin-btn,
+    .register-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .signin-footer {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Animation enhancements */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.signin-container {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.signin-options,
+.registration-options {
+    animation: fadeIn 0.6s ease-out forwards;
+}

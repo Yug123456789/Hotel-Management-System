@@ -1,0 +1,12 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<h2>Add Restaurant Table</h2>
+<form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Add Restaurant Table</button>
+</form>
+
+{% endblock content %}

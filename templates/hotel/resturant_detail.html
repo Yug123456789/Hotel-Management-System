@@ -14,11 +14,17 @@
 
 <body>
 <div class="hotel-container">
-    {% for gallery in hotel.hotelgallery_set.all %}
+    
+    {% for restaurant in resturant %}
         <div class="restaurant-image">
-            <img src="{{ gallery.image.url }}" alt="Hotel Image">
+            {% if restaurant.image %}
+                <img src="{{ restaurant.image.url }}" alt="Restaurant Image">
+            {% else %}
+                <img src="{% static 'images/default_restaurant.jpeg' %}" alt="Default Restaurant Image">
+            {% endif %}
         </div>
     {% endfor %}
+    
 </div>
 
 <div class="container">

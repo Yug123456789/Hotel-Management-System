@@ -48,9 +48,7 @@ $(document).ready(function () {
       success: function (response) {
         console.log(response);
         button.html("Selected");
-        $(".room-count").text(response.total_selected_items)
-        
-        
+        $(".room-count").text(response.total_selected_items);
       },
     });
   });
@@ -59,41 +57,37 @@ $(document).ready(function () {
 //Deleting the selected rooms from the cart
 $(document).on("click", ".remove-room", function () {
   // In here the remove-room class is taken from the frontend part of rooms_selected.html section.
-  
-  let id = $(this).attr("data-item")
-  let button = $(this)
+
+  let id = $(this).attr("data-item");
+  let button = $(this);
 
   $.ajax({
     url: "/booking/remove_selection/",
-    data: { 
-        "id": id 
+    data: {
+      id: id,
     },
     dataType: "json",
-    beforeSend: function() {
-      button.text("..."); 
+    beforeSend: function () {
+      button.text("...");
     },
-    success: function(res){
-      $(".room-count").text(res.total_selected_item)
-      $(".selection-list").html(res.data) // In here the selection-list is from the rooms_selected.html (top div) class name
-      
-
-    }
+    success: function (res) {
+      $(".room-count").text(res.total_selected_item);
+      $(".selection-list").html(res.data); // In here the selection-list is from the rooms_selected.html (top div) class name
+    },
   });
 });
 
 $(document).ready(function () {
   // Add to Selection
   $(".add-to-resturant-selection").on("click", function () {
-    let button = $(this); 
-    let id = button.attr("data-index"); 
+    let button = $(this);
+    let id = button.attr("data-index");
 
-    let hotel_id = $("#hotel_id").val();  
+    let hotel_id = $("#hotel_id").val();
     let restaurant_id = $(`.restaurant_id_${id}`).val();
     let table_number = $(`.table_number_${id}`).val(); // ✅ Get table number
     let hotel_name = $("#hotel_name").val();
-    
     let checkin = $("#checkin").val();
-    
     let checkin_time = $("#checkin_time").val();
     let checkout_time = $("#checkout_time").val();
 
@@ -102,12 +96,10 @@ $(document).ready(function () {
     console.log("Restaurant ID:", restaurant_id);
     console.log("Hotel Name:", hotel_name);
     console.log("Table Number:", table_number); // ✅ Log table number
-    
     console.log("Check-in:", checkin);
-    
     console.log("Check-in Time:", checkin_time);
     console.log("Check-out Time:", checkout_time);
-    
+
     $.ajax({
       url: "/booking/add_to_resturant_selection/",
       data: {
@@ -116,9 +108,10 @@ $(document).ready(function () {
         table_number: table_number, // ✅ Optional: Send to backend if needed
         hotel_name: hotel_name,
         checkin: checkin,
-        
-        checkin_time: checkin_time,
-        checkout_time: checkout_time,
+        checkintime: checkin_time,
+        checkouttime: checkout_time,
+        number_of_seats: $("#number_of_seats").val(),
+        table_capacity: $("#table_capacity").val(),
       },
       dataType: "json",
       beforeSend: function () {
@@ -131,7 +124,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error("Error selecting restaurant:", error);
-      }
+      },
     });
   });
 });
