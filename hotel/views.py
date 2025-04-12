@@ -198,9 +198,7 @@ def resturant_detail(request, slug):
 
 def resturant_table_detail(request, slug):
     hotel = Hotel.objects.get(status="Live", slug=slug)
-    resturant = Resturant.objects.filter( is_available = True)
-
-
+    resturant = Resturant.objects.filter(hotel=hotel, is_available = True)
     id = request.GET.get("hotel-id")
     checkin = request.GET.get("checkin")
     
@@ -209,7 +207,7 @@ def resturant_table_detail(request, slug):
 
     context = {
         "hotel": hotel,
-        "restaurant": resturant,
+        "resturant": resturant,
         "checkin": checkin,
         
         "checkintime": checkintime,
@@ -306,7 +304,7 @@ def restaurant_selected(request):
 def add_hotels(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding hotel.")
-        return redirect("userauthentication:hotel-sign-in")  
+        return redirect("userauthentication:sign-in")  
         
     if request.method == 'POST':
         form = HotelForm(request.POST, request.FILES)
@@ -323,7 +321,7 @@ def add_hotels(request):
 def add_room_types(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding room types.")
-        return redirect("userauthentication:hotel-sign-in")
+        return redirect("userauthentication:sign-in")
         
     if request.method == 'POST':
         form = RoomTypeForm(request.POST)
@@ -351,7 +349,7 @@ def add_room_types(request):
 def add_rooms(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding rooms.")
-        return redirect("userauthentication:hotel-sign-in")
+        return redirect("userauthentication:sign-in")
         
     if request.method == 'POST':
         form = RoomForm(request.POST)
@@ -374,7 +372,7 @@ def add_rooms(request):
 def add_restaurants(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding restaurant.")
-        return redirect("userauthentication:hotel-sign-in")
+        return redirect("userauthentication:sign-in")
             
     if request.method == 'POST':
         form = ResturantForm(request.POST, request.FILES)

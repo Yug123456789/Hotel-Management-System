@@ -156,7 +156,7 @@ class Room(models.Model):
 class Resturant(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete= models.CASCADE)
     table_number = models.CharField(max_length=150)
-    image = models.ImageField(upload_to='aa', blank=True,null=True)
+    
     is_available = models.BooleanField(default=True)
     number_of_seats = models.IntegerField(default=0)
     table_capacity = models.IntegerField(default=0)

@@ -22,8 +22,7 @@ class RoomForm(forms.ModelForm):
 class ResturantForm(forms.ModelForm):
     class Meta:
         model = Resturant
-        fields = ['hotel', 'table_number', 'image', 'is_available', 'number_of_seats', 'table_capacity', 'resturantid']
-
+        fields = ['hotel', 'table_number',  'is_available', 'number_of_seats', 'table_capacity', 'resturantid']
 
 
 class CouponForm(forms.ModelForm):

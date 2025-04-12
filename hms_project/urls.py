@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     #Custom Urls
-    path("", lambda request: redirect("userauthentication:choose-sign-in")),
+    path("chooseauth/", lambda request: redirect("userauthentication:choose-sign-in")),
     path("userauthentication/", include("userauthentication.urls")),
     path("", include("hotel.urls")),
     path("booking/", include("booking.urls")),
