@@ -1,7 +1,7 @@
 from django.contrib import admin
 from hotel.models import (
     Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, 
-    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon
+    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking
 )
 
 # Custom admin for Hotel
@@ -49,9 +49,22 @@ class ResturantAdmin(admin.ModelAdmin):
 
 # Custom admin for Booking
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ['booking_id', 'user', 'hotel', 'room_type', 'payment_status', 'check_in_date', 'check_out_date']
+    list_display = ['booking_id', 'user', 'hotel',  'room_type', 'payment_status', 'check_in_date', 'check_out_date']
     list_filter = ['payment_status', 'check_in_date', 'check_out_date']
     search_fields = ['booking_id', 'user__username', 'hotel__name', 'room_type__type']
+
+class ResturantBookingAdmin(admin.ModelAdmin):
+    list_display = [
+        'rbooking_id', 'full_name', 'email', 'phone', 
+        'user', 'hotel', 'resturant', 
+        'table_number', 'number_of_seats', 'table_capacity', 
+        'check_in_date', 'check_in_time', 'check_out_time'
+    ]
+    list_filter = ['hotel', 'resturant', 'check_in_date']
+    search_fields = [
+        'rbooking_id', 'full_name', 'email', 'phone', 
+        'user__username', 'hotel__name', 'resturant__hotel__name'
+    ]
 
 # Custom admin for Activity Log
 class ActivityLogAdmin(admin.ModelAdmin):
@@ -82,3 +95,4 @@ admin.site.register(Booking, BookingAdmin)
 admin.site.register(ActivityLog, ActivityLogAdmin)
 admin.site.register(StaffOnDuty, StaffOnDutyAdmin)
 admin.site.register(Coupon, CouponAdmin)
+admin.site.register(ResturantBooking, ResturantBookingAdmin)

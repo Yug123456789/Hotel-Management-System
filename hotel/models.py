@@ -179,6 +179,7 @@ class Booking(models.Model):
     coupons = models.ManyToManyField("hotel.Coupon", blank=True)
 
     hotel = models.ForeignKey(Hotel, on_delete= models.SET_NULL, null=True, blank=True)
+    
     room_type = models.ForeignKey(RoomType, on_delete= models.SET_NULL, null=True, blank=True)
     room = models.ManyToManyField(Room)
     before_discount = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
@@ -189,6 +190,7 @@ class Booking(models.Model):
     total_days = models.PositiveIntegerField(default=0)
     checked_in = models.BooleanField(default=False)
     checked_out = models.BooleanField(default=False)
+            
 
     is_active = models.BooleanField(default=False)
     checked_in_tracker = models.BooleanField(default=False)
@@ -204,6 +206,28 @@ class Booking(models.Model):
 
     def rooms(self):
         return self.room.all().count()
+    
+class ResturantBooking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    table_number = models.ForeignKey(Resturant, on_delete=models.SET_NULL, null=True, blank=True, related_name='resturant_bookings_by_table_number')
+    number_of_seats = models.ForeignKey(Resturant, on_delete=models.SET_NULL, null=True, blank=True, related_name='resturant_bookings_by_number_of_seats')
+    table_capacity = models.ForeignKey(Resturant, on_delete=models.SET_NULL, null=True, blank=True, related_name='resturant_bookings_by_table_capacity')
+    full_name = models.CharField(max_length=150)
+    email = models.EmailField(max_length=150)
+    phone = models.CharField(max_length=150)
+    check_in_date = models.DateField()
+    check_in_time = models.TimeField()
+    check_out_time = models.TimeField()
+    total_time = models.FloatField(null=True, blank=True)
+    
+    hotel = models.ForeignKey(Hotel, on_delete=models.SET_NULL, null=True, blank=True)
+    resturant = models.ForeignKey(Resturant, on_delete=models.SET_NULL, null=True, blank=True, related_name='resturant_bookings')
+
+    rbooking_id = ShortUUIDField(unique=True, length=8, max_length=15, alphabet="abcdefghijklmnopqrstuvwxyz")
+
+    def __str__(self):
+        return f"{self.rbooking_id}"
+
 
 class ActivityLog(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)

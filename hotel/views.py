@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Booking, ActivityLog, StaffOnDuty, Coupon, Resturant
+from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Booking, ActivityLog, StaffOnDuty, Coupon, Resturant, ResturantBooking
 from django.contrib import messages
 from datetime import datetime
 from django.shortcuts import get_object_or_404
@@ -232,6 +232,7 @@ def restaurant_selected(request):
                 checkouttime = item.get('checkouttime', '00:00')
                 restaurant_id = int(item['restaurant_id'])
 
+                user = request.user
                 hotel = Hotel.objects.get(id=id)
                 restaurant = Resturant.objects.get(id=restaurant_id)
 
@@ -246,9 +247,9 @@ def restaurant_selected(request):
                 email = request.POST.get('email')
                 phone = request.POST.get('phone')
 
-                booking = Booking.objects.create(
+                booking = ResturantBooking.objects.create(
                     hotel=hotel,
-                    restaurant=restaurant,
+                    resturant=restaurant,
                     check_in_date=checkin,
                     check_in_time=checkintime,
                     check_out_time=checkouttime,
@@ -261,12 +262,12 @@ def restaurant_selected(request):
 
                 for r_id, item in request.session['selection_data_objects'].items():
                     restaurant_id = item['restaurant_id']
-                    restaurant = Resturant.objects.get(resturantid=restaurant_id)
-                    booking.restaurant.add(restaurant)
+                    restaurant = Resturant.objects.get(id=restaurant_id)
+                    
                     table_count += 1
 
                 booking.save()
-                return redirect("hotel:checkout", booking.booking_id)
+                return redirect("hotel:restaurant_checkout", booking.rbooking_id)
 
         hotel = None
         for r_id, item in request.session['selection_data_objects'].items():
@@ -300,6 +301,16 @@ def restaurant_selected(request):
     else:
         messages.warning(request, "No restaurants selected")
         return redirect("/")
+
+def restaurant_checkout(request, booking_id):
+    booking = ResturantBooking.objects.get(rbooking_id=booking_id)
+
+    context = {
+        "booking": booking
+    }
+
+    return render(request, "hotel/resturant_checkout.html", context)
+    
 
 def add_hotels(request):
     if not request.user.is_authenticated:
