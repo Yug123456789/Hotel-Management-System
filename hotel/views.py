@@ -324,7 +324,7 @@ def add_hotels(request):
             hotel = form.save()
             hotel.owner = request.user
             hotel.save()
-            return redirect("/")
+            return redirect("hotel:user_hotel")
     else:
         form = HotelForm()
     return render(request, 'hotel/add_hotel.html', {'form': form})
@@ -336,27 +336,24 @@ def add_room_types(request):
         return redirect("userauthentication:sign-in")
         
     if request.method == 'POST':
-        form = RoomTypeForm(request.POST)
+        form = RoomTypeForm(request.POST)  
         if form.is_valid():
             room_type = form.save(commit=False)
             
             if not request.user.is_superuser:
-                # If not superuser, it allows to add roomtype to their own hotel
                 hotel = form.cleaned_data['hotel']
                 if hotel.owner != request.user:
                     return redirect('unauthorized')  
             
             room_type.save()
-            return redirect("/")  # Redirect after saving
+            return redirect("hotel:user_hotel")
     else:
         form = RoomTypeForm()
-        
-        # Optional: Filter hotel dropdown to show only user's hotels
-        #if not request.user.is_superuser:
-        #    form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
+        if request.user.is_authenticated:
+            form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
     
-    return render(request, 'hotel/add_room_type.html', {'form': form})
 
+    return render(request, 'hotel/add_room_type.html', {'form': form})
 
 def add_rooms(request):
     if not request.user.is_authenticated:
@@ -374,9 +371,12 @@ def add_rooms(request):
                     return redirect('unauthorized')  # Redirect to an unauthorized page or message
             
             room.save()  # Save the room after validation
-            return redirect("/")  # Redirect to another page after saving
+            return redirect("hotel:user_hotel")  # Redirect to another page after saving
     else:
         form = RoomForm()
+        if request.user.is_authenticated:
+            form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
+    
     
     return render(request, 'hotel/add_room.html', {'form': form})
 
@@ -397,9 +397,9 @@ def add_restaurants(request):
                 
             restaurant = form.save()
             messages.success(request, "Restaurant table added successfully!")
-            return redirect("/")
+            return redirect("hotel:user_hotel")
     else:
-        # Only show hotels owned by the current user
+        # This only show hotels owned by the current user (Filters the hotel according to user.)
         form = ResturantForm()
         if request.user.is_authenticated:
             form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
@@ -422,7 +422,7 @@ def add_coupons(request):
 
             coupon = form.save()
             messages.success(request, f"Coupon {coupon.code} added successfully!")
-            return redirect("/")
+            return redirect("hotel:user_hotel")
     else:
         form = CouponForm()
         if request.user.is_authenticated and not request.user.is_superuser:
@@ -432,4 +432,25 @@ def add_coupons(request):
 
 
 def user_hotel(request):
-    return render(request, 'hotel/hotel_user.html')
+    hotels = Hotel.objects.filter(status="Live")
+    context = {
+        "hotels" : hotels
+    }
+    return render(request, 'hotel/hotel_user.html', context)
+
+@login_required
+def user_hotel_dashboard(request):
+    hotel_id = request.GET.get('hotel_id')
+
+    booking = Booking.objects.filter(user=request.user)
+
+    if hotel_id:
+        booking = booking.filter(hotel__id=hotel_id)
+
+    context = {
+        'booking': booking,
+        'selected_hotel_id': hotel_id,
+        'hotels': Hotel.objects.all(),
+    }
+    return render(request, 'hotel/hotel_user_dashboard.html', context)
+

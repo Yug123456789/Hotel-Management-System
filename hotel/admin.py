@@ -50,7 +50,7 @@ class ResturantAdmin(admin.ModelAdmin):
 # Custom admin for Booking
 class BookingAdmin(admin.ModelAdmin):
     list_display = ['booking_id', 'user', 'hotel',  'room_type', 'payment_status', 'check_in_date', 'check_out_date']
-    list_filter = ['hotel','payment_status', 'check_in_date', 'check_out_date']
+    list_filter = ['hotel','user','payment_status', 'check_in_date', 'check_out_date']
     search_fields = ['booking_id', 'user__username', 'hotel__name', 'room_type__type']
 
 class ResturantBookingAdmin(admin.ModelAdmin):

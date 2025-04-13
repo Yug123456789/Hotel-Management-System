@@ -12,8 +12,7 @@ class RoomTypeForm(forms.ModelForm):
     class Meta:
         model = RoomType
         fields = ['hotel', 'type', 'price', 'room_capacity', 'number_of_beds', 'rtid']
-
-
+    
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room

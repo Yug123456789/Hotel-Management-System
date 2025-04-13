@@ -25,7 +25,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="/" class="active">Home</a></li>
+                <li><a href="{% url 'hotel:user_hotel' %}" class="active">Home</a></li>
                 
                 <!-- Hotels Dropdown -->
                 <li class="dropdown">
@@ -46,14 +46,13 @@
                     </ul>
                 </li>
 
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="{% url 'hotel:hotel_user_dashboard' %}">Room Booking</a></li>
                 <li><a href="#">Blog</a></li>
             </ul>
         </nav>
         <div class="header-buttons">
             {% if user.is_authenticated %}
-            <a href="{% url 'hotel:rooms_selected' %}" class=" dashboard-btn"><i class="fa fa-bed"></i> <span class="resturant-count">{{request.session.selection_data_object|length}}</span></a>
-                <a href="{% url 'hotel:rooms_selected' %}" class=" dashboard-btn"><i class="fa fa-bed"></i> <span class="room-count">{{request.session.selection_data_object|length}}</span></a>
+            
                 <a href="{% url 'userauthentication:sign-out' %}" class="signout-btn"><i class="fa fa-sign-out"></i> Logout </a>
             {% else %}
                 <a href="{% url 'userauthentication:sign-in' %}" class="dashboard-btn"> Login</a>
