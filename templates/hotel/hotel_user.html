@@ -1,0 +1,47 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+    <img src="{% static 'images/hero-background.jpeg' %}" alt="Beach View" class="hero-bg">
+    <div class="hero-content">
+        <h1>Book Unique Experiences</h1>
+        <a href="#hotel-listings" class="book-now-btn">Book NOW <span class="arrow">→</span></a>
+        <p>Discover top-rated hotels and restaurants worldwide.</p>
+        
+    </div>
+</section>
+
+<!-- Popular Tours Section -->
+<section class="popular-tours">
+    <h2>Our Popular Tours</h2>
+</section>
+
+<!-- Hotel Listings -->
+<section id="hotel-listings" class="hotel-list">
+    {% for h in hotels %}
+    <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">
+        <div class="hotel">
+            {% if h.image and hotel.image.url %}
+                <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" class="hotel-image" style="width: 100%; height: 200px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Default Image" class="hotel-image" style="width: 100%; height: 200px; object-fit: cover;">
+            {% endif %}
+            
+            <div class="hotel-info">
+                <h3>{{ h.name }}</h3>
+                <p class="hotel-location">📍 {{ h.address }}</p>
+                <p class="hotel-contact">📞 {{ h.mobile }}</p>
+                <div class="hotel-rating">
+                    ⭐⭐⭐⭐⭐ <span class="rating-value">(4.8)</span>
+                </div>
+            </div>
+        </div>
+        
+    </a>
+    {% endfor %}
+</section>
+
+
+{% endblock content %}

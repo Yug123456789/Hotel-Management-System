@@ -429,3 +429,7 @@ def add_coupons(request):
             form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
 
     return render(request, 'hotel/add_coupon.html', {'form': form})
+
+
+def user_hotel(request):
+    return render(request, 'hotel/hotel_user.html')

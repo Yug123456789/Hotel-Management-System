@@ -18,5 +18,6 @@ urlpatterns = [
     path('add-room/', views.add_rooms, name='add_room'),
     path('add-restaurant/', views.add_restaurants, name='add_restaurant'),
     path('coupons/add/', views.add_coupons, name='add_coupon'),
+    path('user_hotel/', views.user_hotel, name='user_hotel'),
     
 ]

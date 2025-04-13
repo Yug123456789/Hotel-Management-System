@@ -63,7 +63,7 @@ def HotelRegisterView(request):
         profile.phone = phone
         profile.save()
 
-        return redirect("hotel:index")
+        return redirect("hotel:user_hotel")
 
     context = {
         "form":form
@@ -104,7 +104,7 @@ def loginViewTemp(request):
 def HotelloginViewTemp(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already logged in.")
-        return redirect("hotel:index")
+        return redirect("hotel:user_hotel")
     
     if request.method == "POST":
         email = request.POST.get("email")
@@ -117,7 +117,7 @@ def HotelloginViewTemp(request):
             if user_query is not None:
                 login(request, user_auth)
                 messages.success(request, "You are logged in.")
-                next_url = request.GET.get("next", "hotel:index")
+                next_url = request.GET.get("next", "hotel:user_hotel")
                 return redirect(next_url)
             else:
                 messages.error(request, "Username or Password doesnot exist")
@@ -133,7 +133,7 @@ def HotelloginViewTemp(request):
 def LogoutView(request):
     logout(request)
     messages.success(request, "You have been sucessfully logged out.")
-    return redirect("userauthentication:sign-in")
+    return redirect("userauthentication:choose-sign-in")
 
 
 def ChooseSignInView(request):
