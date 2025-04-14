@@ -206,10 +206,14 @@ class Booking(models.Model):
 
     def rooms(self):
         return self.room.all().count()
-    
+
+    def room_numbers(self):
+        return ", ".join([r.room_number for r in self.room.all()])
+     
 class ResturantBooking(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     tables = models.ManyToManyField(Resturant, related_name='restaurant_table_bookings')
+    table_numbers = models.CharField(max_length=255, null=True, blank=True)
     full_name = models.CharField(max_length=150)
     email = models.EmailField(max_length=150)
     phone = models.CharField(max_length=150)

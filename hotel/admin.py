@@ -49,13 +49,13 @@ class ResturantAdmin(admin.ModelAdmin):
 
 # Custom admin for Booking
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ['booking_id', 'user', 'hotel',  'room_type', 'payment_status', 'check_in_date', 'check_out_date']
+    list_display = ['booking_id', 'user', 'hotel',  'room_type','room_numbers', 'payment_status', 'check_in_date', 'check_out_date']
     list_filter = ['hotel','user','payment_status', 'check_in_date', 'check_out_date']
     search_fields = ['booking_id', 'user__username', 'hotel__name', 'room_type__type']
 
 class ResturantBookingAdmin(admin.ModelAdmin):
     list_display = [
-        'rbooking_id', 'full_name', 'email', 'phone', 
+        'rbooking_id', 'table_numbers','full_name', 'email', 'phone', 
         'user', 'hotel', 
         'check_in_date', 'check_in_time', 'check_out_time'
     ]

@@ -216,6 +216,11 @@ def resturant_table_detail(request, slug):
     return render(request, "hotel/resturant_table_detail.html", context)
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from datetime import datetime
+from .models import Hotel, Resturant, ResturantBooking
+
 def restaurant_selected(request):
     total_time = 0
     table_count = 0
@@ -225,12 +230,15 @@ def restaurant_selected(request):
 
     if 'selection_data_objects' in request.session:
         if request.method == "POST":
+            table_numbers_list = []  #  Collect selected table numbers
+
             for r_id, item in request.session['selection_data_objects'].items():
                 hotel_id = int(item['hotel_id'])
                 checkin = item['checkin']
                 checkintime = item.get('checkintime', '00:00')
                 checkouttime = item.get('checkouttime', '00:00')
                 restaurant_id = int(item['restaurant_id'])
+                table_number = item.get('table_number')  #  Get table number
 
                 # Parse time and calculate duration
                 time_format = "%H:%M"
@@ -238,6 +246,9 @@ def restaurant_selected(request):
                 checkout_time_obj = datetime.strptime(checkouttime, time_format)
                 time_gap = checkout_time_obj - checkin_time_obj
                 total_time = time_gap.total_seconds() / 3600
+
+                if table_number:
+                    table_numbers_list.append(table_number)
 
                 # Get form data
                 full_name = request.POST.get('full_name')
@@ -256,10 +267,11 @@ def restaurant_selected(request):
                     full_name=full_name,
                     email=email,
                     phone=phone,
-                    user=request.user if request.user.is_authenticated else None
+                    user=request.user if request.user.is_authenticated else None,
+                    table_numbers=", ".join(table_numbers_list)  #  Save table numbers
                 )
 
-                # Add all selected tables to booking
+                # Adds all selected tables to booking
                 for r_id, item in request.session['selection_data_objects'].items():
                     restaurant_table_id = item['restaurant_id']
                     table = Resturant.objects.get(id=restaurant_table_id)
@@ -302,6 +314,7 @@ def restaurant_selected(request):
     else:
         messages.warning(request, "No restaurants selected")
         return redirect("/")
+
 
 def restaurant_checkout(request, booking_id):
     booking = ResturantBooking.objects.get(rbooking_id=booking_id)
@@ -468,3 +481,16 @@ def user_hotel_restaurant_booking(request):
         'hotels': Hotel.objects.all(),
     }
     return render(request, 'hotel/hotel_user_restaurant_booking.html', context)
+
+@login_required
+def user_customer_room_booking(request):
+    hotel_id = request.GET.get('hotel_id')
+
+    booking = Booking.objects.filter(user=request.user)
+
+    context = {
+        'booking': booking,
+        'selected_hotel_id': hotel_id,
+        'hotels': Hotel.objects.all(),
+    }
+    return render(request, 'hotel/customer_room_booking.html', context)
