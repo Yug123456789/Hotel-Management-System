@@ -2,70 +2,85 @@
 {% load static %}
 
 {% block content %}
-
 <link rel="stylesheet" href="{% static 'css/roombookingdisplay.css' %}">
 
-<div class="container my-4">
-    <h2 class="mb-4">Your Bookings</h2>
-
-    {% if booking %}
-
-    <form method="get" class="mb-3">
-        <label for="hotel_id">Filter by Hotel:</label>
-        <select name="hotel_id" id="hotel_id" class="form-control w-25 d-inline-block" onchange="this.form.submit()">
-            <option value="">All Hotels</option>
-            {% for hotel in hotels %}
-                <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
-                    {{ hotel.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </form>
-
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Hotel</th>
-                    <th>Room Type</th>
-                    <th>Payment Status</th>
-                    <th>Total</th>
-                    <th>Saved Amount</th>
-                    <th>Coupons Used</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for booking in booking %}
-                <tr>
-                    <td>{{ booking.booking_id }}</td>
-                    <td>{{ booking.hotel.name }}</td>
-                    <td>{{ booking.room_type }}</td>
-                    <td>{{ booking.payment_status|default:"-" }}</td>
-                    <td>${{ booking.total }}</td>
-                    <td>${{ booking.saved_amount }}</td>
-                    <td>
-                        {% for coupon in booking.coupons.all %}
-                            <span class="badge badge-success">{{ coupon.code }}</span>
-                        {% empty %}
-                            <span class="text-muted">None</span>
-                        {% endfor %}
-                    </td>
-                    <td>{{ booking.check_in_date }}</td>
-                    <td>{{ booking.check_out_date }}</td>
-                    <td>
-                        <a href="{% url 'hotel:checkout' booking.booking_id %}" class="btn btn-sm btn-primary">
-                            Checkout
-                        </a>
-                    </td>
-                </tr>
+<div class="container booking-container my-4">
+    <h2 class="booking-header">Your Bookings</h2>
+    
+    <div class="filter-section">
+        <form method="get">
+            <label for="hotel_id" class="filter-label">Filter by Hotel:</label>
+            <select name="hotel_id" id="hotel_id" class="hotel-select" onchange="this.form.submit()">
+                <option value="">All Hotels</option>
+                {% for hotel in hotels %}
+                    <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
+                        {{ hotel.name }}
+                    </option>
                 {% endfor %}
-            </tbody>
-        </table>
+            </select>
+        </form>
+    </div>
+    
+    {% if booking %}
+        <div class="table-responsive">
+            <table class="table bookings-table">
+                <thead>
+                    <tr>
+                        <th class="col-id">Booking ID</th>
+                        <th class="col-hotel">Hotel</th>
+                        <th class="col-name">Full Name</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-room">Room Type</th>
+                        <th class="col-payment">Payment Status</th>
+                        <th class="col-total">Total</th>
+                        <th class="col-saved">Saved Amount</th>
+                        <th class="col-coupons">Coupons Used</th>
+                        <th class="col-checkin">Check In</th>
+                        <th class="col-checkout">Check Out</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in booking %}
+                    <tr>
+                        <td class="booking-id">{{ booking.booking_id }}</td>
+                        <td class="hotel-name">{{ booking.hotel.name }}</td>
+                        <td>{{ booking.full_name }}</td>
+                        <td>{{ booking.email }}</td>
+                        <td class="room-type">{{ booking.room_type }}</td>
+                        <td class="{% if booking.payment_status == 'Completed' %}payment-complete{% else %}payment-pending{% endif %}">
+                            {{ booking.payment_status|default:"-" }}
+                        </td>
+                        <td class="price">Rs.{{ booking.total }}</td>
+                        <td class="saved-amount">Rs.{{ booking.saved_amount }}</td>
+                        <td>
+                            {% for coupon in booking.coupons.all %}
+                                <span class="coupon-badge">{{ coupon.code }}</span>
+                            {% empty %}
+                                <span class="text-muted">None</span>
+                            {% endfor %}
+                        </td>
+                        <td class="date-info">{{ booking.check_in_date }}</td>
+                        <td class="date-info">{{ booking.check_out_date }}</td>
+                        <td>
+                            <a href="{% url 'hotel:checkout' booking.booking_id %}" class="checkout-btn">
+                                Checkout
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p class="alert alert-info">You have no bookings yet.</p>
+        <div class="no-bookings">You have no bookings yet.</div>
     {% endif %}
 </div>
+
+<script>
+    // Ensure filter is always visible even with no bookings
+    document.addEventListener('DOMContentLoaded', function() {
+        // Script remains the same - filter section is outside the conditional block
+    });
+</script>
 {% endblock content %}

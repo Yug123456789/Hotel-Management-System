@@ -20,5 +20,5 @@ urlpatterns = [
     path('coupons/add/', views.add_coupons, name='add_coupon'),
     path('user_hotel/', views.user_hotel, name='user_hotel'),
     path('hotel_user_dashboard/', views.user_hotel_dashboard, name='hotel_user_dashboard'),
-    
+    path('hotel_user_restaurant_booking/', views.user_hotel_restaurant_booking, name='hotel_user_restaurant_booking'),
 ]

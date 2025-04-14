@@ -1,0 +1,77 @@
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/roombookingdisplay.css' %}">
+
+<div class="container booking-container my-4">
+    <h2 class="booking-header">Your Restaurant Bookings</h2>
+
+    <div class="filter-section">
+        <form method="get">
+            <label for="hotel_id" class="filter-label">Filter by Hotel:</label>
+            <select name="hotel_id" id="hotel_id" class="hotel-select" onchange="this.form.submit()">
+                <option value="">All Hotels</option>
+                {% for hotel in hotels %}
+                    <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
+                        {{ hotel.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if booking %}
+        <div class="table-responsive">
+            <table class="table bookings-table">
+                <thead>
+                    <tr>
+                        <th class="col-id">Booking ID</th>
+                        <th class="col-hotel">Hotel</th>
+                        <th class="col-tables">Tables</th>
+                        <th class="col-name">Full Name</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-phone">Phone</th>
+                        <th class="col-checkin">Check-In Date</th>
+                        <th class="col-checkin-time">Check-In Time</th>
+                        <th class="col-checkout-time">Check-Out Time</th>
+                        <th class="col-duration">Total Time (hrs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in booking %}
+                    <tr>
+                        <td class="booking-id">{{ b.rbooking_id }}</td>
+                        <td class="hotel-name">{{ b.hotel.name }}</td>
+                        <td>
+                            {% for table in b.tables.all %}
+                                <span class="badge bg-secondary">{{ table.table_number }}</span>
+                            {% empty %}
+                                <span class="text-muted">None</span>
+                            {% endfor %}
+                        </td>
+                        <td>{{ b.full_name }}</td>
+                        <td>{{ b.email }}</td>
+                        <td>{{ b.phone }}</td>
+                        <td>{{ b.check_in_date }}</td>
+                        <td>{{ b.check_in_time }}</td>
+                        <td>{{ b.check_out_time }}</td>
+                        <td>{{ b.total_time|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="no-bookings">You have no restaurant bookings yet.</div>
+    {% endif %}
+</div>
+
+<script>
+    // Ensure filter is always visible even with no bookings
+    document.addEventListener('DOMContentLoaded', function() {
+        // Script remains the same - filter section is outside the conditional block
+    });
+</script>
+
+{% endblock content %}

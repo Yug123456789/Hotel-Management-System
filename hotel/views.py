@@ -454,3 +454,17 @@ def user_hotel_dashboard(request):
     }
     return render(request, 'hotel/hotel_user_dashboard.html', context)
 
+@login_required
+def user_hotel_restaurant_booking(request):
+    hotel_id = request.GET.get('hotel_id')
+    booking = ResturantBooking.objects.filter(user=request.user)
+
+    if hotel_id:
+        booking = booking.filter(hotel__id=hotel_id)
+
+    context = {
+        'booking': booking,
+        'selected_hotel_id': hotel_id,
+        'hotels': Hotel.objects.all(),
+    }
+    return render(request, 'hotel/hotel_user_restaurant_booking.html', context)
