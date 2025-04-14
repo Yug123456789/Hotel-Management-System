@@ -2,11 +2,57 @@
 {% load static %}
 {% block content %}
 
-<h2>Add Restaurant Table</h2>
-<form action="" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Add Restaurant Table</button>
-</form>
+<link rel="stylesheet" href="{% static 'css/addrestaurant.css' %}">
+
+
+<div class="restaurant-form-container">
+    <div class="form-header">
+        <h2><i class="fas fa-utensils"></i> Add Restaurant Table</h2>
+        <p>Configure a new dining table for your restaurant</p>
+    </div>
+    
+    <form action="" method="POST" enctype="multipart/form-data" class="restaurant-form">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">
+                    {% if field.name == 'table_number' %}<i class=""></i>
+                    {% elif field.name == 'is_available' %}<i class=""></i>
+                    {% elif field.name == 'number_of_seats' %}<i class=""></i>
+                    {% elif field.name == 'table_capacity' %}<i class=""></i>
+                    {% elif field.name == 'hotel' %}<i class=""></i>
+                    {% endif %}
+                    {{ field.label }}
+                </label>
+                
+                {% if field.name == 'is_available' %}
+                <div class="toggle-switch">
+                    {{ field }}
+                    <span class="slider"></span>
+                    <span class="toggle-label">{{ field.label }}</span>
+                </div>
+                {% else %}
+                {{ field }}
+                {% endif %}
+                
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-plus-circle"></i> Add Table
+            </button>
+        </div>
+    </form>
+</div>
 
 {% endblock content %}

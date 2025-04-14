@@ -2,13 +2,36 @@
 {% load static %}
 {% block content %}
 
-<h2>Add Hotel</h2>
-<form action="" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Add Hotel</button>
-</form>
+<link rel="stylesheet" href="{% static 'css/addhotel.css' %}">
 
-
+<div class="hotel-form-container">
+    <div class="form-header">
+        <h2>Add New Hotel</h2>
+        <p>Fill in the details below to register a new hotel</p>
+    </div>
+    
+    <form action="" method="POST" enctype="multipart/form-data" class="hotel-form">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Add Hotel</button>
+        </div>
+    </form>
+</div>
 
 {% endblock content %}

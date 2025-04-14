@@ -2,12 +2,45 @@
 {% load static %}
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/addroom.css' %}">
 
-
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Room</button>
-</form>
+<div class="room-form-container">
+    <div class="form-header">
+        <h2>Add New Room</h2>
+        <p>Register a new room in your hotel's inventory</p>
+    </div>
+    
+    <form method="POST" class="room-form">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.name == 'is_available' %}
+                <div class="checkbox-wrapper">
+                    {{ field }}
+                    <span class="checkbox-label">Available for booking</span>
+                </div>
+                {% else %}
+                {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-door-open"></i> Add Room
+            </button>
+        </div>
+    </form>
+</div>
 
 {% endblock content %}

@@ -25,6 +25,14 @@ class ResturantForm(forms.ModelForm):
 
 
 class CouponForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(CouponForm, self).__init__(*args, **kwargs)
+        if user and not user.is_superuser:
+            self.fields['hotel'].queryset = Hotel.objects.filter(owner=user)
+        else:
+            self.fields['hotel'].queryset = Hotel.objects.all()  
+
     valid_from = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         initial=timezone.now
@@ -33,17 +41,17 @@ class CouponForm(forms.ModelForm):
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         initial=timezone.now() + timezone.timedelta(days=30)
     )
-    
+
     class Meta:
         model = Coupon
         fields = ['hotel', 'code', 'discount', 'type', 'valid_from', 'valid_upto', 'active', 'coupon_id']
-        
+
     def clean(self):
         cleaned_data = super().clean()
         valid_from = cleaned_data.get('valid_from')
         valid_upto = cleaned_data.get('valid_upto')
-        
+
         if valid_from and valid_upto and valid_from >= valid_upto:
             raise forms.ValidationError("The validity end date must be after the start date.")
-            
+
         return cleaned_data

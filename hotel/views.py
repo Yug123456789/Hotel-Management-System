@@ -399,7 +399,7 @@ def add_restaurants(request):
             messages.success(request, "Restaurant table added successfully!")
             return redirect("hotel:user_hotel")
     else:
-        # This only show hotels owned by the current user (Filters the hotel according to user.)
+        # This line of code is used to show hotels owned by the current user (Filters the hotel according to user.)
         form = ResturantForm()
         if request.user.is_authenticated:
             form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
@@ -412,23 +412,23 @@ def add_coupons(request):
         return redirect("userauthentication:hotel-sign-in")
 
     if request.method == 'POST':
-        form = CouponForm(request.POST)
+        form = CouponForm(request.POST, user=request.user)  
         if form.is_valid():
-            # Check if user is the owner of the selected hotel
             hotel = form.cleaned_data['hotel']
             if hotel and hotel.owner != request.user and not request.user.is_superuser:
                 messages.error(request, "You can only add coupons to hotels you own.")
                 return redirect("/")
-
             coupon = form.save()
             messages.success(request, f"Coupon {coupon.code} added successfully!")
             return redirect("hotel:user_hotel")
     else:
-        form = CouponForm()
-        if request.user.is_authenticated and not request.user.is_superuser:
+        form = CouponForm(user=request.user)  
+        if request.user.is_authenticated:
             form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
+    
 
     return render(request, 'hotel/add_coupon.html', {'form': form})
+
 
 
 def user_hotel(request):

@@ -2,13 +2,38 @@
 {% load static %}
 {% block content %}
 
-  <div class="container">
-    <h2>Add Room Type</h2>
-    <form method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Add Room Type</button>
+<link rel="stylesheet" href="{% static 'css/addroomtype.css' %}">
+
+<div class="roomtype-form-container">
+    <div class="form-header">
+        <h2>Add New Room Type</h2>
+        <p>Define the specifications for a new room category</p>
+    </div>
+    
+    <form method="POST" class="roomtype-form">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-plus-circle"></i> Add Room Type
+            </button>
+        </div>
     </form>
-  </div>
+</div>
 
 {% endblock content %}
