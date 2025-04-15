@@ -49,9 +49,17 @@
                 <li class="dropdown">
                     <a href="#">Edit Hotel</a>
                     <ul class="dropdown-menu">
-                        <li><a href="{% url 'hotel:edit_hotel_list' %}">Your Hotels</a></li>
+                        <li><a href="{% url 'hotel:edit_hotel_list' %}">Edit Hotel</a></li>
+                        <li><a href="{% url 'hotel:user_room_types' %}">Edit Room Type</a></li>
+                        <li><a href="{% url 'hotel:user_rooms' %}">Edit Room</a></li>
+                        <li><a href="{% url 'hotel:user_restaurants' %}">Edit Tables</a></li>
+                        
                     </ul>
                 </li>
+                
+
+
+                
 
                 <li class="dropdown">
                     <a href="#">Bookings</a>

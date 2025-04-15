@@ -24,5 +24,13 @@ urlpatterns = [
     path('customer_user_room_booking/', views.user_customer_room_booking, name='customer_user_room_booking'),
     path('edit-hotel/', views.edit_hotel_list, name='edit_hotel_list'),
     path('edit-hotel/<int:hotel_id>/', views.edit_hotel, name='edit_hotel'),
+    path('user-room-types/', views.user_room_types, name='user_room_types'),
+    path('edit-room-type/<int:room_type_id>/', views.edit_room_type, name='edit_room_type'),
+    path('edit-room/<int:pk>/', views.edit_room, name='edit_room'),
+    path('user-rooms/', views.user_rooms, name='user_rooms'),
+    path('user-restaurants/', views.user_restaurants, name='user_restaurants'),
+    path('edit-restaurant/<int:pk>/', views.edit_restaurant, name='edit_restaurant'),   
+    path('bookmark/<int:hotel_id>/', views.bookmark_hotel, name='bookmark_hotel'),
+    path('my-bookmarks/', views.my_bookmarks, name='my_bookmarks'),
 
 ]

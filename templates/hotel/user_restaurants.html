@@ -1,0 +1,35 @@
+<!-- Listing out the restaurants before editing it.-->
+
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Your Restaurant Tables</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Table Number</th>
+            <th>Seats</th>
+            <th>Capacity</th>
+            <th>Available</th>
+            <th>Hotel</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rest in restaurants %}
+        <tr>
+            <td>{{ rest.table_number }}</td>
+            <td>{{ rest.number_of_seats }}</td>
+            <td>{{ rest.table_capacity }}</td>
+            <td>{{ rest.is_available }}</td>
+            <td>{{ rest.hotel.name }}</td>
+            <td>
+                <a href="{% url 'hotel:edit_restaurant' rest.id %}">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

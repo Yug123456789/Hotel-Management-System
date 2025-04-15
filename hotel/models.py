@@ -264,3 +264,15 @@ class Coupon(models.Model):
   
     def __str__(self):
         return f"{self.code}"
+    
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'hotel')  
+
+    def __str__(self):
+        return f"{self.user.username} bookmarked {self.hotel.name}"

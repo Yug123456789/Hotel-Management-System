@@ -13,7 +13,7 @@
         <div class="booking-item {% if book.checked_out %}checked-out{% elif book.checked_in %}checked-in{% else %}upcoming{% endif %}">
           <div class="hotel-info">
             <h2>{{ book.hotel.name }}</h2>
-            <span class="booking-status">{% if book.checked_in %}Checked In{% elif book.checked_out %}Checked Out{% else %}Upcoming{% endif %}</span>
+            
           </div>
           
           <div class="booking-details">

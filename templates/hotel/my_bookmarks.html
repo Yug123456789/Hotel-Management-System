@@ -1,0 +1,15 @@
+{% extends 'partials/base.html' %}
+{% block content %}
+<h2>My Bookmarked Hotels</h2>
+<div class="hotel-list">
+    {% for bookmark in bookmarks %}
+        <div class="hotel">
+            <h3>{{ bookmark.hotel.name }}</h3>
+            <p>{{ bookmark.hotel.address }}</p>
+            <a href="{% url 'hotel:hotel_detail' bookmark.hotel.slug %}">View Details</a>
+        </div>
+    {% empty %}
+        <p>You have not bookmarked any hotels yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

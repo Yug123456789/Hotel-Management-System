@@ -1,0 +1,21 @@
+<!-- Listing out the room types before editing it.-->
+
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Your Room Types</h2>
+
+{% if room_types %}
+    <ul>
+        {% for room_type in room_types %}
+            <li>
+                {{ room_type.type }} | {{ room_type.hotel.name }}
+                <a href="{% url 'hotel:edit_room_type' room_type.id %}">Edit</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No room types found.</p>
+{% endif %}
+{% endblock %}

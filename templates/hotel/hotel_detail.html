@@ -60,7 +60,18 @@
 
             <button type="submit" class="btn check-availability">Check Availability</button>
             <br><br>
-            <button type="button" class="btn wishlist">♡ Add to Favorites</button>
+            <form method="post" action="{% url 'hotel:bookmark_hotel' hotel.id %}">
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                    {% if hotel in user.bookmarked_hotels.all %}
+                        <button type="submit" class="btn wishlist">❤️ Remove Bookmark</button>
+                    {% else %}
+                        <button type="submit" class="btn wishlist">♡ Add to Favorites</button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'userauthentication:sign-in' %}" class="btn wishlist">♡ Login to Bookmark</a>
+                {% endif %}
+            </form>
         </form>
     </div>
 

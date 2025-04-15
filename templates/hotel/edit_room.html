@@ -1,0 +1,36 @@
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/addhotel.css' %}">
+
+<div class="hotel-form-container">
+    <div class="form-header">
+        <h2>Edit Room</h2>
+        <p>Update the room details below</p>
+    </div>
+    
+    <form method="POST" class="hotel-form">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Update Room</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

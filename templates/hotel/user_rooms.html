@@ -1,0 +1,21 @@
+<!-- Listing out the rooms before editing it.-->
+
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+
+{% block content %}
+
+{% for room in rooms %}
+    <tr>
+        <td>{{ room.room_number }}</td>
+        <td>{{ room.room_type }}</td>
+        <td>{{ room.hotel.name }}</td>
+        <td>
+            <a href="{% url 'hotel:edit_room' room.id %}">Edit</a>
+        </td>
+    </tr>
+{% endfor %}
+
+
+
+{% endblock %}

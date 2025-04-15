@@ -28,15 +28,14 @@
                     <tr>
                         <th class="col-id">Booking ID</th>
                         <th class="col-hotel">Hotel</th>
-                       
                         <th class="col-room">Room Type</th>
                         <th class="col-payment">Payment Status</th>
                         <th class="col-total">Total</th>
-                        <th class="col-saved">Saved Amount</th>
+                        <th class="col-fullname">Full Name</th>
+                        <th class="col-email">Email</th>
                         <th class="col-coupons">Coupons Used</th>
                         <th class="col-checkin">Check In</th>
                         <th class="col-checkout">Check Out</th>
-                        <th class="col-actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,13 +43,13 @@
                     <tr>
                         <td class="booking-id">{{ booking.booking_id }}</td>
                         <td class="hotel-name">{{ booking.hotel.name }}</td>
-                      
                         <td class="room-type">{{ booking.room_type }}</td>
                         <td class="{% if booking.payment_status == 'Completed' %}payment-complete{% else %}payment-pending{% endif %}">
                             {{ booking.payment_status|default:"-" }}
                         </td>
                         <td class="price">Rs.{{ booking.total }}</td>
-                        <td class="saved-amount">Rs.{{ booking.saved_amount }}</td>
+                        <td class="full-name">{{ booking.full_name }}</td>
+                        <td class="email">{{ booking.email }}</td>
                         <td>
                             {% for coupon in booking.coupons.all %}
                                 <span class="coupon-badge">{{ coupon.code }}</span>
@@ -60,15 +59,11 @@
                         </td>
                         <td class="date-info">{{ booking.check_in_date }}</td>
                         <td class="date-info">{{ booking.check_out_date }}</td>
-                        <td>
-                            <a href="{% url 'hotel:checkout' booking.booking_id %}" class="checkout-btn">
-                                Checkout
-                            </a>
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            
         </div>
     {% else %}
         <div class="no-bookings">You have no bookings yet.</div>
