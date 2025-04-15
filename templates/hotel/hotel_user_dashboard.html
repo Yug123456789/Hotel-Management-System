@@ -11,7 +11,7 @@
         <form method="get">
             <label for="hotel_id" class="filter-label">Filter by Hotel:</label>
             <select name="hotel_id" id="hotel_id" class="hotel-select" onchange="this.form.submit()">
-                <option value="">All Hotels</option>
+                
                 {% for hotel in hotels %}
                     <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
                         {{ hotel.name }}
@@ -28,8 +28,7 @@
                     <tr>
                         <th class="col-id">Booking ID</th>
                         <th class="col-hotel">Hotel</th>
-                        <th class="col-name">Full Name</th>
-                        <th class="col-email">Email</th>
+                       
                         <th class="col-room">Room Type</th>
                         <th class="col-payment">Payment Status</th>
                         <th class="col-total">Total</th>
@@ -45,8 +44,7 @@
                     <tr>
                         <td class="booking-id">{{ booking.booking_id }}</td>
                         <td class="hotel-name">{{ booking.hotel.name }}</td>
-                        <td>{{ booking.full_name }}</td>
-                        <td>{{ booking.email }}</td>
+                      
                         <td class="room-type">{{ booking.room_type }}</td>
                         <td class="{% if booking.payment_status == 'Completed' %}payment-complete{% else %}payment-pending{% endif %}">
                             {{ booking.payment_status|default:"-" }}

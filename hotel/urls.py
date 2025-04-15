@@ -22,4 +22,7 @@ urlpatterns = [
     path('hotel_user_dashboard/', views.user_hotel_dashboard, name='hotel_user_dashboard'),
     path('hotel_user_restaurant_booking/', views.user_hotel_restaurant_booking, name='hotel_user_restaurant_booking'),
     path('customer_user_room_booking/', views.user_customer_room_booking, name='customer_user_room_booking'),
+    path('edit-hotel/', views.edit_hotel_list, name='edit_hotel_list'),
+    path('edit-hotel/<int:hotel_id>/', views.edit_hotel, name='edit_hotel'),
+
 ]

@@ -342,6 +342,26 @@ def add_hotels(request):
         form = HotelForm()
     return render(request, 'hotel/add_hotel.html', {'form': form})
 
+@login_required
+def edit_hotel_list(request):
+    user_hotels = Hotel.objects.filter(owner=request.user)
+    return render(request, 'hotel/edit_hotel_list.html', {'hotels': user_hotels})
+
+@login_required
+def edit_hotel(request, hotel_id):
+    hotel = get_object_or_404(Hotel, id=hotel_id, owner=request.user)
+
+    if request.method == 'POST':
+        form = HotelForm(request.POST, request.FILES, instance=hotel)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Hotel updated successfully.")
+            return redirect('hotel:edit_hotel_list')
+    else:
+        form = HotelForm(instance=hotel)
+
+    return render(request, 'hotel/edit_hotel.html', {'form': form})
+
 
 def add_room_types(request):
     if not request.user.is_authenticated:
@@ -455,32 +475,45 @@ def user_hotel(request):
 def user_hotel_dashboard(request):
     hotel_id = request.GET.get('hotel_id')
 
-    booking = Booking.objects.filter(user=request.user)
+    
+    bookings = Booking.objects.filter(user=request.user)
 
+    
     if hotel_id:
-        booking = booking.filter(hotel__id=hotel_id)
+        bookings = bookings.filter(hotel__id=hotel_id)
+
+    
+    hotels = Hotel.objects.filter(booking__user=request.user).distinct()
 
     context = {
-        'booking': booking,
+        'booking': bookings,
         'selected_hotel_id': hotel_id,
-        'hotels': Hotel.objects.all(),
+        'hotels': hotels,  
     }
     return render(request, 'hotel/hotel_user_dashboard.html', context)
+
 
 @login_required
 def user_hotel_restaurant_booking(request):
     hotel_id = request.GET.get('hotel_id')
+    
+    # Get restaurant bookings for the logged-in user
     booking = ResturantBooking.objects.filter(user=request.user)
 
+    # Filter by selected hotel 
     if hotel_id:
         booking = booking.filter(hotel__id=hotel_id)
+
+    # Get only hotels the user has restaurant bookings 
+    hotels = Hotel.objects.filter(resturantbooking__user=request.user).distinct()
 
     context = {
         'booking': booking,
         'selected_hotel_id': hotel_id,
-        'hotels': Hotel.objects.all(),
+        'hotels': hotels,
     }
     return render(request, 'hotel/hotel_user_restaurant_booking.html', context)
+
 
 @login_required
 def user_customer_room_booking(request):

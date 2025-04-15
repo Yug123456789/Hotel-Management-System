@@ -11,7 +11,7 @@
         <form method="get">
             <label for="hotel_id" class="filter-label">Filter by Hotel:</label>
             <select name="hotel_id" id="hotel_id" class="hotel-select" onchange="this.form.submit()">
-                <option value="">All Hotels</option>
+                
                 {% for hotel in hotels %}
                     <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
                         {{ hotel.name }}

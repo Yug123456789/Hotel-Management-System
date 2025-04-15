@@ -37,8 +37,14 @@
 
                 
 
-                <li><a href="{% url 'hotel:customer_user_room_booking' %}">View Your Booked Rooms</a></li>
-                <li><a href="#">View Your Booked Restaurant</a></li>
+                <!-- View Your Booking Dropdown -->
+                <li class="dropdown sticky-booking">
+                    <a href="#">View Your Booking</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'hotel:customer_user_room_booking' %}">Booked Rooms</a></li>
+                        <li><a href="#">Booked Tables</a></li>
+                    </ul>
+                </li>
                 <li><a href="#">Blog</a></li>
             </ul>
         </nav>
