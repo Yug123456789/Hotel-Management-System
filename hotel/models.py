@@ -189,8 +189,7 @@ class Booking(models.Model):
     check_out_date = models.DateField()
     total_days = models.PositiveIntegerField(default=0)
     checked_in = models.BooleanField(default=False)
-    checked_out = models.BooleanField(default=False)
-            
+    checked_out = models.BooleanField(default=False)           
 
     is_active = models.BooleanField(default=False)
     checked_in_tracker = models.BooleanField(default=False)

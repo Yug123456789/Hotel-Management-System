@@ -32,5 +32,6 @@ urlpatterns = [
     path('edit-restaurant/<int:pk>/', views.edit_restaurant, name='edit_restaurant'),   
     path('bookmark/<int:hotel_id>/', views.bookmark_hotel, name='bookmark_hotel'),
     path('my-bookmarks/', views.my_bookmarks, name='my_bookmarks'),
+    path('initiate/', views.initiatekhalti, name='initiate'),
 
 ]

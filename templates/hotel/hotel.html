@@ -3,6 +3,17 @@
 
 {% block content %}
 
+<section class="hero">
+    <img src="{% static 'images/hero-background.jpeg' %}" alt="Beach View" class="hero-bg">
+    <div class="hero-content">
+        <h1>Book Your Hotels </h1>
+        <a href="#hotel-listings" class="book-now-btn">Book NOW <span class="arrow">→</span></a>
+        
+        
+        
+    </div>
+</section>
+
 <section id="hotel-listings" class="hotel-list">
     {% for hotel in hotels %}
         <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">

@@ -75,7 +75,21 @@
                 <br>
                 <br>            
                 <button type="submit" class="btn apply-btn">Apply</button>
-            </form> 
+                
+                
+                </form>
+                <br>
+                <form action="{% url 'hotel:initiate' %}" method="POST">
+                    {% csrf_token%}
+                    <input type="hidden" name="purchase_order_id" value="{{uuid}}">
+                    <input type="hidden" name="amount" value="{{ booking.total }}">
+                    <input type="hidden" name="return_url" value="http://127.0.0.1:8000/customer_user_room_booking/">
+                    <input type="hidden" name="full_name" value="{{ booking.full_name }}">
+                    <input type="hidden" name="email" value="{{ booking.email }}">
+                    <input type="hidden" name="phone" value="{{ booking.phone }}">
+                    <input type="submit" value="Pay with Khalti" class="btn btn-primary">
+                </form>
+            <!-- </form> 
             <div class="esewa-form">
                 <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
                     <input type="hidden" name="amount" value="{{ amount }}">
@@ -91,7 +105,7 @@
                     <input type="hidden" name="signature" value="{{ signature }}">
                 
                     <button class="btn pay-btn stripe">Pay with Esewa</button>
-                </form>
+                </form> -->
                 
                 
             </div>

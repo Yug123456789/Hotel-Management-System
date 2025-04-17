@@ -6,6 +6,9 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from hotel.forms import HotelForm, RoomTypeForm, RoomForm, ResturantForm, CouponForm
 import uuid, hmac, hashlib
+from django.utils import timezone
+import requests, json
+
 
 
 def index (request):
@@ -87,7 +90,8 @@ def rooms_selected(request):
                 total_days=total_days,
                 full_name=full_name,
                 email=email,
-                phone=phone
+                phone=phone,
+                is_active=True
             )
 
             if request.user.is_authenticated:
@@ -101,6 +105,8 @@ def rooms_selected(request):
                 room_id = int(item['room_id']) 
                 room = Room.objects.get(id=room_id)
                 booking.room.add(room)
+                room.is_available = False
+                room.save()
 
                 room_count  += 1
                 days = total_days
@@ -152,21 +158,15 @@ def rooms_selected(request):
         messages.warning(request, "No rooms Selected")
         return redirect("/")
 
- 
-def genSha256(key, message):
-    key = key.encode('utf-8')
-    message = message.encode('utf-8')
-
-    hmac_sha256 = hmac.new(key, message, hashlib.sha256)
-    digest = hmac_sha256.digest()
-    return digest.hex()
 
 def checkout(request, booking_id):
     booking = get_object_or_404(Booking, booking_id=booking_id)
 
+    purchase_order_id = str(uuid.uuid4())
     # Handle coupon logic
     if request.method == "POST":
         code = request.POST.get("code")
+        
         try:
             coupon = Coupon.objects.get(code__iexact=code, active=True)
             if coupon in booking.coupons.all():
@@ -176,53 +176,58 @@ def checkout(request, booking_id):
                 booking.coupons.add(coupon)
                 booking.total -= discount
                 booking.saved_amount += discount
+                
                 booking.save()
                 messages.success(request, "Coupon activated")
         except:
             messages.error(request, "Coupon is not available")
-        return redirect("hotel:checkout", booking.booking_id)
-
-    # eSewa Payment Integration
-    amount = int(booking.total)
-    total_amount = amount  # or add tax if needed
-    tax_amount = 0
-    transaction_uuid = str(uuid.uuid4())
-    product_code = "EPAYTEST"
-    product_service_charge = 0
-    product_delivery_charge = 0
-    secret_key = "8gBm/:&EnhH.1/q"
-
-    signed_field_names = "amount,tax_amount,total_amount,transaction_uuid,product_code,product_service_charge,product_delivery_charge"
-    data_to_sign = (
-        f"amount={amount},"
-        f"tax_amount={tax_amount},"
-        f"total_amount={total_amount},"
-        f"transaction_uuid={transaction_uuid},"
-        f"product_code={product_code},"
-        f"product_service_charge={product_service_charge},"
-        f"product_delivery_charge={product_delivery_charge}"
-    )
-    signature = genSha256(secret_key, data_to_sign)
+        return redirect("hotel:checkout", booking.booking_id)  
 
     context = {
     "booking": booking,
-    "transaction_uuid": transaction_uuid,
-    "amount": amount,
-    "tax_amount": tax_amount,
-    "total_amount": total_amount,
-    "product_code": product_code,
-    "product_service_charge": product_service_charge,
-    "product_delivery_charge": product_delivery_charge,
-    "signed_field_names": signed_field_names,
-    "signature": signature,
-    "success_url": "http://yourdomain.com/esewa/payment-success/",
-    "failure_url": "http://yourdomain.com/esewa/payment-fail/",
+    "uuid": purchase_order_id,
+    
     }
-    print("Signed Fields:", signed_field_names)
-    print("Data to Sign:", data_to_sign)
-    print("Signature:", signature)
 
     return render(request, "hotel/checkout.html", context)
+
+def initiatekhalti(request):
+    url = "https://dev.khalti.com/api/v2/epayment/initiate/"
+    return_url = request.POST.get('return_url')
+    purchase_order_id = request.POST.get('purchase_order_id')
+
+    amount = int(float(request.POST.get('amount')) * 100)
+    full_name = request.POST.get('full_name')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+
+    print("return_url", return_url)
+    print("purchase_order_id",purchase_order_id)
+                                    
+    
+    payload = json.dumps({
+        "return_url": return_url,
+        "website_url": "http://127.0.0.1:8000",
+        "amount": amount,
+        "purchase_order_id": purchase_order_id,
+        "purchase_order_name": "test",
+        "customer_info": {
+        "name": full_name,
+        "email": email,
+        "phone": phone
+        }
+    })
+    headers = {
+        'Authorization': 'key 88f7db09b44d4da794fed1e886e24bb9',
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
+    new_res = json.loads(response.text)
+    print(new_res)
+    return redirect(new_res['payment_url'])
 
 
 def resturant(request, slug):
@@ -243,6 +248,7 @@ def resturant_detail(request, slug):
         "resturant": resturant,
     }
     return render(request, "hotel/resturant_detail.html", context)
+
 
 
 def resturant_table_detail(request, slug):
@@ -670,3 +676,29 @@ def bookmark_hotel(request, hotel_id):
 def my_bookmarks(request):
     bookmarks = Bookmark.objects.filter(user=request.user)
     return render(request, 'hotel/my_bookmarks.html', {'bookmarks': bookmarks})
+
+
+def update_room_status(request):
+    today = timezone.now().date()
+    
+    # Get all active bookings
+    active_bookings = Booking.objects.filter(is_active=True)
+    
+    # Keep track of which rooms should be unavailable
+    unavailable_room_ids = set()
+    
+    # For active bookings that are current (today is between check-in and check-out)
+    for booking in active_bookings:
+        if booking.check_in_date <= today <= booking.check_out_date:
+            # Add room IDs to our set
+            room_ids = booking.room.values_list('id', flat=True)
+            unavailable_room_ids.update(room_ids)
+    
+    # Mark rooms in active bookings as unavailable
+    if unavailable_room_ids:
+        Room.objects.filter(id__in=unavailable_room_ids).update(is_available=False)
+    
+    # Mark rooms not in active bookings as available
+    Room.objects.exclude(id__in=unavailable_room_ids).update(is_available=True)
+    
+    return redirect('hotel:user_hotel')
