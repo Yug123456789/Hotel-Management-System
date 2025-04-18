@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from urllib.parse import urlencode
 from datetime import datetime
-from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Resturant, Booking, ActivityLog, StaffOnDuty
+from hotel.models import Hotel, HotelGallery,   RoomType, Room, Resturant, Booking, ActivityLog, StaffOnDuty
 from django.template.loader import render_to_string
 
 def check_room_availability(request):

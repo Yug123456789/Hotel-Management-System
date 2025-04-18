@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from hotel.models import Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, Booking, ActivityLog, StaffOnDuty, Coupon, Resturant, ResturantBooking, Bookmark
+from hotel.models import Hotel, HotelGallery,   RoomType, Room, Booking, ActivityLog, StaffOnDuty, Coupon, Resturant, ResturantBooking, Bookmark, Payment
 from django.contrib import messages
 from datetime import datetime
 from django.shortcuts import get_object_or_404
@@ -195,15 +195,20 @@ def initiatekhalti(request):
     url = "https://dev.khalti.com/api/v2/epayment/initiate/"
     return_url = request.POST.get('return_url')
     purchase_order_id = request.POST.get('purchase_order_id')
+    booking_id = request.POST.get('booking_id')  # Get the booking_id from the form
 
     amount = int(float(request.POST.get('amount')) * 100)
     full_name = request.POST.get('full_name')
     email = request.POST.get('email')
     phone = request.POST.get('phone')
 
+    # Store the purchase_order_id in the booking
+    booking = Booking.objects.get(booking_id=booking_id)
+    booking.khalti_payment = purchase_order_id
+    booking.save()
+    
     print("return_url", return_url)
-    print("purchase_order_id",purchase_order_id)
-                                    
+    print("purchase_order_id", purchase_order_id)
     
     payload = json.dumps({
         "return_url": return_url,
@@ -212,9 +217,9 @@ def initiatekhalti(request):
         "purchase_order_id": purchase_order_id,
         "purchase_order_name": "test",
         "customer_info": {
-        "name": full_name,
-        "email": email,
-        "phone": phone
+            "name": full_name,
+            "email": email,
+            "phone": phone
         }
     })
     headers = {
@@ -223,12 +228,52 @@ def initiatekhalti(request):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-
-    print(response.text)
     new_res = json.loads(response.text)
     print(new_res)
     return redirect(new_res['payment_url'])
 
+
+def khalti_payment_verify(request):
+    pidx = request.GET.get('pidx')
+    transaction_id = request.GET.get('transaction_id')
+    status = request.GET.get('status')
+    purchase_order_id = request.GET.get('purchase_order_id')
+    total_amount = request.GET.get('total_amount')
+    
+    print(f"Payment data received: pidx={pidx}, status={status}, purchase_order_id={purchase_order_id}")
+    
+    if status == 'Completed':
+        try:
+            # Find the booking using the purchase_order_id we stored
+            booking = Booking.objects.get(khalti_payment=purchase_order_id)
+            
+            # Update booking payment status
+            booking.payment_status = 'paid'
+            booking.save()
+            
+            # Create payment record
+            payment = Payment.objects.create(
+                booking=booking,
+                amount=float(total_amount) / 100 if total_amount else booking.total,
+                transaction_id=transaction_id or pidx,
+                payment_method='Khalti',
+                status='paid'
+            )
+            
+            messages.success(request, "Payment successful!")
+            return redirect('hotel:customer_user_room_booking')
+        
+        except Booking.DoesNotExist:
+            messages.error(request, "Could not locate your booking. Please contact support.")
+            return redirect('hotel:index')
+        except Exception as e:
+            print(f"Error processing payment: {str(e)}")
+            messages.error(request, f"Payment verification failed: {str(e)}")
+            return redirect('hotel:index')
+    else:
+        messages.error(request, "Payment failed or incomplete. Please try again.")
+        return redirect('hotel:index')
+    
 
 def resturant(request, slug):
     hotel = Hotel.objects.get(status="Live", slug=slug)

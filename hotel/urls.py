@@ -33,5 +33,6 @@ urlpatterns = [
     path('bookmark/<int:hotel_id>/', views.bookmark_hotel, name='bookmark_hotel'),
     path('my-bookmarks/', views.my_bookmarks, name='my_bookmarks'),
     path('initiate/', views.initiatekhalti, name='initiate'),
+    path('khalti-payment-verify/', views.khalti_payment_verify, name='khalti_payment_verify'),
 
 ]

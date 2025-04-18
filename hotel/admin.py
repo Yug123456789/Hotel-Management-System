@@ -1,6 +1,6 @@
 from django.contrib import admin
 from hotel.models import (
-    Hotel, HotelGallery, HotelFeatures, HotelFaqs, RoomType, Room, 
+    Hotel, HotelGallery,  RoomType, Room, 
     Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking
 )
 
@@ -29,17 +29,7 @@ class HotelGalleryAdmin(admin.ModelAdmin):
     list_display = ['hotel', 'image']
     list_filter = ['hotel']
 
-# Custom admin for Hotel Features
-class HotelFeaturesAdmin(admin.ModelAdmin):
-    list_display = ['name', 'hotel', 'icon_type', 'icon']
-    search_fields = ['name', 'hotel__name']
-    list_filter = ['icon_type']
 
-# Custom admin for Hotel FAQs
-class HotelFaqsAdmin(admin.ModelAdmin):
-    list_display = ['hotel', 'question']
-    search_fields = ['question', 'hotel__name']
-    list_filter = ['date']
 
 # Custom admin for Restaurant
 class ResturantAdmin(admin.ModelAdmin):
@@ -87,8 +77,7 @@ admin.site.register(Hotel, HotelAdmin)
 admin.site.register(RoomType, RoomTypeAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(HotelGallery, HotelGalleryAdmin)
-admin.site.register(HotelFeatures, HotelFeaturesAdmin)
-admin.site.register(HotelFaqs, HotelFaqsAdmin)
+
 admin.site.register(Resturant, ResturantAdmin)
 admin.site.register(Booking, BookingAdmin)
 admin.site.register(ActivityLog, ActivityLogAdmin)

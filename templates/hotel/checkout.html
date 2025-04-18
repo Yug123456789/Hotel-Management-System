@@ -81,9 +81,10 @@
                 <br>
                 <form action="{% url 'hotel:initiate' %}" method="POST">
                     {% csrf_token%}
+                    <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
                     <input type="hidden" name="purchase_order_id" value="{{uuid}}">
                     <input type="hidden" name="amount" value="{{ booking.total }}">
-                    <input type="hidden" name="return_url" value="http://127.0.0.1:8000/customer_user_room_booking/">
+                    <input type="hidden" name="return_url" value="http://127.0.0.1:8000/khalti-payment-verify/">
                     <input type="hidden" name="full_name" value="{{ booking.full_name }}">
                     <input type="hidden" name="email" value="{{ booking.email }}">
                     <input type="hidden" name="phone" value="{{ booking.phone }}">
