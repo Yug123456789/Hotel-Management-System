@@ -31,8 +31,16 @@
 
                         <input type="hidden" class="room_id_{{r.id}}" value="{{r.id}}" id="room_id">
                         <input type="hidden"  class= "room_number_{{r.id}}" value="{{r.room_number}}" id="room_number">
-                        <button class="btn  add-to-selection" data-index="{{r.id}}">📋 Select</button>
-                    </div>
+                        {% if user.is_authenticated %}
+                        <button class="btn add-to-selection" data-index="{{ r.id }}">
+                            <i class="fas fa-clipboard"></i> Select
+                        </button>
+                        {% else %}
+                        <button class="btn" disabled>
+                            <i class="fas fa-lock"></i> Login First
+                        </button>
+                        {% endif %}
+                                </div>
                 {% endfor %}
 
                 <input type="hidden" value="{{hotel.id}}"  id="id">

@@ -3,7 +3,10 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Roboto, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: #4a5568;
+  background-color: #f7fafc;
 }
 
 html {
@@ -16,19 +19,32 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #f8f8f8;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo img {
-  height: 50px;
+  height: 40px;
+  transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+nav {
+  margin-left: 20px;
+  font-size: 18px;
 }
 
 nav ul {
   list-style: none;
   display: flex;
   gap: 20px;
-  font-size: 20px;
+  font-size: 17px;
   position: relative;
 }
 
@@ -38,16 +54,32 @@ nav ul li {
 
 nav ul li a {
   text-decoration: none;
-  color: #333;
-  font-weight: bold;
-  font-size: 20px;
+  color: #2d3748;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #6c63ff;
 }
 
 nav ul li a.active {
-  color: #6a1b9a;
+  color: #6c63ff;
 }
 
-/* Dropdown Styles - Fixed to prevent disappearing on hover */
+nav ul li a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #6c63ff;
+}
+
+/* Dropdown Styles */
 .dropdown {
   position: relative;
 }
@@ -60,23 +92,20 @@ nav ul li a.active {
   left: 0;
   min-width: 220px;
   z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding: 10px 0;
-  /* Added transition properties for smoother appearance */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s, visibility 0.2s;
 }
 
-/* This makes sure the dropdown stays visible when hovering */
 .dropdown:hover .dropdown-menu {
   display: block;
   opacity: 1;
   visibility: visible;
 }
 
-/* Adding an invisible bridge between dropdown trigger and menu */
 .dropdown::after {
   content: "";
   position: absolute;
@@ -86,7 +115,6 @@ nav ul li a.active {
   left: 0;
 }
 
-/* Ensure menu stays visible when cursor is over the dropdown items */
 .dropdown-menu:hover {
   display: block;
   opacity: 1;
@@ -95,44 +123,113 @@ nav ul li a.active {
 
 .dropdown-menu li {
   display: block;
-  padding: 10px 20px;
-  font-size: 18px;
+  padding: 0.5rem 1rem;
 }
 
 .dropdown-menu li a {
-  color: #333;
+  color: #4a5568;
   text-decoration: none;
+  font-size: 0.9rem;
 }
 
 .dropdown-menu li:hover {
-  background-color: #f0f0f0;
+  background-color: #f7fafc;
+  border-radius: 0.25rem;
 }
 
 .dropdown-menu li a:hover {
-  color: #6a1b9a;
+  color: #6c63ff;
+}
+
+/* Header Search */
+.header-search {
+  position: relative;
+  margin: 0 15px;
+}
+
+.search-input {
+  padding: 0.6rem 1rem;
+  padding-right: 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 2rem;
+  outline: none;
+  width: 200px;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.search-input:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+  width: 220px;
+}
+
+.search-icon-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #4a5568;
+  cursor: pointer;
+}
+
+.search-icon-btn:hover {
+  color: #6c63ff;
 }
 
 /* Header Buttons */
-.header-buttons button {
-  margin-left: 10px;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
+.header-buttons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dashboard-btn,
+.signout-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .dashboard-btn {
-  background-color: #8e24aa;
+  background: #6c63ff;
   color: white;
-  border-radius: 5px;
-  font-size: 18px;
-  padding: 12px 20px;
+  border: none;
+}
+
+.dashboard-btn:hover {
+  background: #5a52e0;
+  transform: translateY(-1px);
 }
 
 .signout-btn {
-  background-color: #ab47bc;
+  background: white;
+  color: #6c63ff;
+  border: 1px solid #6c63ff;
+}
+
+.signout-btn:hover {
+  background: #6c63ff;
   color: white;
-  border-radius: 5px;
+  transform: translateY(-1px);
+}
+
+.room-count,
+.resturant-count {
+  background: #ff6584;
+  color: white;
+  border-radius: 50%;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  margin-left: 0.25rem;
 }
 
 /* Hero Section */
@@ -188,6 +285,7 @@ nav ul li a.active {
   border: 2px solid white;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 2rem;
 }
 
 .book-now-btn .arrow {
@@ -203,28 +301,6 @@ nav ul li a.active {
 
 .book-now-btn:hover .arrow {
   transform: translateX(5px);
-}
-
-.search-bar {
-  display: flex;
-  gap: 10px;
-}
-
-.search-bar input,
-.search-bar select {
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 200px;
-}
-
-.search-btn {
-  padding: 10px 20px;
-  background-color: #6a1b9a;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 /* Popular Tours Section */
@@ -259,11 +335,6 @@ nav ul li a.active {
 .hotel-link:hover,
 .hotel-link:focus,
 .hotel-link:active {
-  text-decoration: none !important;
-}
-
-.views,
-.fav-btn {
   text-decoration: none !important;
 }
 
@@ -310,7 +381,7 @@ nav ul li a.active {
 }
 
 .category-badge {
-  background: #a533ff;
+  background: #6c63ff;
   color: white;
   padding: 5px 10px;
   font-size: 12px;
@@ -331,19 +402,8 @@ nav ul li a.active {
   text-align: left;
 }
 
-.hotel-info h3,
-.hotel-info p,
-.hotel-info .hotel-location,
-.hotel-info .hotel-contact,
-.hotel-info .hotel-rating,
-.hotel-info .rating-value,
-.hotel-info .views,
-.hotel-info .fav-btn {
-  text-decoration: none !important;
-}
-
 .price-tag {
-  background: #8d4be3;
+  background: #6c63ff;
   color: white;
   padding: 5px 10px;
   font-size: 12px;
@@ -353,12 +413,13 @@ nav ul li a.active {
 .hotel h3 {
   font-size: 18px;
   margin: 5px 0;
+  color: #2d3748;
 }
 
 .hotel-location,
 .hotel-contact {
   font-size: 14px;
-  color: #555;
+  color: #4a5568;
   margin: 5px 0;
 }
 
@@ -378,17 +439,95 @@ nav ul li a.active {
 
 .views {
   font-size: 14px;
-  color: #777;
+  color: #718096;
 }
 
 .fav-btn {
   font-size: 18px;
-  color: #ff4757;
+  color: #ff6584;
   cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.fav-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Footer */
+.footer {
+  background: #2d3748;
+  color: white;
+  padding: 3rem 2rem 1.5rem;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-column h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  color: white;
+}
+
+.footer-column ul {
+  list-style: none;
+}
+
+.footer-column li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-column a {
+  color: #e2e8f0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0aec0;
+  font-size: 0.9rem;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
+  header {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .header-search {
+    margin: 1rem 0;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
   .hero-header {
     flex-direction: column;
     gap: 10px;
@@ -398,23 +537,9 @@ nav ul li a.active {
     font-size: 32px;
   }
 
-  .search-bar {
-    flex-direction: column;
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .search-bar input,
-  .search-bar select {
-    width: 100%;
-  }
-
   .hotel-list {
     grid-template-columns: 1fr;
-  }
-
-  .hotel {
-    max-width: 100%;
+    padding: 20px;
   }
 
   .dropdown-menu {
@@ -423,3 +548,19 @@ nav ul li a.active {
     min-width: 200px;
   }
 }
+
+/* Animation */
+/* @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  animation: fadeIn 0.5s ease-out;
+} */

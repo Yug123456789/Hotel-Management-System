@@ -40,9 +40,15 @@
                     <input type="hidden" class="restaurant_id_{{restaurants.id}}" value="{{restaurants.id}}" id="restaurant_id">
                     <input type="hidden" class="table_number_{{restaurants.id}}" value="{{restaurants.table_number}}">
 
-                    <button class="add-to-resturant-selection" data-index="{{restaurants.id}}">
-                        <i class="fas fa-utensils"></i> Book
-                    </button>
+                    {% if user.is_authenticated %}
+                        <button class="add-to-resturant-selection" data-index="{{ restaurants.id }}">
+                            <i class="fas fa-utensils"></i> Book
+                        </button>
+                    {% else %}
+                        <button class="btn" disabled>
+                            <i class="fas fa-lock"></i> Login First
+                        </button>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
