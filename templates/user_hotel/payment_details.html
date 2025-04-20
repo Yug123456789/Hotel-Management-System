@@ -1,0 +1,40 @@
+<!-- This page is to display the payment details from 
+payment models for hotel user of the logged in user -->
+
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/paymentdetail.css' %}">
+<h2>My Payment Details</h2>
+
+{% if payments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Amount</th>
+                <th>Transaction ID</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.booking.id }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.transaction_id }}</td>
+                    <td>{{ payment.payment_method }}</td>
+                    <td>{{ payment.status }}</td>
+                    <td>{{ payment.created_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No payment records found.</p>
+{% endif %}
+
+{% endblock %}

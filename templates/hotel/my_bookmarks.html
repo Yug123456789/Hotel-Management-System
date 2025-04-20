@@ -1,9 +1,20 @@
 {% extends 'partials/base.html' %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/mybookmark.css' %}">
+
+<br>
 <h2>My Bookmarked Hotels</h2>
+
 <div class="hotel-list">
     {% for bookmark in bookmarks %}
         <div class="hotel">
+            {% if bookmark.hotel.image %}
+                <img src="{{ bookmark.hotel.image.url }}" alt="{{ bookmark.hotel.name }}" class="hotel-image">
+            {% else %}
+                <img src="{% static 'images/default-hotel.jpg' %}" alt="No image available" class="hotel-image">
+            {% endif %}
+            
             <h3>{{ bookmark.hotel.name }}</h3>
             <p>{{ bookmark.hotel.address }}</p>
             <a href="{% url 'hotel:hotel_detail' bookmark.hotel.slug %}">View Details</a>

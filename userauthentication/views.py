@@ -48,7 +48,7 @@ def HotelRegisterView(request):
     
     if form.is_valid():
         form.save()
-        hotel_name = form.cleaned_data.get("full_name")
+        full_name = form.cleaned_data.get("full_name")
         phone = form.cleaned_data.get("phone")
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password1")
@@ -56,10 +56,10 @@ def HotelRegisterView(request):
         user = authenticate(email = email, password=password)
         login(request, user)
 
-        messages.success(request, f"Hello{hotel_name}, Your account has been created")
+        messages.success(request, f"Hello{full_name}, Your account has been created")
 
         profile = Profile.objects.get(user=request.user)
-        profile.full_name= hotel_name
+        profile.full_name= full_name
         profile.phone = phone
         profile.save()
 

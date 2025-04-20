@@ -1,0 +1,74 @@
+<!-- This template is for the Hotel User which is used to display the Page which shows resturant 
+table number. As the header like Add hotel, Edit Hotel should
+only be displayed to hotel user that is why i have imported hotel-user.html from partials.
+The main motive of this page is only to display the header part of hoter user.  -->
+
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Table Booking</title>
+    <link rel="stylesheet" href="{% static 'css/resturanttabledetail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Available Tables</h1>
+            <p><b>The {{hotel.name}} restaurant has {{resturant.count}} tables available</b></p>
+        </header>
+        
+        <div class="restaurant-grid">
+            {% for restaurants in resturant %}
+            <!-- Table Card -->
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <h2>TABLE NO.{{restaurants.table_number}}</h2>
+                </div>
+                <div class="restaurant-body">
+                    <div class="restaurant-info">
+                        <div class="info-item">
+                            <i class="fas fa-chair"></i>
+                            <span>No. of Seats</span>
+                            <strong>{{restaurants.number_of_seats}}</strong>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-users"></i>
+                            <span>Table Capacity</span>
+                            <strong>{{restaurants.table_capacity}}</strong>
+                        </div>
+                    </div>
+                    <input type="hidden" class="restaurant_id_{{restaurants.id}}" value="{{restaurants.id}}" id="restaurant_id">
+                    <input type="hidden" class="table_number_{{restaurants.id}}" value="{{restaurants.table_number}}">
+
+                    {% if user.is_authenticated %}
+                        <button class="add-to-resturant-selection" data-index="{{ restaurants.id }}">
+                            <i class="fas fa-utensils"></i> Book
+                        </button>
+                    {% else %}
+                        <button class="btn" disabled>
+                            <i class="fas fa-lock"></i> Login First
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <input type="hidden" value="{{hotel.id}}"  id="hotel_id">
+            <input type="hidden" value="{{hotel.name}}"  id="hotel_name">
+            <input type="hidden" value="{{number_of_seats}}"  id="number_of_seats">
+            <input type="hidden" value="{{table_capacity}}"  id="table_capacity">
+            <input type="hidden" value="{{checkin}}" id="checkin">            
+            <input type="hidden" value="{{checkintime}}" id="checkin_time">
+            <input type="hidden" value="{{checkouttime}}" id="checkout_time">
+
+            
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}

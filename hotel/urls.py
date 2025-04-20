@@ -5,14 +5,18 @@ app_name = "hotel"
  
 urlpatterns = [
     path("", views.index, name= "index"),
-    path("detail/<slug>", views.hotel_detail, name= "hotel_detail"),
-    path("detail/<slug:slug>/room-type/<slug:roomtype_slug>/", views.room_type_detail, name= "room_type_detail"),
+    path("detail/<slug:slug>/admin/", views.hotel_detail, name="hotel_detail"),
+    path("detail/<slug:slug>/", views.hotel_user_hotel_detail, name="user_hotel_hotel_detail"),
+    path("detail/<slug:slug>/room-type/<slug:roomtype_slug>/admin/", views.room_type_detail, name= "room_type_detail"),
+    path("detail/<slug:slug>/room-type/<slug:roomtype_slug>/", views.hotel_user_room_type_detail, name= "user_hotel_room_type_detail"),
     path("rooms_selected/", views.rooms_selected, name="rooms_selected"),
     path("restaurant_selected/", views.restaurant_selected, name="restaurant_selected"),
     path("checkout/<booking_id>/", views.checkout, name="checkout"),
     path("restaurant_checkout/<booking_id>/", views.restaurant_checkout, name="restaurant_checkout"),
-    path("detail/<slug:slug>/resturant2/", views.resturant_table_detail, name="resturant_table_detail"),
-    path("detail/<slug>/resturant/", views.resturant, name= "resturant"),
+    path("detail/<slug:slug>/resturant2/admin/", views.resturant_table_detail, name="resturant_table_detail"),
+    path("detail/<slug:slug>/resturant2/", views.hotel_user_resturant_table_detail, name="user_hotel_resturant_table_detail"),
+    path("detail/<slug>/resturant/admin/", views.resturant, name= "resturant"),
+    path("detail/<slug>/resturant/", views.hotel_user_resturant, name= "user_hotel_resturant"),
     path('add', views.add_hotels, name='add_hotel'),
     path('add-room-type/', views.add_room_types, name='add_room_type'),
     path('add-room/', views.add_rooms, name='add_room'),
@@ -22,6 +26,7 @@ urlpatterns = [
     path('hotel_user_dashboard/', views.user_hotel_dashboard, name='hotel_user_dashboard'),
     path('hotel_user_restaurant_booking/', views.user_hotel_restaurant_booking, name='hotel_user_restaurant_booking'),
     path('customer_user_room_booking/', views.user_customer_room_booking, name='customer_user_room_booking'),
+    path('customer-user-table-bookings/', views.user_customer_table_booking, name='customer_user_table_bookings'),
     path('edit-hotel/', views.edit_hotel_list, name='edit_hotel_list'),
     path('edit-hotel/<int:hotel_id>/', views.edit_hotel, name='edit_hotel'),
     path('user-room-types/', views.user_room_types, name='user_room_types'),
@@ -34,5 +39,5 @@ urlpatterns = [
     path('my-bookmarks/', views.my_bookmarks, name='my_bookmarks'),
     path('initiate/', views.initiatekhalti, name='initiate'),
     path('khalti-payment-verify/', views.khalti_payment_verify, name='khalti_payment_verify'),
-
+    path('payment-details/', views.payment_details, name='payment_details'),
 ]

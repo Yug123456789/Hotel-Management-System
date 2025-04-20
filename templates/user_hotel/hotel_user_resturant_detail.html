@@ -1,4 +1,10 @@
-{% extends 'partials/base.html' %}
+<!-- This template is for the Hotel User which is used to display the Resturant 
+and user can select checkin date, checkin time and checkout time.. 
+As the header like Add hotel, Edit Hotel should only be displayed to hotel user 
+that is why i have imported hotel-user.html from partials. The main motive of this page 
+is only to display the header part of hoter user.  -->
+
+{% extends 'partials/hotel-user.html' %}
 {% load static %}
 {% block content %}
 
@@ -45,7 +51,7 @@
     <!-- Right Section -->
     <div class="booking-box">
         <h2>🌅 Check Available Restaurant Tables</h2>
-        <form method="POST" action="{% url 'booking:check_resturant_availability' %}">
+        <form method="POST" action="{% url 'booking:user_hotel_check_resturant_table_detail' %}">
             {% csrf_token %}
             <input type="hidden" value="{{hotel.id}}" name="hotel-id" id="">
             <div class="form-group">

@@ -36,6 +36,37 @@ def check_room_availability(request):
 
         return HttpResponseRedirect(f"{url}?{query_params}")
     
+def hotel_user_check_room_availability(request):
+    if request.method == "POST":
+        id = request.POST.get("hotel-id")
+        checkin = request.POST.get("checkin")
+        checkout = request.POST.get("checkout")
+        
+        room_type_slug = request.POST.get("room_type")  
+
+        try:
+            hotel = Hotel.objects.get(id=id)
+            room_type = RoomType.objects.get(hotel=hotel, slug=room_type_slug)
+        except (Hotel.DoesNotExist, RoomType.DoesNotExist):
+            return HttpResponseRedirect(reverse("booking:home"))  # Redirect if not found
+
+        print("id ===", id)
+        print("checkin ===", checkin)
+        print("checkout ===", checkout)
+        print("room_type ===", room_type)
+        print("hotel ===", hotel)
+        print("room_type ===", room_type)
+
+        url = reverse("hotel:user_hotel_room_type_detail", args=[hotel.slug, room_type.slug])
+        query_params = urlencode({
+            "hotel-id": id,
+            "checkin": checkin,
+            "checkout": checkout,
+            "room_type": room_type.slug  
+        })
+
+        return HttpResponseRedirect(f"{url}?{query_params}")
+    
 def check_resturant_availability(request):
     if request.method == "POST":
         id = request.POST.get("hotel-id")
@@ -60,6 +91,42 @@ def check_resturant_availability(request):
         
 
         url = reverse("hotel:resturant_table_detail", args=[hotel.slug])
+        query_params = urlencode({
+            "hotel-id": id,
+            "checkin": checkin,
+            
+            "checkintime": checkintime,
+            "checkouttime": checkouttime,
+              
+        })
+
+        return HttpResponseRedirect(f"{url}?{query_params}")
+    
+
+def hotel_user_check_resturant_availability(request):
+    if request.method == "POST":
+        id = request.POST.get("hotel-id")
+        checkin = request.POST.get("checkin")
+        
+        checkintime = request.POST.get("checkintime")
+        checkouttime = request.POST.get("checkouttime")
+        
+        try:
+            hotel = Hotel.objects.get(id=id)
+            
+        except (Hotel.DoesNotExist):
+            return HttpResponseRedirect(reverse("booking:home"))  # Redirect to home page of hotel app if not found
+
+        print("id ===", id)
+        print("checkin ===", checkin)
+        
+        print("checkintime ===", checkintime)
+        print("checkouttime ===", checkouttime)
+        
+        print("hotel ===", hotel)
+        
+
+        url = reverse("hotel:user_hotel_resturant_table_detail", args=[hotel.slug])
         query_params = urlencode({
             "hotel-id": id,
             "checkin": checkin,

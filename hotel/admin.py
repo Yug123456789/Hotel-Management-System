@@ -1,7 +1,7 @@
 from django.contrib import admin
 from hotel.models import (
     Hotel, HotelGallery,  RoomType, Room, 
-    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking
+    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking, Payment
 )
 
 # Custom admin for Hotel
@@ -12,11 +12,17 @@ class HotelAdmin(admin.ModelAdmin):
     search_fields = ['name', 'user__username']
     list_filter = ['status', 'featured', 'date']
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+
 # Custom admin for Room Type
 class RoomTypeAdmin(admin.ModelAdmin):
     list_display = ['type', 'hotel', 'price', 'room_capacity', 'number_of_beds']
     search_fields = ['type', 'hotel__name']
     list_filter = ['hotel']
+
+    class Media:
+        js = ('scripts/custom_admin.js',)
 
 # Custom admin for Room
 class RoomAdmin(admin.ModelAdmin):
@@ -24,12 +30,16 @@ class RoomAdmin(admin.ModelAdmin):
     list_filter = ['hotel', 'room_type', 'is_available']
     search_fields = ['room_number', 'hotel__name', 'room_type__type']
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+    
 # Custom admin for Hotel Gallery
 class HotelGalleryAdmin(admin.ModelAdmin):
     list_display = ['hotel', 'image']
     list_filter = ['hotel']
-
-
+    
+    class Media:
+        js = ('scripts/custom_admin.js',)
 
 # Custom admin for Restaurant
 class ResturantAdmin(admin.ModelAdmin):
@@ -37,11 +47,18 @@ class ResturantAdmin(admin.ModelAdmin):
     search_fields = ['hotel__name', 'table_number']
     list_filter = ['hotel', 'is_available']
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+    
+
 # Custom admin for Booking
 class BookingAdmin(admin.ModelAdmin):
     list_display = ['booking_id', 'user', 'hotel',  'room_type','room_numbers', 'is_active', 'check_in_date', 'check_out_date']
     list_filter = ['hotel','user','payment_status', 'check_in_date', 'check_out_date']
     search_fields = ['booking_id', 'user__username', 'hotel__name', 'room_type__type']
+
+    class Media:
+        js = ('scripts/custom_admin.js',)
 
 class ResturantBookingAdmin(admin.ModelAdmin):
     list_display = [
@@ -55,16 +72,25 @@ class ResturantBookingAdmin(admin.ModelAdmin):
         'user__username', 'hotel__name'
     ]
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+
 # Custom admin for Activity Log
 class ActivityLogAdmin(admin.ModelAdmin):
     list_display = ['booking', 'guest_out', 'guest_in', 'description', 'date']
     list_filter = ['date']
     search_fields = ['booking__booking_id']
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+
 # Custom admin for Staff On Duty
 class StaffOnDutyAdmin(admin.ModelAdmin):
     list_display = ['booking', 'staff_id', 'date']
     search_fields = ['staff_id', 'booking__booking_id']
+
+    class Media:
+        js = ('scripts/custom_admin.js',)
 
 # Custom admin for Coupon
 class CouponAdmin(admin.ModelAdmin):
@@ -72,6 +98,16 @@ class CouponAdmin(admin.ModelAdmin):
     search_fields = ['code']
     list_filter = ['active', 'valid_from', 'valid_upto']
 
+    class Media:
+        js = ('scripts/custom_admin.js',)
+
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'booking', 'amount', 'transaction_id', 'payment_method', 'status', 'created_at']
+    list_filter = ['status', 'payment_method', 'created_at']
+    search_fields = ['transaction_id', 'booking__booking_id', 'booking__user__username']
+    
+    class Media:
+        js = ('scripts/custom_admin.js',)
 # Register models with custom admin classes
 admin.site.register(Hotel, HotelAdmin)
 admin.site.register(RoomType, RoomTypeAdmin)
@@ -84,3 +120,4 @@ admin.site.register(ActivityLog, ActivityLogAdmin)
 admin.site.register(StaffOnDuty, StaffOnDutyAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(ResturantBooking, ResturantBookingAdmin)
+admin.site.register(Payment, PaymentAdmin)

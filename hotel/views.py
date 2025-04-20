@@ -8,6 +8,8 @@ from hotel.forms import HotelForm, RoomTypeForm, RoomForm, ResturantForm, Coupon
 import uuid, hmac, hashlib
 from django.utils import timezone
 import requests, json
+from django.db.models import Q
+
 
 
 
@@ -32,6 +34,13 @@ def hotel_detail(request, slug):
     return render(request, "hotel/hotel_detail.html", context)
 
 
+def hotel_user_hotel_detail(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    context = {
+        "hotel": hotel,
+    }
+    return render(request, "user_hotel/hotel_user_hotel_detail.html", context)
+
 def room_type_detail(request, slug, roomtype_slug):
     hotel = Hotel.objects.get(status="Live", slug=slug)
     room_type = RoomType.objects.get(hotel=hotel, slug=roomtype_slug)
@@ -49,6 +58,24 @@ def room_type_detail(request, slug, roomtype_slug):
         "checkout": checkout,
     }
     return render(request, "hotel/room_type_detail.html", context)
+
+def hotel_user_room_type_detail(request, slug, roomtype_slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    room_type = RoomType.objects.get(hotel=hotel, slug=roomtype_slug)
+    rooms = Room.objects.filter(room_type=room_type, is_available = True)
+
+    id = request.GET.get("hotel-id")
+    checkin = request.GET.get("checkin")
+    checkout = request.GET.get("checkout")
+
+    context = {
+        "hotel": hotel,
+        "room_type": room_type,
+        "rooms": rooms,
+        "checkin": checkin,
+        "checkout": checkout,
+    }
+    return render(request, "user_hotel/hotel_user_room_type_detail.html", context)
 
 def rooms_selected(request):
     total = 0
@@ -274,6 +301,15 @@ def khalti_payment_verify(request):
         messages.error(request, "Payment failed or incomplete. Please try again.")
         return redirect('hotel:index')
     
+# This views is to display the payment details from 
+# payment models for hotel user of the logged in user     
+def payment_details(request):
+    if request.user.is_authenticated:
+        payments = Payment.objects.filter(booking__user=request.user)
+        return render(request, 'user_hotel/payment_details.html', {'payments': payments})
+    else:
+        # Redirect to login or show error
+        return redirect('login')    
 
 def resturant(request, slug):
     hotel = Hotel.objects.get(status="Live", slug=slug)
@@ -294,6 +330,16 @@ def resturant_detail(request, slug):
     }
     return render(request, "hotel/resturant_detail.html", context)
 
+def hotel_user_resturant(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    #resturant = get_object_or_404(Resturant, hotel=hotel, is_available=True)
+    resturant = Resturant.objects.filter(hotel=hotel)
+    
+    context = {
+        "hotel": hotel,
+        
+    }
+    return render(request, "user_hotel/hotel_user_resturant_detail.html", context)
 
 
 def resturant_table_detail(request, slug):
@@ -315,11 +361,26 @@ def resturant_table_detail(request, slug):
     }
     return render(request, "hotel/resturant_table_detail.html", context)
 
+def hotel_user_resturant_table_detail(request, slug):
+    hotel = Hotel.objects.get(status="Live", slug=slug)
+    resturant = Resturant.objects.filter(hotel=hotel, is_available = True)
+    id = request.GET.get("hotel-id")
+    checkin = request.GET.get("checkin")
+    
+    checkintime = request.GET.get("checkintime")
+    checkouttime = request.GET.get("checkouttime")
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from datetime import datetime
-from .models import Hotel, Resturant, ResturantBooking
+    context = {
+        "hotel": hotel,
+        "resturant": resturant,
+        "checkin": checkin,
+        
+        "checkintime": checkintime,
+        "checkouttime": checkouttime,
+    }
+    return render(request, "user_hotel/hotel_user_resturant_table_detail.html", context)
+
+
 
 def restaurant_selected(request):
     total_time = 0
@@ -471,26 +532,42 @@ def add_room_types(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding room types.")
         return redirect("userauthentication:hotel-sign-in")
-        
+
     if request.method == 'POST':
-        form = RoomTypeForm(request.POST)  
+        form = RoomTypeForm(request.POST)
+        
+        #  Set the hotel queryset
+        hotels = Hotel.objects.filter(owner=request.user)
+        form.fields['hotel'].queryset = hotels
+
+        # If there's only one hotel, pre-fill it
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()
+
         if form.is_valid():
             room_type = form.save(commit=False)
-            
+
             if not request.user.is_superuser:
                 hotel = form.cleaned_data['hotel']
                 if hotel.owner != request.user:
-                    return redirect('unauthorized')  
-            
+                    return redirect('unauthorized')
+
             room_type.save()
             return redirect("hotel:user_hotel")
     else:
         form = RoomTypeForm()
-        if request.user.is_authenticated:
-            form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
-    
+        
+        #  Set the hotel queryset
+        hotels = Hotel.objects.filter(owner=request.user)
+        form.fields['hotel'].queryset = hotels
+
+        #  If there's only one hotel, pre-fill it
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()
 
     return render(request, 'hotel/add_room_type.html', {'form': form})
+
+
 
 def user_room_types(request):
     # Fetch all room types where the hotel belongs to the current user
@@ -514,29 +591,51 @@ def edit_room_type(request, room_type_id):
 
 
 def add_rooms(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated:  # Make sure user is logged in
         messages.warning(request, "You have to log in before adding rooms.")
         return redirect("userauthentication:hotel-sign-in")
-        
-    if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            
-            if not request.user.is_superuser:
-                hotel = form.cleaned_data['hotel']
-                if hotel.owner != request.user:
-                    return redirect('unauthorized')  # Redirect to an unauthorized page or message
-            
-            room.save()  # Save the room after validation
-            return redirect("hotel:user_hotel")  # Redirect to another page after saving
-    else:
-        form = RoomForm()
-        if request.user.is_authenticated:
-            form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
-    
-    
-    return render(request, 'hotel/add_room.html', {'form': form})
+
+    if request.method == 'POST':  # If form is submitted (If the request method is post method)
+        form = RoomForm(request.POST, user=request.user)  # Pass the user to the form
+
+        hotels = Hotel.objects.filter(owner=request.user)  # Only show hotels the user owns
+        form.fields['hotel'].queryset = hotels  # Set those hotels in the dropdown
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()  #  This auto-selects the hotel if there's only one
+
+        room_types = RoomType.objects.filter(hotel__owner=request.user)  # Get room types from user's hotels
+        form.fields['room_type'].queryset = room_types  # Set them in the dropdown
+        if room_types.count() == 1:
+            form.fields['room_type'].initial = room_types.first()  #  This auto-selects room type if only one exists
+
+        if form.is_valid():  # If all form data is valid
+            room = form.save(commit=False)  # Create room object but don’t save to DB yet
+
+            if not request.user.is_superuser:  # Extra check: if not admin
+                hotel = form.cleaned_data['hotel']  # Get selected hotel
+                if hotel.owner != request.user:  # If it's not the user's hotel, block it
+                    return redirect('unauthorized')
+
+            room.save()  # Save the room to Database
+            return redirect("hotel:user_hotel")  # Redirect the user to user_hotel page after saving
+
+    else:  
+        form = RoomForm(user=request.user)  # Create empty form for the user
+
+        hotels = Hotel.objects.filter(owner=request.user)  # Filter hotels by owner
+        form.fields['hotel'].queryset = hotels  # Set filtered hotels in dropdown
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()  #  Pre-select the hotel if there's only one
+
+        room_types = RoomType.objects.filter(hotel__owner=request.user)  
+        form.fields['room_type'].queryset = room_types
+        if room_types.count() == 1:
+            form.fields['room_type'].initial = room_types.first()  #  Pre-select room type if only one exists
+
+    return render(request, 'hotel/add_room.html', {'form': form})  # Show the form on the page
+
+
+
 
 def user_rooms(request):
     rooms = Room.objects.filter(hotel__owner=request.user)
@@ -572,23 +671,32 @@ def add_restaurants(request):
             
     if request.method == 'POST':
         form = ResturantForm(request.POST, request.FILES)
+
+        hotels = Hotel.objects.filter(owner=request.user)
+        form.fields['hotel'].queryset = hotels          #filtering the hotel on dropdown according to the user
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()   # Auto selecting the first hotel in ndropdown instead of showing ----
+
         if form.is_valid():
-            # Check if user is the owner of the selected hotel
             hotel = form.cleaned_data['hotel']
             if hotel.owner != request.user:
                 messages.error(request, "You can only add restaurants to hotels you own.")
                 return redirect("/")
-                
-            restaurant = form.save()
+
+            form.save()
             messages.success(request, "Restaurant table added successfully!")
             return redirect("hotel:user_hotel")
+
     else:
-        # This line of code is used to show hotels owned by the current user (Filters the hotel according to user.)
         form = ResturantForm()
-        if request.user.is_authenticated:
-            form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
-    
+
+        hotels = Hotel.objects.filter(owner=request.user)
+        form.fields['hotel'].queryset = hotels    #filtering the hotel on dropdown
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()   # Auto selecting the first hotel in ndropdown instead of showing ----
+
     return render(request, 'hotel/add_restaurant.html', {'form': form})
+
 
 def user_restaurants(request):
     if not request.user.is_authenticated:
@@ -633,11 +741,18 @@ def add_coupons(request):
             return redirect("hotel:user_hotel")
     else:
         form = CouponForm(user=request.user)  
+        
+        # Filter hotels owned by the logged-in user to show in the dropdown
         if request.user.is_authenticated:
             form.fields['hotel'].queryset = Hotel.objects.filter(owner=request.user)
-    
+            
+        # Auto-select if there is only one hotel owned by the user
+        hotels = Hotel.objects.filter(owner=request.user)
+        if hotels.count() == 1:
+            form.fields['hotel'].initial = hotels.first()  # Select the first hotel if there's only one
 
     return render(request, 'hotel/add_coupon.html', {'form': form})
+
 
 
 
@@ -646,9 +761,9 @@ def user_hotel(request):
     context = {
         "hotels" : hotels
     }
-    return render(request, 'hotel/hotel_user.html', context)
+    return render(request, 'user_hotel/hotel_user.html', context)
 
-
+# Displays the Room booking sectio of hotel user.
 def user_hotel_dashboard(request):
     hotel_id = request.GET.get('hotel_id')
 
@@ -709,6 +824,17 @@ def user_customer_room_booking(request):
     }
     return render(request, 'hotel/customer_room_booking.html', context)
 
+def user_customer_table_booking(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in first.")
+        return redirect('userauthentication:sign-in')
+
+    bookings = ResturantBooking.objects.filter(user=request.user).order_by('-check_in_date')
+
+    context = {
+        'table_bookings': bookings
+    }
+    return render(request, 'hotel/customer_table_booking.html', context)
 
 def bookmark_hotel(request, hotel_id):
     hotel = get_object_or_404(Hotel, id=hotel_id)
@@ -721,6 +847,7 @@ def bookmark_hotel(request, hotel_id):
 def my_bookmarks(request):
     bookmarks = Bookmark.objects.filter(user=request.user)
     return render(request, 'hotel/my_bookmarks.html', {'bookmarks': bookmarks})
+
 
 
 def update_room_status(request):

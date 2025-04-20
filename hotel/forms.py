@@ -17,6 +17,16 @@ class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = ['hotel', 'room_type', 'room_number', 'is_available', 'rid']
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(RoomForm, self).__init__(*args, **kwargs)
+
+        if user and not user.is_superuser:
+            # Filter hotel field 
+            self.fields['hotel'].queryset = Hotel.objects.filter(owner=user)
+
+            # Filter room types related to those hotels
+            self.fields['room_type'].queryset = RoomType.objects.filter(hotel__owner=user)
 
 class ResturantForm(forms.ModelForm):
     class Meta:
@@ -44,7 +54,7 @@ class CouponForm(forms.ModelForm):
 
     class Meta:
         model = Coupon
-        fields = ['hotel', 'code', 'discount', 'type', 'valid_from', 'valid_upto', 'active', 'coupon_id']
+        fields = ['hotel', 'code', 'discount', 'type', 'valid_from', 'valid_upto', 'active']
 
     def clean(self):
         cleaned_data = super().clean()
