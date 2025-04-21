@@ -1,0 +1,75 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>Profile Details</h2>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-photo-section">
+            <div class="profile-image-container">
+                <img src="{{ profile.image.url }}" alt="Profile Image" class="profile-image">
+                <button class="upload-btn">Upload Photo</button>
+            </div>
+            <div class="verification-badge">
+                {% if profile.verified %}
+                    <span class="badge verified">Verified</span>
+                {% else %}
+                    <span class="badge not-verified">Not Verified</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Full Name</label>
+                    <p>{{ profile.full_name }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>Email</label>
+                    <p>{{ profile.user.email }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Mobile</label>
+                    <p>{{ profile.phone }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>Gender</label>
+                    <p>{{ profile.gender|default:"Not specified" }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>Country</label>
+                    <p>{{ profile.country|default:"Not specified" }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>State</label>
+                    <p>{{ profile.state|default:"Not specified" }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>City</label>
+                    <p>{{ profile.city }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row full-width">
+                <div class="detail-group">
+                    <label>Address</label>
+                    <p>{{ profile.address }}</p>
+                </div>
+            </div>
+            
+         
+        </div>
+    </div>
+</div>
+{% endblock content %}

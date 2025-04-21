@@ -79,6 +79,52 @@ nav ul li a.active::after {
   background: #6c63ff;
 }
 
+/* Profile Circle Only in Navigation */
+.profile-circle-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.profile-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #8a2be2; /* Changed to purple */
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.profile-circle-link:hover .profile-circle {
+  background-color: #7b1fa2; /* Darker purple on hover */
+  transform: scale(1.1);
+}
+
+/* Ensure no pseudo-elements are adding the dot */
+.profile-circle::before,
+.profile-circle::after {
+  content: "" !important;
+  display: none !important;
+}
+
+/* Remove any potential list item styling */
+.header-buttons li {
+  list-style: none;
+}
+
 /* Dropdown Styles */
 .dropdown {
   position: relative;
