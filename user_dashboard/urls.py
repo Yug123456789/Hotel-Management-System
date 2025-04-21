@@ -5,4 +5,5 @@ app_name = "userdashboard"
  
 urlpatterns = [
     path("profile", views.profile, name= "profile"),
+    path('update-profile-image/', views.update_profile_image, name='update_profile_image'),
 ]

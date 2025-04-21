@@ -10,10 +10,14 @@
     
     <div class="profile-card">
         <div class="profile-photo-section">
-            <div class="profile-image-container">
-                <img src="{{ profile.image.url }}" alt="Profile Image" class="profile-image">
-                <button class="upload-btn">Upload Photo</button>
-            </div>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'userdashboard:update_profile_image' %}">
+                {% csrf_token %}
+                <div class="profile-image-container">
+                    <img src="{{ profile.image.url }}" alt="Profile Image" class="profile-image">
+                    <input type="file" name="image" accept="image/*" required>
+                    <button type="submit" class="upload-btn">Upload Photo</button>
+                </div>
+            </form>
             <div class="verification-badge">
                 {% if profile.verified %}
                     <span class="badge verified">Verified</span>
@@ -40,14 +44,8 @@
                     <label>Mobile</label>
                     <p>{{ profile.phone }}</p>
                 </div>
-                <div class="detail-group">
-                    <label>Gender</label>
-                    <p>{{ profile.gender|default:"Not specified" }}</p>
-                </div>
-                <div class="detail-group">
-                    <label>Country</label>
-                    <p>{{ profile.country|default:"Not specified" }}</p>
-                </div>
+              
+              
             </div>
             
             <div class="detail-row">
