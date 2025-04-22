@@ -1,14 +1,19 @@
 from django.shortcuts import render
 from hotel.models import Hotel
 from userauthentication.models import Profile
-from hotel.models import Bookmark
+from hotel.models import Bookmark, Coupon
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils import timezone
+
 
 def profile (request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to loin first")
+        return redirect('userauthentication:sign-in')
     profile = Profile.objects.get(user=request.user)
-
+    print(profile.verified)
     context = {
         'profile': profile,
     }
@@ -28,3 +33,16 @@ def update_profile_image(request):
             messages.error(request, 'Please select a valid image file.')
 
     return redirect('userdashboard:profile')
+
+
+def coupon(request):
+    current_time = timezone.now()
+    context = {
+        "coupons" :  Coupon.objects.filter(
+        active=True,
+        valid_from__lte=current_time,
+        valid_upto__gte=current_time
+    )
+    }
+    
+    return render(request, "user_dashboard/coupon.html", context)

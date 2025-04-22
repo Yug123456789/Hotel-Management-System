@@ -437,6 +437,8 @@ def restaurant_selected(request):
                     restaurant_table_id = item['restaurant_id']
                     table = Resturant.objects.get(id=restaurant_table_id)
                     booking.tables.add(table)
+                    table.is_available = False
+                    table.save()
                     table_count += 1
 
                 booking.save()
@@ -874,3 +876,43 @@ def update_room_status(request):
     Room.objects.exclude(id__in=unavailable_room_ids).update(is_available=True)
     
     return redirect('hotel:user_hotel')
+
+
+# def update_table_status(request):
+#     today = timezone.now().date()
+#     current_time = timezone.now().time()
+    
+#     # Get all active restaurant bookings
+#     active_bookings = ResturantBooking.objects.filter(is_active=True)
+    
+#     # Keep track of which tables should be unavailable
+#     unavailable_table_ids = set()
+    
+#     # For active bookings that are current (today is the check-in date and the time falls within booking hours)
+#     for booking in active_bookings:
+#         # Check if the booking is for today
+#         if booking.check_in_date == today:
+#             # Convert booking times to time objects if they aren't already
+#             check_in_time = booking.check_in_time
+#             check_out_time = booking.check_out_time
+            
+#             if isinstance(check_in_time, str):
+#                 check_in_time = datetime.strptime(check_in_time, "%H:%M").time()
+            
+#             if isinstance(check_out_time, str):
+#                 check_out_time = datetime.strptime(check_out_time, "%H:%M").time()
+            
+#             # Check if current time is between check-in and check-out time
+#             if check_in_time <= current_time <= check_out_time:
+#                 # Add table IDs to our set
+#                 table_ids = booking.tables.values_list('id', flat=True)
+#                 unavailable_table_ids.update(table_ids)
+    
+#     # Mark tables in active bookings as unavailable
+#     if unavailable_table_ids:
+#         Resturant.objects.filter(id__in=unavailable_table_ids).update(is_available=False)
+    
+#     # Mark tables not in active bookings as available
+#     Resturant.objects.exclude(id__in=unavailable_table_ids).update(is_available=True)
+    
+#     return redirect('hotel:user_hotel')

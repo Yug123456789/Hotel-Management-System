@@ -1,0 +1,33 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/coupon.css' %}">
+<br>
+<div class="container mt-5">
+    <h2 class="mb-4">Available Coupons</h2>
+    {% if coupons %}
+        <div class="row">
+            {% for coupon in coupons %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Coupon Code: {{ coupon.code }}</h5>
+                            <p class="card-text">
+                                <strong>Discount:</strong> {{ coupon.discount }} {{ coupon.type }}<br>
+                                <strong>Valid From:</strong> {{ coupon.valid_from|date:"M d, Y H:i" }}<br>
+                                <strong>Valid Upto:</strong> {{ coupon.valid_upto|date:"M d, Y H:i" }}
+                            </p>
+                            {% if coupon.hotel %}
+                                <p><strong>Hotel:</strong> {{ coupon.hotel.name }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No coupons available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock content %}
