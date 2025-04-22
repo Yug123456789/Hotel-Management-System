@@ -9,6 +9,12 @@ IDENTITY_TYPE = (
     ("Passport Number", "Passport Number")
 )
 
+ROLE_CHOICES = (
+    ('admin', 'Admin'),
+    ('customer', 'Customer'),
+    ('hotel', 'Hotel'),
+)
+
 def user_directory_path(instance, filename): #To upload the image of profile model of user
     ext = filename.split(".")[-1]
     filename = "%s.%s" % (instance.user.id, filename)
@@ -22,6 +28,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     otp = models.CharField(max_length=100, null=True, blank=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='customer')
     
 
     USERNAME_FIELD='email'

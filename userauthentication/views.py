@@ -72,63 +72,41 @@ def HotelRegisterView(request):
     return render(request, "userauthentication/hotel-sign-up.html", context)
 
 
-def loginViewTemp(request):
+def universal_login_view(request):
     if request.user.is_authenticated:
-        messages.warning(request, "You are already logged in.")
-        return redirect("hotel:index")
-    
+        if request.user.role == 'hotel':
+            messages.warning(request, "You are already logged in as a Hotel User.")
+            return redirect("hotel:user_hotel")
+        else:
+            messages.warning(request, "You are already logged in.")
+            return redirect("hotel:index")
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
 
         try:
-            user_query = User.objects.get(email=email)
+            user = User.objects.get(email=email)
             user_auth = authenticate(request, email=email, password=password)
 
-            if user_query is not None:
+            if user_auth is not None:
                 login(request, user_auth)
                 messages.success(request, "You are logged in.")
-                next_url = request.GET.get("next", "hotel:index")
-                return redirect(next_url)
+                
+                if user_auth.role == 'hotel':
+                    return redirect("hotel:user_hotel")
+                else:
+                    return redirect("hotel:index")
             else:
-                messages.error(request, "Username or Password doesnot exist")
+                messages.error(request, "Incorrect email or password.")
                 return redirect("userauthentication:sign-in")
-            
 
-        except:
-            messages.error(request, "User doesnot exist")
+        except User.DoesNotExist:
+            messages.error(request, "User does not exist.")
             return redirect("userauthentication:sign-in")
-        
+
     return render(request, "userauthentication/sign-in.html")
 
-def HotelloginViewTemp(request):
-    if request.user.is_authenticated:
-        messages.warning(request, "You are already logged in.")
-        return redirect("hotel:user_hotel")
-    
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-
-        try:
-            user_query = User.objects.get(email=email)
-            user_auth = authenticate(request, email=email, password=password)
-
-            if user_query is not None:
-                login(request, user_auth)
-                messages.success(request, "You are logged in.")
-                next_url = request.GET.get("next", "hotel:user_hotel")
-                return redirect(next_url)
-            else:
-                messages.error(request, "Username or Password doesnot exist")
-                return redirect("userauthentication:hotel-sign-in")
-            
-
-        except:
-            messages.error(request, "User doesnot exist")
-            return redirect("userauthentication:hotel-sign-in")
-        
-    return render(request, "userauthentication/hotel-sign-in.html", {'is_hotel': True})
 
 def LogoutView(request):
     logout(request)
