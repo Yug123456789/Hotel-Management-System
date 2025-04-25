@@ -3,17 +3,61 @@
 
 {% block content %}
 
+<!-- Hero Section -->
 <section class="hero">
     <img src="{% static 'images/hero-background.jpeg' %}" alt="Beach View" class="hero-bg">
     <div class="hero-content">
         <h1>Book Your Hotels </h1>
         <a href="#hotel-listings" class="book-now-btn">Book NOW <span class="arrow">→</span></a>
-        
-        
-        
     </div>
 </section>
 
+<!-- Why Book With Us -->
+<section class="why-book">
+    <div class="container">
+        <h2>Why Book With Us?</h2>
+        <div class="reasons">
+            <div class="reason">
+                <img src="{% static 'images/easy_booking.png' %}" alt="Easy Booking">
+                <h4>Easy Booking</h4>
+                <p>Quick and hassle-free hotel reservations in just a few clicks.</p>
+            </div>
+            <div class="reason">
+                <img src="{% static 'images/best_prices.png' %}" alt="Best Prices">
+                <h4>Best Prices</h4>
+                <p>Affordable stays without compromising on quality and comfort.</p>
+            </div>
+            <div class="reason">
+                <img src="{% static 'images/support.png' %}" alt="24/7 Support">
+                <h4>24/7 Support</h4>
+                <p>Our support team is available round-the-clock to assist you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Destinations -->
+<section class="top-destinations">
+    <div class="container">
+        <h2>Top Destinations</h2>
+        <div class="destinations">
+            <div class="destination">
+                <img src="{% static 'images/kathmandu.jpeg' %}" alt="Kathmandu">
+                <h4>Kathmandu</h4>
+            </div>
+            <div class="destination">
+                <img src="{% static 'images/pokhara.jpeg' %}" alt="Pokhara">
+                <h4>Pokhara</h4>
+            </div>
+            <div class="destination">
+                <img src="{% static 'images/lumbini.jpeg' %}" alt="Lumbini">
+                <h4>Lumbini</h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hotel Listings -->
 <section id="hotel-listings" class="hotel-list">
     {% for hotel in hotels %}
         <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">
@@ -23,15 +67,11 @@
                 {% else %}
                     <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Default Image" class="hotel-image" style="width: 100%; height: 200px; object-fit: cover;">
                 {% endif %}
-                
-                
                 <div class="hotel-info">
                     <h3>{{ hotel.name }}</h3>
                     <p class="hotel-location">📍 {{ hotel.address }}</p>
                     <p class="hotel-contact">📞 {{ hotel.mobile }}</p>
-                    <div class="hotel-rating">
-                        ⭐⭐⭐⭐⭐ <span class="rating-value">(4.8)</span>
-                    </div>
+                   
                     <br>
                     {% if user.is_authenticated %}
                         <form method="post" action="{% url 'hotel:bookmark_hotel' hotel.id %}">
@@ -49,6 +89,35 @@
             </div>
         </a>
     {% endfor %}
+</section>
+
+<!-- Customer Testimonials -->
+<section class="testimonials">
+    <div class="container">
+        <h2>What Our Guests Say</h2>
+        <div class="testimonial-cards">
+            <div class="testimonial">
+                <p>"Amazing experience! The hotel was cozy and the service was top-notch."</p>
+                <h5>- Sita R.</h5>
+            </div>
+            <div class="testimonial">
+                <p>"Loved the location and ease of booking. Will definitely use this again."</p>
+                <h5>- Ram K.</h5>
+            </div>
+            <div class="testimonial">
+                <p>"Customer support helped me when I had to change dates. Super helpful!"</p>
+                <h5>- Priya M.</h5>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final Call To Action -->
+<section class="cta-book">
+    <div class="container">
+        <h2>Ready for your next stay?</h2>
+        <a href="#hotel-listings" class="cta-btn">Find Hotels Near You →</a>
+    </div>
 </section>
 
 {% endblock content %}

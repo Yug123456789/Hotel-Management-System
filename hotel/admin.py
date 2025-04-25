@@ -1,7 +1,7 @@
 from django.contrib import admin
 from hotel.models import (
     Hotel, HotelGallery,  RoomType, Room, 
-    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking, Payment
+    Resturant, Booking, ActivityLog, StaffOnDuty, Coupon, ResturantBooking, Payment ,HotelReview
 )
 
 # Custom admin for Hotel
@@ -108,6 +108,15 @@ class PaymentAdmin(admin.ModelAdmin):
     
     class Media:
         js = ('scripts/custom_admin.js',)
+
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['hotel', 'user', 'rating', 'review', 'created_at']
+    
+    
+    class Media:
+        js = ('scripts/custom_admin.js',)
+
 # Register models with custom admin classes
 admin.site.register(Hotel, HotelAdmin)
 admin.site.register(RoomType, RoomTypeAdmin)
@@ -121,3 +130,4 @@ admin.site.register(StaffOnDuty, StaffOnDutyAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(ResturantBooking, ResturantBookingAdmin)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(HotelReview, ReviewAdmin)

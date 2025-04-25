@@ -266,3 +266,14 @@ class Payment(models.Model):
     
     def __str__(self):
         return f"Payment {self.id} - {self.status} - {self.booking.id}"
+    
+
+class HotelReview(models.Model):
+    hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()  # 1 to 5
+    review = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.hotel.name} - {self.rating} stars by {self.user.username}"

@@ -4,7 +4,7 @@ from django.contrib import messages
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
-from hotel.forms import HotelForm, RoomTypeForm, RoomForm, ResturantForm, CouponForm
+from hotel.forms import HotelForm, RoomTypeForm, RoomForm, ResturantForm, CouponForm, HotelReviewForm
 import uuid, hmac, hashlib
 from django.utils import timezone
 import requests, json
@@ -27,12 +27,36 @@ def index (request):
 
 
 def hotel_detail(request, slug):
-    hotel = Hotel.objects.get(status="Live", slug=slug)
-    context = {
-        "hotel": hotel,
-    }
-    return render(request, "hotel/hotel_detail.html", context)
+    hotel = get_object_or_404(Hotel, slug=slug)
+    reviews = hotel.reviews.all()
+    existing_review = None
 
+    if request.user.is_authenticated:
+        existing_review = reviews.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        if existing_review:
+            messages.warning(request, "You have already given your rating.")
+            return redirect('hotel:hotel_detail', slug=hotel.slug)
+        
+        form = HotelReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.hotel = hotel
+            review.user = request.user
+            review.save()
+            messages.success(request, "Your review has been submitted.")
+            return redirect('hotel:hotel_detail', slug=hotel.slug)
+    else:
+        form = HotelReviewForm()
+
+    context = {
+        'hotel': hotel,
+        'reviews': reviews,
+        'form': form,
+        'existing_review': existing_review,
+    }
+    return render(request, 'hotel/hotel_detail.html', context)
 
 def hotel_user_hotel_detail(request, slug):
     hotel = Hotel.objects.get(status="Live", slug=slug)
@@ -916,3 +940,4 @@ def update_room_status(request):
 #     Resturant.objects.exclude(id__in=unavailable_table_ids).update(is_available=True)
     
 #     return redirect('hotel:user_hotel')
+

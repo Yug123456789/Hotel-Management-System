@@ -22,13 +22,31 @@
         <div class="hotel-info">
             <h3>{{ hotel.name }}</h3>
             <p class="hotel-location">📍 {{ hotel.address }}</p>
-            <p class="hotel-contact">📞 {{ hotel.mobile }}</p>
-            <div class="rating">
-                ⭐⭐⭐⭐☆ <span class="review">3.0/1 Reviews</span>
-            </div>
-            <div class="share">
-                ❤️ <span>Share</span>
-            </div>
+            {% if user.is_authenticated %}
+            <h3>Leave a Review</h3>
+            {% if existing_review %}
+                <p class="already-reviewed">✅ You have already given your rating.</p>
+            {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Submit Review</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'userauthentication:sign-in' %}">Login</a> to leave a review.</p>
+        {% endif %}
+
+            <h3>Reviews</h3>
+            {% for review in reviews %}
+                <div class="review">
+                    <strong>{{ review.user.username }}</strong> rated ⭐ {{ review.rating }}
+                    <p>{{ review.review }}</p>
+                    <small>{{ review.created_at }}</small>
+                </div>
+            {% empty %}
+                <p>No reviews yet. Be the first!</p>
+            {% endfor %}
         </div>
       
         

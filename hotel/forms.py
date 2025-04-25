@@ -1,5 +1,5 @@
 from django import forms
-from hotel.models import Hotel, RoomType, Room, Resturant, Coupon
+from hotel.models import Hotel, RoomType, Room, Resturant, Coupon, HotelReview
 from django.utils import timezone
 
 class HotelForm(forms.ModelForm):
@@ -7,6 +7,14 @@ class HotelForm(forms.ModelForm):
         model = Hotel
         fields = ['name', 'image',  'address', 'mobile', 'email', 'status', 'tags', 'featured', 'hid']
 
+class HotelReviewForm(forms.ModelForm):
+    class Meta:
+        model = HotelReview
+        fields = ['rating', 'review']
+        widgets = {
+            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'review': forms.Textarea(attrs={'rows': 3}),
+        }
 
 class RoomTypeForm(forms.ModelForm):
     class Meta:
