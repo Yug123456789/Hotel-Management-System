@@ -1,0 +1,73 @@
+{% extends 'partials/hotel-user.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/hotelprofile.css' %}">
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>Hotel Profile Details</h2>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-photo-section">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'userdashboard:update_profile_image' %}">
+                {% csrf_token %}
+                <div class="profile-image-container">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-image">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="profile-image">
+                    {% endif %}
+                    <input type="file" name="profile_image" accept="image/*" required>
+                    <button type="submit" class="upload-btn">Upload Photo</button>
+                </div>
+            </form>
+            <div class="verification-badge">
+                {% if profile.verified %}
+                    <span class="badge verified">Verified</span>
+                {% else %}
+                    <span class="badge not-verified">Not Verified</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Hotel Owner Name</label>
+                    <p>{{ request.user.full_name }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>Email</label>
+                    <p>{{ request.user.email }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Phone</label>
+                    <p>{{ request.user.phone }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>State</label>
+                    <p>{{ profile.state|default:"Not specified" }}</p>
+                </div>
+                <div class="detail-group">
+                    <label>City</label>
+                    <p>{{ profile.city|default:"Not specified" }}</p>
+                </div>
+            </div>
+            
+            <div class="detail-row full-width">
+                <div class="detail-group">
+                    <label>Address</label>
+                    <p>{{ profile.address|default:"Not specified" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

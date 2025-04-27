@@ -7,18 +7,38 @@ The main motive of this page is only to display the header part of hoter user.  
 {% load static %}
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/topdestination.css' %}">
 <!-- Hero Section -->
 <section class="hero">
     <img src="{% static 'images/hero-background.jpeg' %}" alt="Beach View" class="hero-bg">
     <div class="hero-content">
-        
-        
+                
     </div>
 </section>
 
 <!-- Popular Tours Section -->
 <section class="popular-tours">
     <h2>Our Popular Tours</h2>
+</section>
+
+<section class="top-destinations">
+    <div class="container">
+        <h2>Top Destinations</h2>
+        <div class="destinations">
+            <div class="destination">
+                <img src="{% static 'images/Kathmandu.jpg' %}" alt="Kathmandu">
+                <h4>Kathmandu</h4>
+            </div>
+            <div class="destination">
+                <img src="{% static 'images/pokhara.jpg' %}" alt="Pokhara">
+                <h4>Pokhara</h4>
+            </div>
+            <div class="destination">
+                <img src="{% static 'images/lumbini.jpeg' %}" alt="Lumbini">
+                <h4>Lumbini</h4>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Hotel Listings -->

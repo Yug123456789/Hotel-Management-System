@@ -64,7 +64,7 @@
                     <span class="profile-circle">P</span>
                 </a>
             </li>
-            <a href="{% url 'hotel:restaurant_selected' %}" class=" dashboard-btn"><i class="fa fa-table"></i> <span class="resturant-count">{{request.session.selection_data_object|length}}</span></a>
+            <a href="{% url 'hotel:restaurant_selected' %}" class=" dashboard-btn"><i class="fa fa-table"></i> <span class="resturant-count">{{request.session.selection_data_objects|length}}</span></a>
                 <a href="{% url 'hotel:rooms_selected' %}" class=" dashboard-btn"><i class="fa fa-bed"></i> <span class="room-count">{{request.session.selection_data_object|length}}</span></a>
                 <a href="{% url 'userauthentication:sign-out' %}" class="signout-btn"><i class="fa fa-sign-out"></i> Logout </a>
             {% else %}

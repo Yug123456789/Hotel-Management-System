@@ -34,6 +34,18 @@ def update_profile_image(request):
 
     return redirect('userdashboard:profile')
 
+def hotel_profile(request):
+    if request.user.role != 'hotel':
+        messages.warning(request, "You are not authorized to access the hotel profile.")
+        return redirect('hotel:index')
+
+    profile = request.user.profile
+
+    context = {
+        'profile': profile
+    }
+
+    return render(request, "user_dashboard/hotel_profile.html", context)
 
 def coupon(request):
     current_time = timezone.now()

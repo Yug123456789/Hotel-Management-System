@@ -789,22 +789,36 @@ def user_hotel(request):
     }
     return render(request, 'user_hotel/hotel_user.html', context)
 
-# Displays the Room booking sectio of hotel user.
+# Displays the Room booking section of hotel user.
 def user_hotel_dashboard(request):
     hotel_id = request.GET.get('hotel_id')
-
     
-    bookings = Booking.objects.filter(user=request.user)
-
+    # If role of the user is hotel show their related room booking.
+    if request.user.role == 'hotel':
+        
+        user_hotels = Hotel.objects.filter(owner=request.user)  
+        
+        if user_hotels.exists():
+            if hotel_id:
+                bookings = Booking.objects.filter(hotel__id=hotel_id, hotel__in=user_hotels)
+            else:
+                bookings = Booking.objects.filter(hotel__in=user_hotels)
+        else:
+            bookings = Booking.objects.none()
+    else:
+        # For customer user, show their own bookings
+        bookings = Booking.objects.filter(user=request.user)
+        if hotel_id:
+            bookings = bookings.filter(hotel__id=hotel_id)
     
-    if hotel_id:
-        bookings = bookings.filter(hotel__id=hotel_id)
-
-    
-    hotels = Hotel.objects.filter(booking__user=request.user).distinct()
+    # Get list of hotels related to this user
+    if request.user.role == 'hotel':
+        hotels = Hotel.objects.filter(owner=request.user).distinct()
+    else:
+        hotels = Hotel.objects.filter(booking__user=request.user).distinct()
 
     context = {
-        'booking': bookings,
+        'bookings': bookings,  
         'selected_hotel_id': hotel_id,
         'hotels': hotels,  
     }
@@ -815,18 +829,32 @@ def user_hotel_dashboard(request):
 def user_hotel_restaurant_booking(request):
     hotel_id = request.GET.get('hotel_id')
     
-    # Get restaurant bookings for the logged-in user
-    booking = ResturantBooking.objects.filter(user=request.user)
-
-    # Filter by selected hotel 
-    if hotel_id:
-        booking = booking.filter(hotel__id=hotel_id)
-
-    # Get only hotels the user has restaurant bookings 
-    hotels = Hotel.objects.filter(resturantbooking__user=request.user).distinct()
+    # If role of the user is hotel show their related table booking.
+    if request.user.role == 'hotel':
+        
+        user_hotels = Hotel.objects.filter(owner=request.user)  
+        
+        if user_hotels.exists():
+            if hotel_id:
+                bookings = ResturantBooking.objects.filter(hotel__id=hotel_id, hotel__in=user_hotels)
+            else:
+                bookings = ResturantBooking.objects.filter(hotel__in=user_hotels)
+        else:
+            bookings = ResturantBooking.objects.none()
+            
+        # For hotel users, only show their managed hotels
+        hotels = user_hotels
+    else:
+        # For customer user, show their own bookings
+        bookings = ResturantBooking.objects.filter(user=request.user)
+        if hotel_id:
+            bookings = bookings.filter(hotel__id=hotel_id)
+            
+        # Get only hotels where the customer has restaurant bookings
+        hotels = Hotel.objects.filter(resturantbooking__user=request.user).distinct()
 
     context = {
-        'booking': booking,
+        'bookings': bookings,  
         'selected_hotel_id': hotel_id,
         'hotels': hotels,
     }

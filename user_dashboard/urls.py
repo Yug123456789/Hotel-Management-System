@@ -5,6 +5,7 @@ app_name = "userdashboard"
  
 urlpatterns = [
     path("profile", views.profile, name= "profile"),
+    path('hotel-profile/', views.hotel_profile, name='hotel_profile'),
     path('update-profile-image/', views.update_profile_image, name='update_profile_image'),
      path('coupon/', views.coupon, name='coupon'),
 ]

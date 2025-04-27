@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/roombookingdisplay.css' %}">
 
 <div class="container booking-container my-4">
-    <h2 class="booking-header">Your Bookings</h2>
+    <h2 class="booking-header">Your Room Bookings</h2>
     
     <div class="filter-section">
         <form method="get">
@@ -21,7 +21,7 @@
         </form>
     </div>
     
-    {% if booking %}
+    {% if bookings %}
         <div class="table-responsive">
             <table class="table bookings-table">
                 <thead>
@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for booking in booking %}
+                    {% for booking in bookings %}
                     <tr>
                         <td class="booking-id">{{ booking.booking_id }}</td>
                         <td class="hotel-name">{{ booking.hotel.name }}</td>

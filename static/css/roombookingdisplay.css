@@ -1,241 +1,295 @@
 /* Room Booking Display CSS */
 .booking-container {
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.booking-header {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #3498db;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.filter-label {
+  font-weight: 500;
+  color: #2c3e50;
+  margin-right: 10px;
+}
+
+.hotel-select {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background-color: #fff;
+  width: auto;
+  min-width: 200px;
+  transition: all 0.3s;
+}
+
+.hotel-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Table styling with improved spacing */
+.bookings-table {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.bookings-table thead {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.bookings-table th {
+  color: #fff;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  padding: 15px 10px;
+  vertical-align: middle;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bookings-table th:last-child {
+  border-right: none;
+}
+
+.bookings-table td {
+  padding: 15px 10px;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #f2f2f2;
+  word-break: break-word;
+}
+
+.bookings-table td:last-child {
+  border-right: none;
+}
+
+.bookings-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Column widths */
+.bookings-table .col-id {
+  width: 10%;
+}
+
+.bookings-table .col-hotel {
+  width: 10%;
+}
+
+.bookings-table .col-room {
+  width: 10%;
+}
+
+.bookings-table .col-payment {
+  width: 10%;
+}
+
+.bookings-table .col-total {
+  width: 8%;
+}
+
+.bookings-table .col-saved {
+  width: 8%;
+}
+
+.bookings-table .col-coupons {
+  width: 10%;
+}
+
+.bookings-table .col-checkin {
+  width: 12%;
+}
+
+.bookings-table .col-checkout {
+  width: 12%;
+}
+
+.bookings-table .col-actions {
+  width: 10%;
+}
+
+.booking-id {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.hotel-name {
+  font-weight: 500;
+  color: #3498db;
+}
+
+.room-type {
+  color: #7f8c8d;
+}
+
+.payment-pending {
+  color: #e74c3c;
+}
+
+.payment-complete {
+  color: #27ae60;
+}
+
+.price {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.saved-amount {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+.date-info {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.coupon-badge {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.checkout-btn {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 8px 15px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.checkout-btn:hover {
+  background: linear-gradient(135deg, #2980b9, #1a5276);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-decoration: none;
+}
+
+.no-bookings {
+  background-color: #fff;
+  border-left: 4px solid #3498db;
+  padding: 20px;
+  border-radius: 4px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 30px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-responsive {
+  max-height: 70vh; /* Adjust based on your needs */
+  overflow-y: auto;
+  position: relative;
+  border-radius: 8px;
+}
+
+/* Make the header sticky */
+.bookings-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Add a subtle shadow to the sticky header */
+.bookings-table thead::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 5px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), transparent);
+}
+
+/* Adjust the table layout to prevent misalignment */
+.bookings-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Ensure header cells have proper borders */
+.bookings-table th {
+  border-bottom: none;
+  position: relative;
+}
+
+/* Add border between header and body */
+.bookings-table tbody tr:first-child td {
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .table-responsive {
+    max-height: none;
+    overflow-x: auto;
   }
-  
-  .booking-header {
-    color: #2c3e50;
-    font-weight: 600;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #3498db;
-  }
-  
-  .filter-section {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  }
-  
-  .filter-label {
-    font-weight: 500;
-    color: #2c3e50;
-    margin-right: 10px;
-  }
-  
-  .hotel-select {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
-    background-color: #fff;
-    width: auto;
-    min-width: 200px;
-    transition: all 0.3s;
-  }
-  
-  .hotel-select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-  }
-  
-  /* Table styling with improved spacing */
-  .bookings-table {
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    table-layout: fixed;
-  }
-  
+
   .bookings-table thead {
-    background: linear-gradient(135deg, #3498db, #2980b9);
+    position: static; /* Disable sticky on mobile */
   }
-  
-  .bookings-table th {
-    color: #fff;
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    padding: 15px 10px;
-    vertical-align: middle;
-    text-align: left;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .bookings-table {
+    display: block;
+    overflow-x: auto;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    table-layout: auto;
   }
-  
-  .bookings-table th:last-child {
-    border-right: none;
+
+  .hotel-select {
+    width: 100%;
   }
-  
+
+  .bookings-table th,
   .bookings-table td {
-    padding: 15px 10px;
-    vertical-align: middle;
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #f2f2f2;
-    word-break: break-word;
+    min-width: 120px;
   }
-  
-  .bookings-table td:last-child {
-    border-right: none;
+}
+
+@media (max-width: 576px) {
+  .booking-container {
+    padding: 15px;
   }
-  
-  .bookings-table tbody tr:hover {
-    background-color: #f8f9fa;
-  }
-  
-  /* Column widths */
-  .bookings-table .col-id {
-    width: 10%;
-  }
-  
-  .bookings-table .col-hotel {
-    width: 10%;
-  }
-  
-  .bookings-table .col-room {
-    width: 10%;
-  }
-  
-  .bookings-table .col-payment {
-    width: 10%;
-  }
-  
-  .bookings-table .col-total {
-    width: 8%;
-  }
-  
-  .bookings-table .col-saved {
-    width: 8%;
-  }
-  
-  .bookings-table .col-coupons {
-    width: 10%;
-  }
-  
-  .bookings-table .col-checkin {
-    width: 12%;
-  }
-  
-  .bookings-table .col-checkout {
-    width: 12%;
-  }
-  
-  .bookings-table .col-actions {
-    width: 10%;
-  }
-  
-  .booking-id {
-    font-weight: 600;
-    color: #2c3e50;
-  }
-  
-  .hotel-name {
-    font-weight: 500;
-    color: #3498db;
-  }
-  
-  .room-type {
-    color: #7f8c8d;
-  }
-  
-  .payment-pending {
-    color: #e74c3c;
-  }
-  
-  .payment-complete {
-    color: #27ae60;
-  }
-  
-  .price {
-    font-weight: 600;
-    color: #2c3e50;
-  }
-  
-  .saved-amount {
-    color: #27ae60;
-    font-weight: 600;
-  }
-  
-  .date-info {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-  }
-  
-  .coupon-badge {
-    background-color: #3498db;
-    color: white;
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    margin-right: 5px;
-    display: inline-block;
-  }
-  
-  .checkout-btn {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    border: none;
-    border-radius: 5px;
-    color: white;
-    padding: 8px 15px;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.3s;
-    display: inline-block;
-    text-decoration: none;
-  }
-  
-  .checkout-btn:hover {
-    background: linear-gradient(135deg, #2980b9, #1a5276);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: white;
-    text-decoration: none;
-  }
-  
-  .no-bookings {
-    background-color: #fff;
-    border-left: 4px solid #3498db;
-    padding: 20px;
-    border-radius: 4px;
-    color: #2c3e50;
-    font-size: 1.1rem;
-    text-align: center;
-    margin: 30px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 992px) {
-    .bookings-table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-      table-layout: auto;
-    }
-    
-    .hotel-select {
-      width: 100%;
-    }
-    
-    .bookings-table th,
-    .bookings-table td {
-      min-width: 120px;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .booking-container {
-      padding: 15px;
-    }
-  }
+}

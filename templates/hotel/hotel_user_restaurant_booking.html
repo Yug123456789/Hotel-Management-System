@@ -21,7 +21,7 @@
         </form>
     </div>
 
-    {% if booking %}
+    {% if bookings %}
         <div class="table-responsive">
             <table class="table bookings-table">
                 <thead>
@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for b in booking %}
+                    {% for b in bookings %}
                     <tr>
                         <td class="booking-id">{{ b.rbooking_id }}</td>
                         <td class="hotel-name">{{ b.hotel.name }}</td>

@@ -120,7 +120,7 @@ $(document).ready(function () {
       success: function (response) {
         console.log(response);
         button.html("Booked");
-        $(".selection-count").text(response.total_selected_items);
+        $(".resturant-count").text(response.total_selected_items);
       },
       error: function (xhr, status, error) {
         console.error("Error selecting restaurant:", error);
