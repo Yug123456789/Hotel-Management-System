@@ -517,6 +517,11 @@ def add_hotels(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding hotel.")
         return redirect("userauthentication:hotel-sign-in")  
+    
+    #Checking if the role of the user is hotel because only the hotwl user can add hotel.  
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can add hotels.")
+        return redirect("hotel:index")
         
     if request.method == 'POST':
         form = HotelForm(request.POST, request.FILES)
@@ -529,17 +534,30 @@ def add_hotels(request):
         form = HotelForm()
     return render(request, 'hotel/add_hotel.html', {'form': form})
 
-
 def edit_hotel_list(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before editing hotel.")
-        return redirect("userauthentication:hotel-sign-in")  
+        return redirect("userauthentication:hotel-sign-in")
     
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can edit hotels.")
+        return redirect("hotel:index")
+        
     user_hotels = Hotel.objects.filter(owner=request.user)
     return render(request, 'hotel/edit_hotel_list.html', {'hotels': user_hotels})
 
 
 def edit_hotel(request, hotel_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in before editing hotel.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can edit hotels.")
+        return redirect("hotel:index")
+    
     hotel = get_object_or_404(Hotel, id=hotel_id, owner=request.user)
 
     if request.method == 'POST':
@@ -553,11 +571,36 @@ def edit_hotel(request, hotel_id):
 
     return render(request, 'hotel/edit_hotel.html', {'form': form})
 
+def delete_hotel(request, hotel_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in before deleting a hotel.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can delete hotels.")
+        return redirect("hotel:index")
+        
+    hotel = get_object_or_404(Hotel, id=hotel_id, owner=request.user)
+    
+    if request.method == 'POST':
+        # Delete the hotel
+        hotel.delete()
+        messages.success(request, "Hotel deleted successfully.")
+        return redirect('hotel:edit_hotel_list')
+        
+    return render(request, 'hotel/delete_hotel_confirm.html', {'hotel': hotel})
+
 
 def add_room_types(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding room types.")
         return redirect("userauthentication:hotel-sign-in")
+
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can add room types.")
+        return redirect("hotel:index")
 
     if request.method == 'POST':
         form = RoomTypeForm(request.POST)
@@ -579,6 +622,7 @@ def add_room_types(request):
                     return redirect('unauthorized')
 
             room_type.save()
+            messages.success(request, "Room type added successfully!")
             return redirect("hotel:user_hotel")
     else:
         form = RoomTypeForm()
@@ -594,13 +638,31 @@ def add_room_types(request):
     return render(request, 'hotel/add_room_type.html', {'form': form})
 
 
-
 def user_room_types(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in to view room types.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can view room types.")
+        return redirect("hotel:index")
+        
     # Fetch all room types where the hotel belongs to the current user
     room_types = RoomType.objects.filter(hotel__owner=request.user)
     return render(request, 'hotel/user_room_types.html', {'room_types': room_types})
 
+
 def edit_room_type(request, room_type_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in before editing room types.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can edit room types.")
+        return redirect("hotel:index")
+    
     room_type = get_object_or_404(RoomType, id=room_type_id, hotel__owner=request.user)
 
     if request.method == 'POST':
@@ -621,6 +683,11 @@ def add_rooms(request):
         messages.warning(request, "You have to log in before adding rooms.")
         return redirect("userauthentication:hotel-sign-in")
 
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can add rooms.")
+        return redirect("hotel:index")
+
     if request.method == 'POST':  # If form is submitted (If the request method is post method)
         form = RoomForm(request.POST, user=request.user)  # Pass the user to the form
 
@@ -635,7 +702,7 @@ def add_rooms(request):
             form.fields['room_type'].initial = room_types.first()  #  This auto-selects room type if only one exists
 
         if form.is_valid():  # If all form data is valid
-            room = form.save(commit=False)  # Create room object but don’t save to DB yet
+            room = form.save(commit=False)  # Create room object but don't save to DB yet
 
             if not request.user.is_superuser:  # Extra check: if not admin
                 hotel = form.cleaned_data['hotel']  # Get selected hotel
@@ -643,6 +710,7 @@ def add_rooms(request):
                     return redirect('unauthorized')
 
             room.save()  # Save the room to Database
+            messages.success(request, "Room added successfully!")
             return redirect("hotel:user_hotel")  # Redirect the user to user_hotel page after saving
 
     else:  
@@ -661,16 +729,29 @@ def add_rooms(request):
     return render(request, 'hotel/add_room.html', {'form': form})  # Show the form on the page
 
 
-
-
 def user_rooms(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You must log in to view rooms.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can view rooms.")
+        return redirect("hotel:index")
+    
     rooms = Room.objects.filter(hotel__owner=request.user)
     return render(request, 'hotel/user_rooms.html', {'rooms': rooms})
+
 
 def edit_room(request, pk):
     if not request.user.is_authenticated:
         messages.warning(request, "You must log in first.")
         return redirect("userauthentication:hotel-sign-in")
+
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can edit rooms.")
+        return redirect("hotel:index")
 
     room = get_object_or_404(Room, pk=pk)
 
@@ -682,6 +763,7 @@ def edit_room(request, pk):
         form = RoomForm(request.POST, instance=room)
         if form.is_valid():
             form.save()
+            messages.success(request, "Room updated successfully.")
             return redirect("hotel:user_hotel")
     else:
         form = RoomForm(instance=room)
@@ -694,6 +776,11 @@ def add_restaurants(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding restaurant.")
         return redirect("userauthentication:hotel-sign-in")
+    
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can add restaurants.")
+        return redirect("hotel:index")
             
     if request.method == 'POST':
         form = ResturantForm(request.POST, request.FILES)
@@ -729,10 +816,25 @@ def user_restaurants(request):
         messages.warning(request, "You must log in to view your restaurant tables.")
         return redirect("userauthentication:hotel-sign-in")
 
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can view restaurant tables.")
+        return redirect("hotel:index")
+
     restaurants = Resturant.objects.filter(hotel__owner=request.user)
     return render(request, 'hotel/user_restaurants.html', {'restaurants': restaurants})
 
+
 def edit_restaurant(request, pk):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You must log in first.")
+        return redirect("userauthentication:hotel-sign-in")
+        
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can edit restaurant tables.")
+        return redirect("hotel:index")
+    
     restaurant = get_object_or_404(Resturant, pk=pk)
 
     if restaurant.hotel.owner != request.user:
@@ -750,10 +852,16 @@ def edit_restaurant(request, pk):
 
     return render(request, 'hotel/edit_restaurant.html', {'form': form})
 
+
 def add_coupons(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in before adding a coupon.")
         return redirect("userauthentication:hotel-sign-in")
+
+    # Check if user has the 'hotel' role
+    if request.user.role != 'hotel':
+        messages.warning(request, "Only hotel users can add coupons.")
+        return redirect("hotel:index")
 
     if request.method == 'POST':
         form = CouponForm(request.POST, user=request.user)  
@@ -778,7 +886,6 @@ def add_coupons(request):
             form.fields['hotel'].initial = hotels.first()  # Select the first hotel if there's only one
 
     return render(request, 'hotel/add_coupon.html', {'form': form})
-
 
 
 
@@ -878,17 +985,50 @@ def user_customer_room_booking(request):
     }
     return render(request, 'hotel/customer_room_booking.html', context)
 
+def cancel_booking(request, booking_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in first.")
+        return redirect('userauthentication:sign-in')
+    
+    try:
+        booking = Booking.objects.get(id=booking_id, user=request.user)
+        booking_id = booking.booking_id  # Save for message
+        booking.delete()
+        messages.success(request, f"Booking #{booking_id} has been successfully cancelled.")
+    except Booking.DoesNotExist:
+        messages.error(request, "Booking not found or you don't have permission to cancel it.")
+    
+    return redirect('hotel:customer_user_room_booking')
+
 def user_customer_table_booking(request):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in first.")
         return redirect('userauthentication:sign-in')
 
     bookings = ResturantBooking.objects.filter(user=request.user).order_by('-check_in_date')
+    import datetime
+    today = datetime.date.today()
 
     context = {
-        'table_bookings': bookings
+        'table_bookings': bookings,
+        'today': today,
     }
     return render(request, 'hotel/customer_table_booking.html', context)
+
+def cancel_table_booking(request, booking_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in first.")
+        return redirect('userauthentication:sign-in')
+    
+    try:
+        booking = ResturantBooking.objects.get(id=booking_id, user=request.user)
+        booking_id = booking.rbooking_id  # Save for message
+        booking.delete()
+        messages.success(request, f"Table booking #{booking_id} has been successfully cancelled.")
+    except ResturantBooking.DoesNotExist:
+        messages.error(request, "Booking not found or you don't have permission to cancel it.")
+    
+    return redirect('hotel:customer_user_table_booking')
 
 def bookmark_hotel(request, hotel_id):
     hotel = get_object_or_404(Hotel, id=hotel_id)

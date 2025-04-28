@@ -24,6 +24,7 @@
                 <td>{{ hotel.address }}</td>
                 <td>{{ hotel.status }}</td>
                 <td><a href="{% url 'hotel:edit_hotel' hotel.id %}" class="edit-btn">Edit</a></td>
+                <a href="{% url 'hotel:delete_hotel' hotel.id %}" class="delete-btn">Delete Hotel</a>
             </tr>
             {% empty %}
             <tr>

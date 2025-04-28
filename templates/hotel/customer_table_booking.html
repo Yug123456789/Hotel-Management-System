@@ -1,55 +1,57 @@
-{% extends 'partials/base.html' %}
-{% load static %}
-{% block content %}
-
-<link rel="stylesheet" href="{% static 'css/customerusertablebooking.css' %}">
-<br>
-<div class="container mt-5">
-  <h2 class="page-title">My Table Bookings</h2>
-
-  {% if table_bookings %}
-    <div class="booking-list">
-      {% for booking in table_bookings %}
-        <div class="booking-item">
-          <div class="hotel-info">
-            <h2>{{ booking.hotel.name }}</h2>
-          </div>
-          
-          <div class="booking-details">
-            <div class="detail-row">
-              <span><b>Table Number(s): </b>{{ booking.table_numbers }}</span>
+{% extends 'partials/base.html' %} 
+{% load static %} 
+{% block content %}  
+<link rel="stylesheet" href="{% static 'css/customerusertablebooking.css' %}"> 
+<br> 
+<div class="container mt-5">   
+  <h2 class="page-title">My Table Bookings</h2>    
+  {% if table_bookings %}     
+    <div class="booking-list">       
+      {% for booking in table_bookings %}         
+        <div class="booking-item">           
+          <div class="hotel-info">             
+            <h2>{{ booking.hotel.name }}</h2>           
+          </div>                      
+          <div class="booking-details">             
+            <div class="detail-row">               
+              <span><b>Table Number(s): </b>{{ booking.table_numbers }}</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Date: </b>{{ booking.check_in_date|date:"M d, Y" }}</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Check-in Time: </b>{{ booking.check_in_time }}</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Check-out Time: </b>{{ booking.check_out_time }}</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Duration: </b>{{ booking.total_time }} hour(s)</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Full Name: </b>{{ booking.full_name }}</span>               
+              <span><b>Phone: </b>{{ booking.phone }}</span>               
+              <span><b>Email: </b>{{ booking.email }}</span>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Booking ID: </b>{{ booking.rbooking_id }}</span>             
             </div>
-            <div class="detail-row">
-              <span><b>Date: </b>{{ booking.check_in_date|date:"M d, Y" }}</span>
-            </div>
-            <div class="detail-row">
-              <span><b>Check-in Time: </b>{{ booking.check_in_time }}</span>
-            </div>
-            <div class="detail-row">
-              <span><b>Check-out Time: </b>{{ booking.check_out_time }}</span>
-            </div>
-            <div class="detail-row">
-              <span><b>Duration: </b>{{ booking.total_time }} hour(s)</span>
-            </div>
-            <div class="detail-row">
-              <span><b>Full Name: </b>{{ booking.full_name }}</span>
-              <span><b>Phone: </b>{{ booking.phone }}</span>
-              <span><b>Email: </b>{{ booking.email }}</span>
-            </div>
-            <div class="detail-row">
-              <span><b>Booking ID: </b>{{ booking.rbooking_id }}</span>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="no-bookings">
-      <h3>No table bookings yet</h3>
-      <p>Your upcoming restaurant reservations will appear here</p>
-      <a href="{% url 'hotel:index' %}" class="btn-browse">Browse Restaurants</a>
-    </div>
-  {% endif %}
-</div>
-
+            <!-- Add cancellation button with condition -->
+            {% if booking.check_in_date|date:"Y-m-d" >= today|date:"Y-m-d" %}
+              <div class="booking-actions">
+                <a href="{% url 'hotel:cancel_table_booking' booking.id %}" class="btn-cancel" onclick="return confirm('Are you sure you want to cancel this table reservation?');">Cancel Reservation</a>
+              </div>
+            {% endif %}
+          </div>         
+        </div>       
+      {% endfor %}     
+    </div>   
+  {% else %}     
+    <div class="no-bookings">       
+      <h3>No table bookings yet</h3>       
+      <p>Your upcoming restaurant reservations will appear here</p>       
+      <a href="{% url 'hotel:index' %}" class="btn-browse">Browse Restaurants</a>     
+    </div>   
+  {% endif %} 
+</div>  
 {% endblock content %}

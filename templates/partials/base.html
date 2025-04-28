@@ -68,13 +68,13 @@
                 <a href="{% url 'hotel:rooms_selected' %}" class=" dashboard-btn"><i class="fa fa-bed"></i> <span class="room-count">{{request.session.selection_data_object|length}}</span></a>
                 <a href="{% url 'userauthentication:sign-out' %}" class="signout-btn"><i class="fa fa-sign-out"></i> Logout </a>
             {% else %}
-                <a href="#" onclick="showCouponMessage(this)" class="dashboard-btn" data-signup-url="{% url 'userauthentication:sign-up' %}">Claim Coupon</a>
+                <!-- <a href="#" onclick="showCouponMessage(this)" class="dashboard-btn" data-signup-url="{% url 'userauthentication:sign-up' %}">Claim Coupon</a> -->
                 <a href="{% url 'userauthentication:choose-sign-in' %}" class="dashboard-btn"> Login</a>
                 
                 {% if is_hotel %}
                     <a href="{% url 'userauthentication:hotel-sign-up' %}" class="signout-btn"> Register </a>
                 {% else %}
-                    <a href="{% url 'userauthentication:sign-up' %}" class="signout-btn"> Register </a>
+                    <a href="{% url 'userauthentication:choose-sign-in' %}" class="signout-btn"> Register </a>
                 {% endif %}
             {% endif %}
         </div>

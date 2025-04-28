@@ -103,7 +103,38 @@
             <button>📧 {{ hotel.email }}</button>
         </div>
 
-        
+        <!-- Available Room Types Table -->
+        <div class="available-room-types">
+            <h3>Available Room Types</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Price</th>
+                        <th>Available Rooms</th>
+                        <th>Number of Beds</th>
+                        <th>Room Capacity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for roomtype in hotel.hotel_room_types.all %}
+                        <tr>
+                            <td>{{ roomtype.type }}</td>
+                            <td>Rs {{ roomtype.price }}</td>
+                            <td>{{ roomtype.rooms_count }}</td>
+                            <td>{{ roomtype.number_of_beds }}</td>
+                            <td>{{ roomtype.room_capacity }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No room types available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+   
 
         <!-- Amenities Section -->
         <div class="amenities-section">

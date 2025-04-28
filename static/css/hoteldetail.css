@@ -293,6 +293,29 @@ form[method="post"] button[type="submit"] {
   transform: translateX(5px);
 }
 
+.available-room-types table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.available-room-types th,
+.available-room-types td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.available-room-types th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.available-room-types h3 {
+  margin-top: 30px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .hotel-details-container {

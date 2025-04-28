@@ -1,0 +1,129 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.calendar_bg_cover {
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	cursor:pointer;
+}
+
+.calendar_picker {
+	position:absolute;
+	background:#fff;
+	width:275px;
+	
+	-moz-box-shadow: 0 0 5px #777;
+	-webkit-box-shadow: 0 0 5px #777;
+	box-shadow: 0 0 5px #777;
+}
+
+.calendar_picker input#calendar_type_text {
+	margin:0;
+	padding:0.5em 2.5%;
+	background:#F5F4F0;
+	color:#313131;
+	border:1px #E3E2D7 solid;
+	outline:0;
+	display:block;
+	width:95%;
+	
+	font-size:1.1em;
+}
+	.calendar_picker input#calendar_type_text.placeholder {
+		background:url(/images/calendar_type_text_reg.png) 7px center no-repeat #F5F4F0;
+	}
+
+.calendar_picker .inner_content {
+	border:1px #D2D2D2 solid;
+	border-top:none;
+	width:95%;
+	padding:1.5em 2.5%;
+
+}
+
+.calendar_picker .calendar_month_chooser {
+	text-align:center;
+}
+	.calendar_picker .calendar_month_chooser .back_year {
+		color:#9b9b9b;
+		border:none;
+		width:15px;
+		cursor:pointer;
+		margin-right:3px;
+	}
+	
+	.calendar_picker .calendar_month_chooser .back_month {
+		color:#cfcfcf;
+		border:none;
+		width:15px;
+		cursor:pointer;
+	}
+	
+	.calendar_picker .calendar_month_chooser .forward_month {
+		color:#cfcfcf;
+		border:none;
+		width:15px;
+		cursor:pointer;
+	}
+	
+	.calendar_picker .calendar_month_chooser .forward_year {
+		color:#9b9b9b;
+		border:none;
+		width:15px;
+		cursor:pointer;
+		margin-left:3px;
+	}
+
+	.calendar_picker .calendar_month_chooser span {
+		width:10em;
+		display:inline-block;
+	}
+
+.calendar_picker .calendar_table {
+	border-collapse:collapse;
+}
+
+.calendar_picker .calendar_table td {
+	width:2em;
+	height:2em;
+	text-align:center;
+	vertical-align:middle;
+	
+	border:1px #D2D2D2 solid;
+}
+	.calendar_picker .calendar_table td.disable {
+		background:#d2d2d2 !IMPORTANT;
+		color:#313131 !IMPORTANT;
+		cursor:pointer !IMPORTANT;
+	}
+
+	.calendar_picker .calendar_table td.day_names { border:none; }
+	.calendar_picker .calendar_table td.other_month { color:#B5B5B5; }
+	
+	.calendar_picker .calendar_table td:hover,
+	.calendar_picker .calendar_table td.highlight {
+		color:#fff;
+		background:#62BDD5;
+		cursor:pointer;
+	}
+		.calendar_picker .calendar_table td.no_hover {
+			color:#313131 !IMPORTANT;
+			background:#fff !IMPORTANT;
+			cursor:default !IMPORTANT;
+		}
+		
+	.calendar_picker .calendar_table td.today {
+		background:#DED0C0;
+	}
+	
+.calendar_picker .clear_date {
+	position:relative;
+	margin:-1em auto 0.5em auto;
+}
+
+	.calendar_picker .clear_date a { font-size:0.8em; cursor:pointer; color:#898989; }
+	.calendar_picker .clear_date a:hover { color:#000; text-decoration:underline; }
+		

@@ -97,6 +97,32 @@
   background: #34495e;
 }
 
+.booking-actions {
+  margin-top: 15px;
+  text-align: right;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-cancel:hover {
+  background-color: #c82333;
+  text-decoration: none;
+  color: white;
+}
+
+.booking-item {
+  position: relative;
+  /* Add any other existing styles */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .booking-details {

@@ -1,70 +1,66 @@
-{% extends 'partials/base.html' %}
-{% load static %}
-{% block content %}
 
-<link rel="stylesheet" href="{% static 'css/customeruseroombooking.css' %}">
-<br>
-<div class="container mt-5">
-  <h2 class="page-title">My Room Bookings</h2>
-
-  {% if booking %}
-    <div class="booking-list">
-      {% for book in booking %}
-        <div class="booking-item {% if book.checked_out %}checked-out{% elif book.checked_in %}checked-in{% else %}upcoming{% endif %}">
-          <div class="hotel-info">
-            <h2>{{ book.hotel.name }}</h2>
-            
-          </div>
-          
-          <div class="booking-details">
-            <div class="detail-row">
-              <span><b>Room Type: {{ book.room_type }}</b></span>
-              
+{% extends 'partials/base.html' %} 
+{% load static %} 
+{% block content %}  
+<link rel="stylesheet" href="{% static 'css/customeruseroombooking.css' %}"> 
+<br> 
+<div class="container mt-5">   
+  <h2 class="page-title">My Room Bookings</h2>    
+  {% if booking %}     
+    <div class="booking-list">       
+      {% for book in booking %}         
+        <div class="booking-item {% if book.checked_out %}checked-out{% elif book.checked_in %}checked-in{% else %}upcoming{% endif %}">           
+          <div class="hotel-info">             
+            <h2>{{ book.hotel.name }}</h2>                        
+          </div>                      
+          <div class="booking-details">             
+            <div class="detail-row">               
+              <span><b>Room Type: {{ book.room_type }}</b></span>                            
+            </div>             
+            <div class="detail-row">               
+              <span><b>Room Number: {{book.room_number}}</b></span>               
+              <strong>                 
+                {% for room in book.room.all %}                   
+                  {{ room.room_number }}{% if not forloop.last %}, {% endif %}                 
+                {% endfor %}               
+              </strong>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Dates:</b></span>               
+              <strong><b>{{ book.check_in_date|date:"M d, Y" }} - {{ book.check_out_date|date:"M d, Y" }}</b></strong>             
+            </div>             
+            <div class="detail-row">               
+              <span><b>Duration: </b></span>               
+              <strong><b>{{ book.total_days }} night(s)</b></strong>             
+            </div>           
+          </div>                      
+          <div class="booking-summary">             
+            <div class="total-amount">               
+              <span><b><strong>Total Amount: Rs.{{ book.total }}</strong></b></span>                            
+            </div>             
+            <div class="booking-meta">               
+              <div class="booking-id">                 
+                <span><b><stong>Booking ID: {{ book.booking_id }}</stong></b></span>                                
+              </div>               
+              <div class="payment-status {{ book.payment_status|lower }}">                 
+                {{ book.payment_status }}               
+              </div>             
             </div>
-            <div class="detail-row">
-              <span><b>Room Number: {{book.room_number}}</b></span>
-              <strong>
-                {% for room in book.room.all %}
-                  {{ room.room_number }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </strong>
-            </div>
-            <div class="detail-row">
-              <span><b>Dates:</b></span>
-              <strong><b>{{ book.check_in_date|date:"M d, Y" }} - {{ book.check_out_date|date:"M d, Y" }}</b></strong>
-            </div>
-            <div class="detail-row">
-              <span><b>Duration: </b></span>
-              <strong><b>{{ book.total_days }} night(s)</b></strong>
-            </div>
-          </div>
-          
-          <div class="booking-summary">
-            <div class="total-amount">
-              <span><b><strong>Total Amount: Rs.{{ book.total }}</strong></b></span>
-              
-            </div>
-            <div class="booking-meta">
-              <div class="booking-id">
-                <span><b><stong>Booking ID: {{ book.booking_id }}</stong></b></span>
-                
+            {% if not book.checked_in and not book.checked_out %}
+              <div class="booking-actions">
+                <a href="{% url 'hotel:cancel_booking' book.id %}" class="btn-cancel" onclick="return confirm('Are you sure you want to cancel this booking?');">Cancel Booking</a>
               </div>
-              <div class="payment-status {{ book.payment_status|lower }}">
-                {{ book.payment_status }}
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="no-bookings">
-      
-      <h3>No bookings yet</h3>
-      <p>Your upcoming room reservations will appear here</p>
-      <a href="{% url 'hotel:index' %}" class="btn-browse">Browse Available Rooms</a>
-    </div>
-  {% endif %}
-</div>
-
+            {% endif %}
+          </div>         
+        </div>       
+      {% endfor %}     
+    </div>   
+  {% else %}     
+    <div class="no-bookings">              
+      <h3>No bookings yet</h3>       
+      <p>Your upcoming room reservations will appear here</p>       
+      <a href="{% url 'hotel:index' %}" class="btn-browse">Browse Available Rooms</a>     
+    </div>   
+  {% endif %} 
+</div>  
 {% endblock content %}
