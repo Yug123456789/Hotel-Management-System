@@ -1,5 +1,6 @@
 {% extends 'partials/base.html' %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
@@ -7,7 +8,7 @@
     <div class="profile-header">
         <h2>Profile Details</h2>
     </div>
-    
+        
     <div class="profile-card">
         <div class="profile-photo-section">
             <form method="POST" enctype="multipart/form-data" action="{% url 'userdashboard:update_profile_image' %}">
@@ -18,6 +19,17 @@
                     <button type="submit" class="upload-btn">Upload Photo</button>
                 </div>
             </form>
+            
+            <!-- Delete Image Form -->
+            {% if profile.image and profile.image.name != 'default.jpg' %}
+            <form method="POST" action="{% url 'userdashboard:delete_profile_image' %}" style="margin-top: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete your profile image?')">
+                    Delete Photo
+                </button>
+            </form>
+            {% endif %}
+            
             <div class="verification-badge">
                 {% if profile.verified %}
                     <span class="badge verified">Verified</span>
@@ -25,8 +37,11 @@
                     <span class="badge not-verified">Not Verified</span>
                 {% endif %}
             </div>
+            <div class="profile-actions">
+                <a href="{% url 'userdashboard:change_password' %}" class="btn btn-primary">Change Password</a>
+            </div>
         </div>
-        
+                
         <div class="profile-details">
             <div class="detail-row">
                 <div class="detail-group">
@@ -38,16 +53,15 @@
                     <p>{{ profile.user.email }}</p>
                 </div>
             </div>
-            
+                        
             <div class="detail-row">
                 <div class="detail-group">
                     <label>Mobile</label>
                     <p>{{ profile.phone }}</p>
                 </div>
-              
-              
+                                        
             </div>
-            
+                        
             <div class="detail-row">
                 <div class="detail-group">
                     <label>State</label>
@@ -58,16 +72,33 @@
                     <p>{{ profile.city }}</p>
                 </div>
             </div>
-            
+                        
             <div class="detail-row full-width">
                 <div class="detail-group">
                     <label>Address</label>
                     <p>{{ profile.address }}</p>
                 </div>
             </div>
-            
-         
+                            
         </div>
     </div>
 </div>
+
+<style>
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+</style>
+
 {% endblock content %}

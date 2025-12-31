@@ -1,21 +1,224 @@
-<!-- Listing out the room types before editing it.-->
-
 {% extends 'partials/hotel-user.html' %}
 {% load static %}
 
 {% block content %}
-<h2>Your Room Types</h2>
+<div class="room-types-container">
+    <div class="room-types-header">
+        <h2>Your Room Types</h2>
+        <a href="{% url 'hotel:add_room_type' %}" class="add-room-type-btn">
+            <i class="fas fa-plus"></i> Add Room Type
+        </a>
+    </div>
 
-{% if room_types %}
-    <ul>
-        {% for room_type in room_types %}
-            <li>
-                {{ room_type.type }} | {{ room_type.hotel.name }}
-                <a href="{% url 'hotel:edit_room_type' room_type.id %}">Edit</a>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No room types found.</p>
-{% endif %}
+    <div class="room-types-list-container">
+        {% if room_types %}
+            <div class="room-types-grid">
+                {% for room_type in room_types %}
+                <div class="room-type-card">
+                    <div class="room-type-info">
+                        <h3>{{ room_type.type }}</h3>
+                        <p class="hotel-name">{{ room_type.hotel.name }}</p>
+                        {% if room_type.description %}
+                        <p class="room-type-description">{{ room_type.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="room-type-actions">
+                        <a href="{% url 'hotel:edit_room_type' room_type.id %}" class="edit-btn">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-door-open"></i>
+                <p>No room types found</p>
+                <a href="{% url 'hotel:add_room_type' %}" class="add-room-type-btn">
+                    <i class="fas fa-plus"></i> Create Your First Room Type
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Main container styling */
+    .room-types-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Header styling */
+    .room-types-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .room-types-header h2 {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    /* Add room type button */
+    .add-room-type-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #4299e1;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .add-room-type-btn:hover {
+        background-color: #3182ce;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(66, 153, 225, 0.2);
+    }
+
+    .add-room-type-btn i {
+        margin-right: 8px;
+    }
+
+    /* Room types grid */
+    .room-types-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    /* Room type card */
+    .room-type-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e2e8f0;
+    }
+
+    .room-type-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .room-type-info {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .room-type-info h3 {
+        color: #2d3748;
+        margin: 0 0 10px 0;
+        font-size: 18px;
+    }
+
+    .hotel-name {
+        color: #4a5568;
+        font-size: 14px;
+        margin: 0 0 15px 0;
+        font-weight: 500;
+    }
+
+    .room-type-description {
+        color: #718096;
+        font-size: 14px;
+        margin: 10px 0 0 0;
+        line-height: 1.5;
+    }
+
+    /* Actions */
+    .room-type-actions {
+        padding: 15px 20px;
+        background-color: #f8fafc;
+        border-top: 1px solid #edf2f7;
+        text-align: right;
+    }
+
+    .edit-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background-color: #edf2f7;
+        color: #4a5568;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn:hover {
+        background-color: #e2e8f0;
+        color: #2d3748;
+    }
+
+    .edit-btn i {
+        margin-right: 6px;
+        font-size: 13px;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        border: 1px dashed #cbd5e0;
+    }
+
+    .empty-state i {
+        font-size: 40px;
+        color: #cbd5e0;
+        margin-bottom: 20px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    /* Responsive styling */
+    @media (max-width: 768px) {
+        .room-types-container {
+            padding: 20px;
+            margin: 15px;
+        }
+        
+        .room-types-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .room-types-header h2 {
+            margin-bottom: 15px;
+        }
+        
+        .room-types-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .room-types-header h2 {
+            font-size: 24px;
+        }
+    }
+</style>
 {% endblock %}

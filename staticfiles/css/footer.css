@@ -1,0 +1,58 @@
+/* General Footer Styling */
+.footer {
+  background-color: #f4f7fc;
+  padding: 40px 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Footer Columns */
+.footer-column {
+  flex: 1;
+  min-width: 220px;
+  margin-bottom: 20px;
+}
+
+/* Section Headings */
+.footer-column h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Footer Links */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+  text-decoration: none;
+  color: #0073e6;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #005bb5;
+  text-decoration: underline;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #666;
+}

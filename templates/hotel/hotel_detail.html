@@ -40,7 +40,7 @@
             <h3>Reviews</h3>
             {% for review in reviews %}
                 <div class="review">
-                    <strong>{{ review.user.username }}</strong> rated ⭐ {{ review.rating }}
+                    <strong>{{ review.user.username }}</strong> Rated: {{ review.rating }} ⭐ 
                     <p>{{ review.review }}</p>
                     <small>{{ review.created_at }}</small>
                 </div>
@@ -111,7 +111,7 @@
                     <tr>
                         <th>Room Type</th>
                         <th>Price</th>
-                        <th>Available Rooms</th>
+                        <!-- <th>Available Rooms</th> -->
                         <th>Number of Beds</th>
                         <th>Room Capacity</th>
                     </tr>
@@ -121,7 +121,7 @@
                         <tr>
                             <td>{{ roomtype.type }}</td>
                             <td>Rs {{ roomtype.price }}</td>
-                            <td>{{ roomtype.rooms_count }}</td>
+                            <!-- <td>{{ roomtype.rooms_count }}</td> -->
                             <td>{{ roomtype.number_of_beds }}</td>
                             <td>{{ roomtype.room_capacity }}</td>
                         </tr>

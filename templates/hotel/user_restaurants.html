@@ -1,35 +1,297 @@
-<!-- Listing out the restaurants before editing it.-->
-
 {% extends 'partials/hotel-user.html' %}
 {% load static %}
 
 {% block content %}
-<h2>Your Restaurant Tables</h2>
+<div class="restaurant-container">
+    <div class="restaurant-header">
+        <h2>Your Restaurant Tables</h2>
+        <!-- <a href="{% url 'hotel:add_restaurant' %}" class="add-btn">
+            <i class="fas fa-plus"></i> Add Table
+        </a> -->
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Table Number</th>
-            <th>Seats</th>
-            <th>Capacity</th>
-            <th>Available</th>
-            <th>Hotel</th>
-            <th>Edit</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for rest in restaurants %}
-        <tr>
-            <td>{{ rest.table_number }}</td>
-            <td>{{ rest.number_of_seats }}</td>
-            <td>{{ rest.table_capacity }}</td>
-            <td>{{ rest.is_available }}</td>
-            <td>{{ rest.hotel.name }}</td>
-            <td>
-                <a href="{% url 'hotel:edit_restaurant' rest.id %}">Edit</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="restaurant-table-container">
+        <table class="restaurant-table">
+            <thead>
+                <tr>
+                    <th>Table Number</th>
+                    <th>Seats</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Hotel</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rest in restaurants %}
+                <tr>
+                    <td data-label="Table Number">
+                        <span class="table-number">{{ rest.table_number }}</span>
+                    </td>
+                    <td data-label="Seats">{{ rest.number_of_seats }}</td>
+                    <td data-label="Capacity">{{ rest.table_capacity }}</td>
+                    <td data-label="Status">
+                        <span class="status-badge {% if rest.is_available %}available{% else %}unavailable{% endif %}">
+                            {% if rest.is_available %}Available{% else %}Occupied{% endif %}
+                        </span>
+                    </td>
+                    <td data-label="Hotel">{{ rest.hotel.name }}</td>
+                    <td data-label="Actions" class="actions">
+                        <a href="{% url 'hotel:edit_restaurant' rest.id %}" class="action-btn edit-btn">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row">
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <p>No restaurant tables found</p>
+                            <a href="{% url 'hotel:add_restaurant' %}" class="add-btn">
+                                <i class="fas fa-plus"></i> Add Your First Table
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    /* Main container */
+    .restaurant-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Header */
+    .restaurant-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .restaurant-header h2 {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    /* Add button */
+    .add-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #38a169;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .add-btn:hover {
+        background-color: #2f855a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(56, 161, 105, 0.2);
+    }
+
+    .add-btn i {
+        margin-right: 8px;
+    }
+
+    /* Table container */
+    .restaurant-table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+    }
+
+    /* Table styling */
+    .restaurant-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+    }
+
+    .restaurant-table thead {
+        background-color: #f8fafc;
+    }
+
+    .restaurant-table th {
+        padding: 16px 20px;
+        text-align: left;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .restaurant-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #edf2f7;
+        color: #4a5568;
+        font-size: 15px;
+    }
+
+    /* Table number */
+    .table-number {
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    /* Status badge */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .status-badge.available {
+        background-color: #ebf8ff;
+        color: #3182ce;
+    }
+
+    .status-badge.unavailable {
+        background-color: #fff5f5;
+        color: #e53e3e;
+    }
+
+    /* Action buttons */
+    .actions {
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn {
+        background-color: #edf2f7;
+        color: #4a5568;
+    }
+
+    .edit-btn:hover {
+        background-color: #e2e8f0;
+        color: #2d3748;
+    }
+
+    .edit-btn i {
+        margin-right: 6px;
+        font-size: 13px;
+    }
+
+    /* Empty state */
+    .empty-row td {
+        padding: 0 !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        border: 1px dashed #cbd5e0;
+    }
+
+    .empty-state i {
+        font-size: 40px;
+        color: #cbd5e0;
+        margin-bottom: 20px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    /* Responsive styling */
+    @media (max-width: 768px) {
+        .restaurant-container {
+            padding: 20px;
+            margin: 15px;
+        }
+        
+        .restaurant-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .restaurant-header h2 {
+            margin-bottom: 15px;
+        }
+        
+        .restaurant-table th,
+        .restaurant-table td {
+            padding: 12px 15px;
+        }
+        
+        .add-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .restaurant-header h2 {
+            font-size: 24px;
+        }
+        
+        .restaurant-table {
+            display: block;
+        }
+        
+        .restaurant-table thead {
+            display: none;
+        }
+        
+        .restaurant-table tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        
+        .restaurant-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            text-align: right;
+        }
+        
+        .restaurant-table td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #4a5568;
+            margin-right: 15px;
+        }
+        
+        .restaurant-table td.actions {
+            justify-content: flex-end;
+        }
+    }
+</style>
 {% endblock %}

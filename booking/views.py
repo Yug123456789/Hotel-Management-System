@@ -1,12 +1,19 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from urllib.parse import urlencode
+from django.shortcuts import redirect
+from django.contrib import messages
 from datetime import datetime
 from hotel.models import Hotel, HotelGallery,   RoomType, Room, Resturant, Booking, ActivityLog, StaffOnDuty
 from django.template.loader import render_to_string
 
 def check_room_availability(request):
+    
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "Please log in to check room availability.")
+            hotel_id = request.POST.get("hotel-id")
+            return redirect("userauthentication:choose-sign-in")
         id = request.POST.get("hotel-id")
         checkin = request.POST.get("checkin")
         checkout = request.POST.get("checkout")
@@ -69,6 +76,10 @@ def hotel_user_check_room_availability(request):
     
 def check_resturant_availability(request):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "Please log in to check restaurant availability.")
+            hotel_id = request.POST.get("hotel-id")
+            return redirect("userauthentication:choose-sign-in")
         id = request.POST.get("hotel-id")
         checkin = request.POST.get("checkin")
         
@@ -141,7 +152,7 @@ def hotel_user_check_resturant_availability(request):
 def add_to_selection(request):
     room_selection = {}
 
-    room_id = str(request.GET.get('id', ''))  # Ensure room_id is a string
+    room_id = str(request.GET.get('id', ''))  # Ensure room_id is a string Convert in string
 
     room_selection[room_id] = {
         'hotel_id': request.GET.get('hotel_id', ''),

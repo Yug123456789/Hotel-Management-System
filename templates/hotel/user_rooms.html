@@ -1,21 +1,187 @@
-<!-- Listing out the rooms before editing it.-->
-
 {% extends 'partials/hotel-user.html' %}
 {% load static %}
 
 {% block content %}
+<div class="rooms-container">
+    <div class="rooms-header">
+        <h2>Room Management</h2>
+    </div>
+    
+    <div class="rooms-table-container">
+        <table class="rooms-table">
+            <thead>
+                <tr>
+                    <th>Room Number</th>
+                    <th>Room Type</th>
+                    <th>Hotel</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td>{{ room.room_number }}</td>
+                    <td><span class="room-type-badge">{{ room.room_type }}</span></td>
+                    <td>{{ room.hotel.name }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'hotel:edit_room' room.id %}" class="action-btn edit-btn">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">No rooms found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-{% for room in rooms %}
-    <tr>
-        <td>{{ room.room_number }}</td>
-        <td>{{ room.room_type }}</td>
-        <td>{{ room.hotel.name }}</td>
-        <td>
-            <a href="{% url 'hotel:edit_room' room.id %}">Edit</a>
-        </td>
-    </tr>
-{% endfor %}
+<style>
+    /* Main container styling */
+    .rooms-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
 
+    /* Header styling */
+    .rooms-header h2 {
+        color: #2c3e50;
+        margin-bottom: 25px;
+        font-size: 28px;
+        font-weight: 600;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f2f5;
+    }
 
+    /* Table container */
+    .rooms-table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
 
+    /* Table styling */
+    .rooms-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+    }
+
+    .rooms-table thead {
+        background-color: #f8fafc;
+    }
+
+    .rooms-table th {
+        padding: 16px 20px;
+        text-align: left;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .rooms-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #edf2f7;
+        color: #4a5568;
+        font-size: 15px;
+    }
+
+    /* Hover effect for rows */
+    .rooms-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    /* Room type badge */
+    .room-type-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        background-color: #ebf8ff;
+        color: #3182ce;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* Action buttons */
+    .actions-cell {
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn {
+        background-color: #4299e1;
+        color: white;
+    }
+
+    .edit-btn:hover {
+        background-color: #3182ce;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(66, 153, 225, 0.2);
+    }
+
+    .edit-btn i {
+        margin-right: 6px;
+        font-size: 13px;
+    }
+
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 40px !important;
+        color: #a0aec0;
+        font-style: italic;
+    }
+
+    /* Responsive styling */
+    @media (max-width: 768px) {
+        .rooms-container {
+            padding: 20px;
+            margin: 15px;
+        }
+        
+        .rooms-table th,
+        .rooms-table td {
+            padding: 12px 15px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .rooms-header h2 {
+            font-size: 24px;
+        }
+        
+        .rooms-table th {
+            font-size: 13px;
+            padding: 10px 12px;
+        }
+        
+        .rooms-table td {
+            font-size: 14px;
+        }
+    }
+</style>
 {% endblock %}

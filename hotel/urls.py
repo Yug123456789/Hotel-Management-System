@@ -5,6 +5,8 @@ app_name = "hotel"
  
 urlpatterns = [
     path("", views.index, name= "index"),
+    path("about_us", views.about_us, name= "about_us"),
+    path("available_hotel", views.available_hotel, name= "available_hotel"),
     path("detail/<slug:slug>/admin/", views.hotel_detail, name="hotel_detail"),
     path("detail/<slug:slug>/", views.hotel_user_hotel_detail, name="user_hotel_hotel_detail"),
     path("detail/<slug:slug>/room-type/<slug:roomtype_slug>/admin/", views.room_type_detail, name= "room_type_detail"),
@@ -24,6 +26,7 @@ urlpatterns = [
     path('coupons/add/', views.add_coupons, name='add_coupon'),
     path('user_hotel/', views.user_hotel, name='user_hotel'),
     path('hotel_user_dashboard/', views.user_hotel_dashboard, name='hotel_user_dashboard'),
+    path('hotel-user-cancel-room-booking/<int:booking_id>/', views.hotel_user_cancel_room_booking, name='hotel_user_cancel_room_booking'),
     path('hotel_user_restaurant_booking/', views.user_hotel_restaurant_booking, name='hotel_user_restaurant_booking'),
     path('customer_user_room_booking/', views.user_customer_room_booking, name='customer_user_room_booking'),
     path('cancel-booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),

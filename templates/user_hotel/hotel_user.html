@@ -7,6 +7,7 @@ The main motive of this page is only to display the header part of hoter user.  
 {% load static %}
 {% block content %}
 
+
 <link rel="stylesheet" href="{% static 'css/topdestination.css' %}">
 <!-- Hero Section -->
 <section class="hero">
@@ -43,6 +44,7 @@ The main motive of this page is only to display the header part of hoter user.  
 
 <!-- Hotel Listings -->
 <section id="hotel-listings" class="hotel-list">
+    
     {% for hotel in hotels %}
     <a href="{% url 'hotel:user_hotel_hotel_detail' hotel.slug %}" class="hotel-link">
         <div class="hotel">

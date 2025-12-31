@@ -4,14 +4,86 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/roombookingdisplay.css' %}">
 
+<style>
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.3s;
+    }
+    
+    .cancel-btn:hover {
+        background-color: #c82333;
+    }
+    
+    .cancel-form {
+        display: inline;
+    }
+    
+    .col-actions {
+        width: 100px;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+    }
+    
+    .alert-dismissible .btn-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+        padding: 1.25rem 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+</style>
+
 <div class="container booking-container my-4">
     <h2 class="booking-header">Your Room Bookings</h2>
+    
+    <!-- Display Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" onclick="this.parentElement.style.display='none'" aria-label="Close">&times;</button>
+            </div>
+        {% endfor %}
+    {% endif %}
     
     <div class="filter-section">
         <form method="get">
             <label for="hotel_id" class="filter-label">Filter by Hotel:</label>
             <select name="hotel_id" id="hotel_id" class="hotel-select" onchange="this.form.submit()">
-                
+                <option value="">All Hotels</option>
                 {% for hotel in hotels %}
                     <option value="{{ hotel.id }}" {% if hotel.id|stringformat:"s" == selected_hotel_id %}selected{% endif %}>
                         {{ hotel.name }}
@@ -32,10 +104,13 @@
                         <th class="col-payment">Payment Status</th>
                         <th class="col-total">Total</th>
                         <th class="col-fullname">Full Name</th>
-                        <th class="col-email">Email</th>
+                        <!-- <th class="col-email">Email</th> -->
                         <th class="col-coupons">Coupons Used</th>
                         <th class="col-checkin">Check In</th>
                         <th class="col-checkout">Check Out</th>
+                        {% if user.role == 'hotel' %}
+                        <th class="col-actions">Actions</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +124,7 @@
                         </td>
                         <td class="price">Rs.{{ booking.total }}</td>
                         <td class="full-name">{{ booking.full_name }}</td>
-                        <td class="email">{{ booking.email }}</td>
+                        <!-- <td class="email">{{ booking.email }}</td> -->
                         <td>
                             {% for coupon in booking.coupons.all %}
                                 <span class="coupon-badge">{{ coupon.code }}</span>
@@ -59,11 +134,22 @@
                         </td>
                         <td class="date-info">{{ booking.check_in_date }}</td>
                         <td class="date-info">{{ booking.check_out_date }}</td>
+                    {% if user.role == 'hotel' %}
+                    <td class="actions">
+                        {% if booking.payment_status != 'paid' %}
+                        <form method="post" action="{% url 'hotel:hotel_user_cancel_room_booking' booking.id %}" class="cancel-form" onsubmit="return confirm('Are you sure you want to cancel booking #{{ booking.booking_id }} for {{ booking.full_name }}? This action cannot be undone.')">
+                            {% csrf_token %}
+                            <button type="submit" class="cancel-btn">Cancel</button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted">Paid</span>
+                        {% endif %}
+                    </td>
+                    {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            
         </div>
     {% else %}
         <div class="no-bookings">You have no bookings yet.</div>
@@ -73,7 +159,20 @@
 <script>
     // Ensure filter is always visible even with no bookings
     document.addEventListener('DOMContentLoaded', function() {
-        // Script remains the same - filter section is outside the conditional block
+        // Auto-hide alert messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                if (alert.style.display !== 'none') {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s';
+                    setTimeout(function() {
+                        alert.style.display = 'none';
+                    }, 500);
+                }
+            });
+        }, 5000);
     });
 </script>
+
 {% endblock content %}

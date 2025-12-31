@@ -1,0 +1,410 @@
+function getCustomizedVideos() {
+  var isLoggedIn = window._user_num !== '';
+
+  if (!isCustomizedVideosOpen() || !isLoggedIn) {
+    return;
+  }
+
+  new $ajax({
+    parent: this,
+    type: 'GET',
+    url: API_URL + 'v1/current_user/customized_videos',
+    response: function (data) {
+      var watchedVideos = getWatchedCustomizedVideos();
+      setCustomizedVideos(JSON.parse(data.response), watchedVideos);
+    },
+  });
+}
+
+function showOrHideCustomizedVideos() {
+  var isOpen = isCustomizedVideosOpen();
+  var videos = document.getElementById('customized_videos');
+  var openButton = document.getElementById(
+    'underbar_show_hide_customized_videos'
+  );
+  var toolTip = document.getElementById('custom_videos_tooltip');
+  setIsCustomizedVideosOpen(!isOpen);
+
+  // isOpen is true, which means we are closing it
+  if (isOpen) {
+    hide_backdrop();
+  }
+
+  if (!isOpen && !videos) {
+    getCustomizedVideos();
+    positionCustomizedVideosPanel();
+    return;
+  }
+
+  if (!videos) {
+    return;
+  }
+
+  if (!isOpen) {
+    videos.className = '';
+    openButton.className = 'highlighted';
+    positionCustomizedVideosPanel();
+
+    if (toolTip) {
+      toolTip.className = '';
+    }
+
+    return;
+  }
+
+  videos.className = 'hidden';
+  openButton.className = '';
+
+  if (toolTip) {
+    toolTip.className = 'hidden';
+  }
+}
+
+function isCustomizedVideosOpen() {
+  return localStorage.getItem('isCustomizedVideosOpen') !== 'false';
+}
+
+function setIsCustomizedVideosOpen(isOpened) {
+  var value = isOpened ? 'true' : 'false';
+  localStorage.setItem('isCustomizedVideosOpen', value);
+}
+
+function getWatchedCustomizedVideos() {
+  return JSON.parse(localStorage.getItem('watchedCustomizedVideos')) || [];
+}
+
+function setCustomizedVideos(videos, watchedVideos) {
+  if (videos.length === 0 || document.getElementById('customized_videos')) {
+    return;
+  }
+
+  var div = $create('div');
+  div.id = 'customized_videos';
+  document.body.appendChild(div);
+
+  var customizedBody = $create('div');
+  customizedBody.id = 'customized_videos_body';
+  div.appendChild(customizedBody);
+
+  var customizedControls = $create('div');
+  customizedControls.id = 'customized_videos_controls';
+  insertCustomizedVideosControls(customizedControls);
+  customizedBody.appendChild(customizedControls);
+
+  var customizedContent = $create('div');
+  customizedContent.id = 'customized_videos_content';
+  customizedBody.appendChild(customizedContent);
+
+  var title = $create('div');
+  title.className = 'customized_videos_title';
+  title.appendChild($text('Personalized Videos'));
+  customizedContent.appendChild(title);
+
+  var sub_title = $create('div');
+  sub_title.className = 'customized_videos_subtitle';
+  sub_title.appendChild(
+    $text('We built this list for you based on your answers from setup.')
+  );
+  customizedContent.appendChild(sub_title);
+
+  // Recommended videos
+  var recommendedVideosHeading = $create('div');
+  recommendedVideosHeading.className = 'customized_videos_heading';
+  recommendedVideosHeading.innerHTML = 'RECOMMENDED';
+  customizedContent.appendChild(recommendedVideosHeading);
+
+  var recommendedVideosDiv = $create('div');
+  recommendedVideosDiv.id = 'customized_videos_recommended';
+  customizedContent.appendChild(recommendedVideosDiv);
+
+  // Popular videos
+  var popularHeading = $create('div');
+  popularHeading.className = 'customized_videos_heading';
+  popularHeading.innerHTML = 'POPULAR VIDEOS';
+  customizedContent.appendChild(popularHeading);
+
+  var popularVideosDiv = $create('div');
+  popularVideosDiv.id = 'customized_videos_popular';
+  customizedContent.appendChild(popularVideosDiv);
+
+  // Watched videos
+  var watchedHeading = $create('div');
+  watchedHeading.className = 'customized_videos_heading';
+  watchedHeading.innerHTML = 'WATCHED';
+  customizedContent.appendChild(watchedHeading);
+
+  var watchedVideosDiv = $create('div');
+  watchedVideosDiv.id = 'customized_videos_watched';
+  customizedContent.appendChild(watchedVideosDiv);
+
+  document.getElementById('underbar_show_hide_customized_videos').className =
+    'highlighted';
+  insertCustomizedVideos(
+    recommendedVideosDiv,
+    popularVideosDiv,
+    watchedVideosDiv,
+    videos,
+    watchedVideos
+  );
+
+  // Handle repositioning the page
+  positionCustomizedVideosPanel();
+  window.addEventListener('resize', positionCustomizedVideosPanel);
+}
+
+function insertCustomizedVideosControls(parent) {
+  remove_child_nodes(parent);
+
+  var div = $create('div');
+  div.className = 'viewAll';
+  parent.appendChild(div);
+
+  var alink = $create('a');
+  alink.setAttribute('target', '_blank');
+  alink.href = 'https://support.teamgantt.com/videos';
+  alink.appendChild($text('View all videos'));
+  div.appendChild(alink);
+
+  var div = $create('div');
+  div.className = 'closeButton';
+  div.onclick = function () {
+    showOrHideCustomizedVideos();
+  };
+  parent.appendChild(div);
+}
+
+function insertCustomizedVideos(
+  recommendedVideosDiv,
+  popularVideosDiv,
+  watchedVideosDiv,
+  videos,
+  watchedVideos
+) {
+  videos.forEach(function (onboardingVideo) {
+    var isRecommended = onboardingVideo.is_recommended;
+    var video = onboardingVideo.video;
+    var isVideoWatched =
+      js_in_array(video.id, watchedVideos) !== -1 ||
+      video.title.indexOf('Welcome ') === 0;
+    var videoDiv = createVideoDiv(
+      video.id,
+      video.title,
+      video.videoUrl,
+      video.duration
+    );
+
+    if (isVideoWatched) {
+      watchedVideosDiv.appendChild(videoDiv);
+    } else if (isRecommended) {
+      recommendedVideosDiv.appendChild(videoDiv);
+    } else {
+      popularVideosDiv.appendChild(videoDiv);
+    }
+  });
+
+  highlightCustomVideoPanel();
+}
+
+let closeVideoChecker = null;
+
+function createVideoDiv(id, title, url, duration) {
+  var wrapper = $create('div');
+  wrapper.className = 'customized_video';
+  wrapper.setAttribute('videoId', id);
+  wrapper.onclick = function () {
+    markCustomizedVideoAsWatched(id);
+    closeHighlightCustomVideoPanel();
+    moveCustomizedVideoToWatched(this);
+    showWebclientBackdrop();
+
+    closeVideoChecker = setInterval(function () {
+      if ($id('wistia-' + id + '-1_popover_overlay')) {
+        // video is still playing
+        return;
+      }
+
+      clearInterval(closeVideoChecker);
+      hide_backdrop();
+    }, 100);
+  };
+  wrapper.appendChild(insertWistiaVideo(id, url));
+
+  var titleDiv = $create('div');
+  titleDiv.className = 'title';
+  titleDiv.innerHTML = title;
+  wrapper.appendChild(titleDiv);
+
+  var durationDiv = $create('div');
+  durationDiv.className = 'duration';
+  durationDiv.innerHTML = duration;
+  wrapper.appendChild(durationDiv);
+
+  return wrapper;
+}
+
+function insertWistiaVideo(id, url) {
+  var div = $create('DIV');
+  div.className = 'wistia_video_wrapper';
+
+  var div2 = $create('DIV');
+  div2.style.display = 'flex';
+  div2.style.alignItems = 'center';
+  div2.style.justifyContent = 'center';
+  div2.style.height = '100%';
+  div2.style.width = '100%';
+  div.appendChild(div2);
+
+  var div3 = $create('DIV');
+  div3.className = 'wistia_responsive_wrapper';
+  div3.style.height = '100%';
+  div3.style.width = '100%';
+  div2.appendChild(div3);
+
+  var div4 = $create('DIV');
+  div4.className =
+    'wistia_embed wistia_async_' +
+    id +
+    ' videoFoam=true seo=false playButton=false popover=true';
+  div4.style.height = '100%';
+  div4.style.width = '100%';
+  div3.appendChild(div4);
+
+  window._wq = window._wq || [];
+  window._wq.push({
+    id,
+    options: {
+      autoPlay: true,
+      popoverOverlayColor: '3c3c3c',
+      popoverOverlayOpacity: '0.5',
+    },
+  });
+
+  return div;
+}
+
+function positionCustomizedVideosPanel() {
+  if (!isCustomizedVideosOpen()) {
+    return;
+  }
+
+  var underbar = document.getElementById('underbar');
+  var footer = document.getElementById('footer');
+  var resources = document.getElementById('resource_view_list');
+  var resourcesTooltip = document.getElementById('resource_view_tool_tip');
+  var videoPanel = document.getElementById('customized_videos');
+
+  if (!underbar || !footer || !resources || !videoPanel) {
+    setTimeout(positionCustomizedVideosPanel, 200);
+    return;
+  }
+
+  var top = underbar.offsetTop * 1 + underbar.offsetHeight * 1;
+  var bottom = footer.offsetHeight;
+
+  if (resources) {
+    bottom += resources.offsetHeight;
+    setTimeout(positionCustomizedVideosPanel, 200);
+  }
+  if (resourcesTooltip) {
+    bottom += resourcesTooltip.offsetHeight - 3;
+  }
+
+  videoPanel.style.top = top + 'px';
+  videoPanel.style.bottom = bottom + 'px';
+}
+
+function highlightCustomVideoPanel() {
+  if (
+    localStorage.getItem('isCustomizedVideoToolTipClosed') === 'true' ||
+    document.getElementById('customized_videos_popular').childNodes.length === 0
+  ) {
+    return;
+  }
+
+  var tooltip = $create('div');
+  tooltip.id = 'custom_videos_tooltip';
+
+  var wrapper = $create('div');
+  wrapper.id = 'custom_videos_tooltip_body';
+  tooltip.appendChild(wrapper);
+
+  var closer = $create('div');
+  closer.id = 'custom_videos_tooltip_closer';
+  closer.onclick = function () {
+    closeHighlightCustomVideoPanel();
+  };
+  tooltip.appendChild(closer);
+
+  var arrowTip = $create('div');
+  arrowTip.id = 'custom_videos_tooltip_arrow';
+  tooltip.appendChild(arrowTip);
+
+  var bubble = $create('div');
+  bubble.id = 'custom_videos_tooltip_bubble';
+  tooltip.appendChild(bubble);
+
+  var title = $create('div');
+  title.id = 'custom_videos_tooltip_title';
+  title.appendChild($text('Watch these videos to get started!'));
+  wrapper.appendChild(title);
+
+  var subTitle = $create('div');
+  subTitle.id = 'custom_videos_tooltip_subtitle';
+  subTitle.appendChild(
+    $text(
+      "They'll give you a great head start into learning the ins and outs of TeamGantt!"
+    )
+  );
+  wrapper.appendChild(subTitle);
+
+  document.body.appendChild(tooltip);
+}
+
+function closeHighlightCustomVideoPanel() {
+  localStorage.setItem('isCustomizedVideoToolTipClosed', 'true');
+
+  if (!document.getElementById('custom_videos_tooltip')) {
+    return;
+  }
+
+  document.body.removeChild(document.getElementById('custom_videos_tooltip'));
+}
+
+function markCustomizedVideoAsWatched(videoId) {
+  var watchedVideos = getWatchedCustomizedVideos();
+
+  if (js_in_array(videoId, watchedVideos) === -1) {
+    watchedVideos.push(videoId);
+    localStorage.setItem(
+      'watchedCustomizedVideos',
+      JSON.stringify(watchedVideos)
+    );
+  }
+
+  return watchedVideos;
+}
+
+function moveCustomizedVideoToWatched(video) {
+  setTimeout(function () {
+    var watchedVideos = document.getElementById('customized_videos_watched');
+    watchedVideos.appendChild(video);
+  }, 500);
+}
+
+// BRING IN WISTIA
+window.addEventListener('load', function () {
+  var script = $create('SCRIPT');
+  script.setAttribute('src', 'https://fast.wistia.com/assets/external/E-v1.js');
+  script.setAttribute('async', true);
+  document.body.appendChild(script);
+
+  getCustomizedVideos();
+});
+
+function showWebclientBackdrop() {
+  if (!get_is_embedded_view()) {
+    return;
+  }
+
+  parent_post_message('show-backdrop', {});
+}

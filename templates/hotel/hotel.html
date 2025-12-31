@@ -60,37 +60,43 @@
 </section>
 
 <!-- Hotel Listings -->
-<section id="hotel-listings" class="hotel-list">
-    {% for hotel in hotels %}
-        <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">
-            <div class="hotel">
-                {% if hotel.image and hotel.image.url %}
-                    <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" class="hotel-image" style="width: 100%; height: 200px; object-fit: cover;">
-                {% else %}
-                    <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Default Image" class="hotel-image" style="width: 100%; height: 200px; object-fit: cover;">
-                {% endif %}
-                <div class="hotel-info">
-                    <h3>{{ hotel.name }}</h3>
-                    <p class="hotel-location">📍 {{ hotel.address }}</p>
-                    <p class="hotel-contact">📞 {{ hotel.mobile }}</p>
-                   
-                    <br>
-                    {% if user.is_authenticated %}
-                        <form method="post" action="{% url 'hotel:bookmark_hotel' hotel.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="bookmark-btn">
-                                {% if hotel.id in bookmarked_ids %}
-                                    ✅ Bookmarked
-                                {% else %}
-                                    🔖 Bookmark
-                                {% endif %}
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        </a>
-    {% endfor %}
+<!-- Available Hotels -->
+<section id="hotel-listings">
+    <div class="container">
+        <h2>Available Hotels</h2>
+        <div class="hotel-list">
+            {% for hotel in hotels %}
+                <a href="{% url 'hotel:hotel_detail' hotel.slug %}" class="hotel-link">
+                    <div class="hotel">
+                        {% if hotel.image and hotel.image.url %}
+                            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" class="hotel-image">
+                        {% else %}
+                            <img src="{% static 'images/club_himalayan.jpeg' %}" alt="Default Image" class="hotel-image">
+                        {% endif %}
+                        <div class="hotel-info">
+                            <h3>{{ hotel.name }}</h3>
+                            <p class="hotel-location">📍 {{ hotel.address }}</p>
+                            <p class="hotel-contact">📞 {{ hotel.mobile }}</p>
+                           
+                            <br>
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'hotel:bookmark_hotel' hotel.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bookmark-btn">
+                                        {% if hotel.id in bookmarked_ids %}
+                                            ✅ Bookmarked
+                                        {% else %}
+                                            🔖 Bookmark
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
 </section>
 
 <!-- Customer Testimonials -->

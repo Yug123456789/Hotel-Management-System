@@ -29,6 +29,9 @@
                     <span class="badge not-verified">Not Verified</span>
                 {% endif %}
             </div>
+            <div class="profile-actions">
+                <a href="{% url 'userdashboard:change_password' %}" class="btn btn-primary">Change Password</a>
+            </div>
         </div>
         
         <div class="profile-details">

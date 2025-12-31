@@ -9,8 +9,7 @@ def RegisterView(request):
     if request.user.is_authenticated:
         messages.warning(request, f"You are already logged in.")
         return redirect("hotel:index")
-
-
+    
     form = UserRegisterForm(request.POST or None)
     
     if form.is_valid():
@@ -19,31 +18,30 @@ def RegisterView(request):
         phone = form.cleaned_data.get("phone")
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password1")
-
+        
         user = authenticate(email = email, password=password)
         login(request, user)
-
-        messages.success(request, f"Hello{full_name}, Your account has been created")
-
+        
+        messages.success(request, f"Hello {full_name}, Your account has been created")
+        
         profile = Profile.objects.get(user=request.user)
         profile.full_name= full_name
         profile.phone = phone
         profile.save()
-
+        
         return redirect("hotel:index")
-
+    
     context = {
         "form":form
     }
-
+    
     return render(request, "userauthentication/sign-up.html", context)
 
 def HotelRegisterView(request):
     if request.user.is_authenticated:
         messages.warning(request, f"You are already logged in.")
         return redirect("hotel:index")
-
-
+    
     form = UserHotelRegisterForm(request.POST or None)
     
     if form.is_valid():
@@ -52,68 +50,70 @@ def HotelRegisterView(request):
         phone = form.cleaned_data.get("phone")
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password1")
-
+        
         user = authenticate(email = email, password=password)
         login(request, user)
-
-        messages.success(request, f"Hello{full_name}, Your account has been created")
-
+        
+        messages.success(request, f"Hello {full_name}, Your account has been created")
+        
         profile = Profile.objects.get(user=request.user)
         profile.full_name= full_name
         profile.phone = phone
         profile.save()
-
+        
         return redirect("hotel:user_hotel")
-
+    
     context = {
         "form":form
     }
-
+    
     return render(request, "userauthentication/hotel-sign-up.html", context)
-
 
 def universal_login_view(request):
     if request.user.is_authenticated:
-        if request.user.role == 'hotel':
+        if request.user.role == 'admin':
+            messages.warning(request, "You are already logged in as an Admin.")
+            return redirect("/admin/")  # Redirect to Django admin or your custom admin dashboard
+        elif request.user.role == 'hotel':
             messages.warning(request, "You are already logged in as a Hotel User.")
             return redirect("hotel:user_hotel")
         else:
             messages.warning(request, "You are already logged in.")
             return redirect("hotel:index")
-
+    
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-
+        
         try:
             user = User.objects.get(email=email)
             user_auth = authenticate(request, email=email, password=password)
-
+            
             if user_auth is not None:
                 login(request, user_auth)
                 messages.success(request, "You are logged in.")
                 
-                if user_auth.role == 'hotel':
+                # Role-based redirection
+                if user_auth.role == 'admin':
+                    return redirect("/admin/")  # Django admin or custom admin dashboard
+                elif user_auth.role == 'hotel':
                     return redirect("hotel:user_hotel")
-                else:
+                else:  # customer role
                     return redirect("hotel:index")
             else:
                 messages.error(request, "Incorrect email or password.")
                 return redirect("userauthentication:sign-in")
-
+        
         except User.DoesNotExist:
             messages.error(request, "User does not exist.")
             return redirect("userauthentication:sign-in")
-
+    
     return render(request, "userauthentication/sign-in.html")
-
 
 def LogoutView(request):
     logout(request)
-    messages.success(request, "You have been sucessfully logged out.")
+    messages.success(request, "You have been successfully logged out.")
     return redirect("userauthentication:choose-sign-in")
-
 
 def ChooseSignInView(request):
     return render(request, "userauthentication/choose-sign-in.html")
-

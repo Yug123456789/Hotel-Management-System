@@ -1,0 +1,142 @@
+/* Checkout Page Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 20px auto;
+  gap: 20px;
+}
+
+/* Selected Rooms Section */
+.selected-rooms,
+.billing-info,
+.booking-summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Room Card */
+.room-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+}
+
+.room-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.room-card p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.room-price {
+  font-weight: bold;
+  color: #28a745;
+}
+
+/* Billing Info Form */
+.billing-form .input-group {
+  margin-bottom: 15px;
+}
+
+.billing-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.billing-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Booking Summary */
+.booking-summary {
+  flex: 1;
+  max-width: 300px;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+}
+
+.summary-list li {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.total-cost {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: black;
+  margin-bottom: 10px;
+}
+
+/* Coupon & Payment */
+.coupon-input {
+  width: calc(100% - 70px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.apply-btn {
+  background: purple;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.pay-btn.flutterwave {
+  background: orange;
+  color: #fff;
+}
+
+.pay-btn.stripe {
+  background: purple;
+  color: #fff;
+}

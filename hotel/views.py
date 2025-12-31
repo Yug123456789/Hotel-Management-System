@@ -14,6 +14,11 @@ from django.db.models import Q
 
 
 def index (request):
+    user = request.user
+    if user.is_authenticated and user.is_superuser:
+        messages.warning(request, "Admins cannot access user pages.")
+        return redirect("admin:index")
+    
     hotels = Hotel.objects.filter(status="Live")
     bookmarked_ids = []
 
@@ -25,6 +30,12 @@ def index (request):
     }
     return render(request, "hotel/hotel.html", context)
 
+def available_hotel(request):
+    hotels = Hotel.objects.filter(status="Live")
+    context = {
+        "hotels" : hotels        
+    }
+    return render(request, "hotel/available_hotels.html", context)
 
 def hotel_detail(request, slug):
     hotel = get_object_or_404(Hotel, slug=slug)
@@ -167,6 +178,11 @@ def rooms_selected(request):
             booking.total += float(total)
             booking.before_discount += float(total)
             booking.save()
+            
+            # After clicking Continue to Checkout removes the selected hotel and room details from the session
+            del request.session['selection_data_object']
+            request.session.modified = True
+
             return redirect("hotel:checkout", booking.booking_id)
 
         hotel = None
@@ -466,6 +482,9 @@ def restaurant_selected(request):
                     table_count += 1
 
                 booking.save()
+
+                del request.session['selection_data_objects']
+                request.session.modified = True
 
                 return redirect("hotel:restaurant_checkout", booking.rbooking_id)
 
@@ -931,6 +950,31 @@ def user_hotel_dashboard(request):
     }
     return render(request, 'hotel/hotel_user_dashboard.html', context)
 
+def hotel_user_cancel_room_booking(request, booking_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You have to log in first.")
+        return redirect('userauthentication:sign-in')
+        
+    try:
+        # For hotel users, check if they own the hotel for this booking
+        if request.user.role == 'hotel':
+            booking = Booking.objects.get(id=booking_id, hotel__owner=request.user)
+        else:
+            # For regular users, check if it's their booking
+            booking = Booking.objects.get(id=booking_id, user=request.user)
+            
+        # Check if booking is paid - don't allow cancellation of paid bookings
+        if booking.payment_status == "paid":
+            messages.error(request, "Paid bookings cannot be cancelled.")
+            return redirect('hotel:hotel_user_dashboard')
+                    
+        booking_id_display = booking.booking_id  # Save for message
+        booking.delete()
+        messages.success(request, f"Booking #{booking_id_display} has been successfully cancelled.")
+    except Booking.DoesNotExist:
+        messages.error(request, "Booking not found or you don't have permission to cancel it.")
+        
+    return redirect('hotel:hotel_user_dashboard')
 
 
 def user_hotel_restaurant_booking(request):
@@ -985,6 +1029,20 @@ def user_customer_room_booking(request):
     }
     return render(request, 'hotel/customer_room_booking.html', context)
 
+# def cancel_booking(request, booking_id):
+#     if not request.user.is_authenticated:
+#         messages.warning(request, "You have to log in first.")
+#         return redirect('userauthentication:sign-in')
+    
+#     try:
+#         booking = Booking.objects.get(id=booking_id, user=request.user)
+#         booking_id = booking.booking_id  # Save for message
+#         booking.delete()
+#         messages.success(request, f"Booking #{booking_id} has been successfully cancelled.")
+#     except Booking.DoesNotExist:
+#         messages.error(request, "Booking not found or you don't have permission to cancel it.")
+    
+#     return redirect('hotel:customer_user_room_booking')
 def cancel_booking(request, booking_id):
     if not request.user.is_authenticated:
         messages.warning(request, "You have to log in first.")
@@ -992,6 +1050,13 @@ def cancel_booking(request, booking_id):
     
     try:
         booking = Booking.objects.get(id=booking_id, user=request.user)
+        
+        # Check if booking is paid - don't allow cancellation of paid bookings
+        # Note the space after "Paid as i have register like this in my models."
+        if booking.payment_status == "paid":
+            messages.error(request, "Paid bookings cannot be cancelled.")
+            return redirect('hotel:customer_user_room_booking')
+            
         booking_id = booking.booking_id  # Save for message
         booking.delete()
         messages.success(request, f"Booking #{booking_id} has been successfully cancelled.")
@@ -1039,6 +1104,9 @@ def bookmark_hotel(request, hotel_id):
 
 
 def my_bookmarks(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You must log in first.")
+        return redirect("userauthentication:hotel-sign-in")
     bookmarks = Bookmark.objects.filter(user=request.user)
     return render(request, 'hotel/my_bookmarks.html', {'bookmarks': bookmarks})
 
@@ -1069,6 +1137,9 @@ def update_room_status(request):
     
     return redirect('hotel:user_hotel')
 
+def about_us(request):
+
+    return render(request, "hotel/about_us.html")
 
 # def update_table_status(request):
 #     today = timezone.now().date()
